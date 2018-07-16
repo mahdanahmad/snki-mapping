@@ -6,7 +6,7 @@ const topojson	= require('topojson');
 const shapefile	= require('shapefile');
 
 const gadm_root	= './data/shp/gadm_data/';
-const rslt_root	= './results/json/';
+const rslt_root	= './public/json/';
 
 const simply_val	= 1e-8;
 const quant_val		= 1e4;
@@ -19,8 +19,8 @@ function shpToJson(filepath, level, callback) {
 }
 
 function toTopo(level, filename, json, callback) {
-	let geojson			= {};
-	geojson[filename]	= json;
+	let geojson			= { map: json };
+	// geojson[filename]	= json;
 	let topology		= topojson.topology(geojson);
 	topology			= topojson.presimplify(topology, topojson.sphericalTriangleArea);
 	topology			= topojson.simplify(topology, (level - 1) ? null : simply_val);
@@ -49,7 +49,7 @@ fs.readdirSync(gadm_root).filter(o => (path.extname(o) == '.shp')).forEach(file 
 	let filename	= file.slice(0, -4);
 
 	if (level == 1) {
-		shpToJson(file, level, geo => { toTopo(level, filename, geo, topo => { writeToFile(filename, topo); }); })
+		shpToJson(file, level, geo => { toTopo(level, filename, geo, topo => { writeToFile('0', topo); }); })
 	} else {
 		shpToJson(file, level, geo => {
 			_.chain(geo)

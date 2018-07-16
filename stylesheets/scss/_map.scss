@@ -1,0 +1,6 @@
+#map-wrapper {
+	height: 100%; width: 100%;
+	svg#map-viz {
+		rect#background { fill: none; pointer-events: all; }
+	}
+}

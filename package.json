@@ -9,8 +9,16 @@
     "serve": "pm2 start ./app/server.js --name=\"snki-mapping\" --watch",
     "sass": "cd stylesheets && sass --watch scss:css --style compressed"
   },
-  "author": "mahdan.hasan@un.or.id",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mahdanahmad/snki-mapping.git"
+  },
+  "author": "mahdan.ahmad@un.or.id",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mahdanahmad/snki-mapping/issues"
+  },
+  "homepage": "https://github.com/mahdanahmad/snki-mapping#readme",
   "dependencies": {
     "async": "^2.6.1",
     "body-parser": "^1.18.3",
@@ -24,7 +32,6 @@
     "mongodb": "^3.0.10",
     "multer": "^1.3.1",
     "nodemon": "^1.17.5",
-    "sass": "^1.9.0",
     "shapefile": "^0.6.6",
     "topojson": "^3.0.2",
     "xlsx": "^0.13.1"
