@@ -2,5 +2,7 @@
 	height: 100%; width: 100%;
 	svg#map-viz {
 		rect#background { fill: none; pointer-events: all; }
+		path { stroke: #eee; fill: none; }
+		text { fill: white; text-anchor: middle; @include noselect(); }
 	}
 }

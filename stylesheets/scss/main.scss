@@ -1,7 +1,7 @@
-@import "map";
-
 @import "statics";
 @import "mixins";
+
+@import "map";
 
 a { cursor: pointer; text-decoration: none; color: black; }
 ul { list-style-type: none; margin: 0px; padding: 0px; }
