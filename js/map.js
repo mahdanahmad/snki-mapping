@@ -65,8 +65,10 @@ function zoom(id, state) {
 			scale = Math.max(node.width * .35 / dx, node.height * .35 / dy);
 
 			if (centered[state]) {
-				svg.select('g#' + 'wrapped-' + centered[state]).remove();
+				// svg.select('g#' + 'wrapped-' + centered[state]).remove();
 				svg.select('g#' + state + '-' + centered[state]).classed('hidden', false);
+
+				svg.selectAll(states.slice(curr_state + 1).map((o) => ('g.' + o + '-wrapper')).join(', ')).remove();
 			}
 			svg.select('g#' + state + '-' + id).classed('hidden', true);
 			centered[state]	= id;
