@@ -17,6 +17,7 @@ app.use(express.static(path.join(__dirname, '../stylesheets')));
 app.use(express.static(path.join(__dirname, '../views')));
 
 app.use('/', require('./routes/views'));
+app.use('/api', require('./routes/api'));
 
 // catch 404 and forward to error handler
 app.use((req, res) => {
