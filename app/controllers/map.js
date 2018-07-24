@@ -10,9 +10,9 @@ module.exports.index	= (input, callback) => {
 	let message         = 'Get map data success.';
 	let result          = null;
 
-	const prov_id		= (input.prov_id	|| null);
-	const kab_id		= (input.kab_id		|| null);
-	const kec_id		= (input.kec_id		|| null);
+	const prov_id		= (input.prov	|| null);
+	const kab_id		= (input.kab	|| null);
+	const kec_id		= (input.kec	|| null);
 
 	const states		= ['prov_id', 'kab_id', 'kec_id', 'desa_id'];
 

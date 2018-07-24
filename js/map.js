@@ -2,11 +2,10 @@ let map_dest	= "#map-wrapper";
 let map_id		= "map-viz";
 
 let path;
-const states	= ['prov', 'kabs', 'kecs', 'vils'];
+const states	= ['prov', 'kab', 'kec', 'desa'];
 let curr_state	= -1;
 
 let mappedGeo	= {};
-let centered	= {};
 
 let base_font	= 10;
 let base_stroke	= .5;
@@ -69,11 +68,13 @@ function zoom(id, state) {
 				svg.select('g#' + state + '-' + centered[state]).classed('hidden', false);
 
 				svg.selectAll(states.slice(curr_state + 1).map((o) => ('g.' + o + '-wrapper')).join(', ')).remove();
+				centered = _.omit(centered, states.slice(curr_state + 1));
 			}
 			svg.select('g#' + state + '-' + id).classed('hidden', true);
 			centered[state]	= id;
 
 			drawMap(id, states[curr_state + 1]);
+			svg.selectAll('path.' + state).classed('unintended', true);
 		} else if (_.isNil(state)) {
 			x = node.width / 2;
 			y = node.height / 2;
@@ -82,14 +83,17 @@ function zoom(id, state) {
 			svg.selectAll('g#' + _.head(states) + '-' + centered[_.head(states)]).classed('hidden', false);
 			svg.selectAll(_.tail(states).map((o) => ('g.' + o + '-wrapper')).join(', ')).remove();
 			centered	= {};
-		} else {
-			x = node.width / 2;
-			y = node.height / 2;
-			scale = 1;
 
-			svg.select('g#' + states[curr_state + 1] + '-' + centered[states[curr_state + 1]]).classed('hidden', false);
-			svg.selectAll('g.' + states[curr_state + 2] + '-wrapper').remove();
-			centered[states[curr_state + 1]]	= null;
+			svg.selectAll('path.unintended').classed('unintended', false);
+		} else {
+			// x = node.width / 2;
+			// y = node.height / 2;
+			// scale = 1;
+			//
+			// svg.select('g#' + states[curr_state + 1] + '-' + centered[states[curr_state + 1]]).classed('hidden', false);
+			// svg.selectAll('g.' + states[curr_state + 2] + '-wrapper').remove();
+			// centered[states[curr_state + 1]]	= null;
+			console.error('unhandled');
 		}
 
 		let duration	= 750;
@@ -100,7 +104,7 @@ function zoom(id, state) {
 
 		d3.selectAll('svg#' + map_id + ' path').transition()
 			.duration(duration)
-			.style('stroke-opacity', base_opac)
+			// .style('stroke-opacity', base_opac)
 			.style('stroke-width', (base_stroke - ((curr_state + 1) * .1)) + 'px');
 
 		d3.selectAll('svg#' + map_id + ' text').transition()
@@ -114,28 +118,63 @@ function zoom(id, state) {
 function drawMap(id, state) {
 	let svg	= d3.select("svg#" + map_id + '> g');
 
-	d3.json('json/' + id + '.json', (err, raw) => {
-		let topo		= topojson.feature(raw, raw.objects.map);
-		mappedGeo[state]	= _.chain(topo).get('features', []).keyBy('properties.id').mapValues((o) => ({ centroid: path.centroid(o), bounds: path.bounds(o) })).value();
+	d3.queue()
+		.defer(getMapData)
+		.defer(d3.json, 'json/' + id + '.json')
+		.await((err, data, raw) => {
+			let topo			= topojson.feature(raw, raw.objects.map);
+			mappedGeo[state]	= _.chain(topo).get('features', []).keyBy('properties.id').mapValues((o) => ({ centroid: path.centroid(o), bounds: path.bounds(o) })).value();
 
-		let grouped	= svg.append('g').attr('id', 'wrapped-' + id).attr('class', state + '-wrapper')
-			.selectAll('path.' + state).data(topo.features).enter().append('g')
+			let grouped	= svg.append('g').attr('id', 'wrapped-' + id).attr('class', state + '-wrapper')
+				.selectAll('path.' + state).data(topo.features).enter().append('g')
 				.attr('id', (o) => (state + '-' + o.properties.id))
 				.attr('class', 'grouped-' + state + ' cursor-pointer');
 
-		grouped.append('path')
-			.attr('d', path)
-			.attr('class', state)
-			.attr('vector-effect', 'non-scaling-stroke')
-			.style('stroke-opacity', base_opac)
-			.style('stroke-width', (base_stroke - ((curr_state + 1) * .1)) + 'px');
+			grouped.append('path')
+				.attr('d', path)
+				.attr('class', state + ' color-6')
+				.attr('vector-effect', 'non-scaling-stroke')
+				// .style('stroke-opacity', base_opac)
+				.style('stroke-width', (base_stroke - ((curr_state + 1) * .1)) + 'px');
 
-		grouped.append('text')
-			.attr('x', (o) => (mappedGeo[state][o.properties.id].centroid[0]))
-			.attr('y', (o) => (mappedGeo[state][o.properties.id].centroid[1]))
-			.style('font-size', (base_font / scale) + 'px')
-			.text((o) => (o.properties.name));
+			grouped.append('text')
+				.attr('x', (o) => (mappedGeo[state][o.properties.id].centroid[0]))
+				.attr('y', (o) => (mappedGeo[state][o.properties.id].centroid[1]))
+				.style('font-size', (base_font / scale) + 'px')
+				.text((o) => (o.properties.name));
 
-		grouped.on('click', (o) => zoom(o.properties.id, state));
-	});
+			grouped.on('click', (o) => zoom(o.properties.id, state));
+
+			setTimeout(() => colorMap(data, state), 500)
+		});
+}
+
+function colorMap(data, state) {
+	$('.' + state).removeClass('unintended').removeClass((idx, className) => ((className.match (/(^|\s)color-\S+/g) || []).join(' ')) ).addClass('color-6');
+
+	if (!_.isEmpty(data)) {
+		let minData	= _.chain(data).minBy('size').get('size', null).value();
+		let maxData	= _.chain(data).maxBy('size').get('size', null).value();
+
+		if (minData == maxData) { minData = 0; }
+
+		if (!_.isNil(minData) && !_.isNil(maxData)) {
+			const range			= _.ceil((maxData - minData) / 5);
+			const fracture		= _.times(5, (i) => (_.ceil(maxData) - ((i + 1) * range)))
+
+			data.forEach((o) => { $( '#' + state + '-' + o._id + ' > path' ).removeClass((idx, className) => ((className.match (/(^|\s)color-\S+/g) || []).join(' ')) ).addClass(checkProvRange(o.size)); });
+
+			function checkProvRange(value) {
+				let className	= "";
+				_.forEach(fracture, (o, i) => {
+					if (value >= o && _.isEmpty(className)) { className = 'color-' + (i + 1); }
+				});
+
+				return !_.isEmpty(className) ? className : 'color-6';
+			}
+		} else {
+
+		}
+
+	}
 }
