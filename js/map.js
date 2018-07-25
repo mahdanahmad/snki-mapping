@@ -1,7 +1,7 @@
 let map_dest	= "#map-wrapper";
 let map_id		= "map-viz";
 
-let path;
+let path, projection;
 const states	= ['prov', 'kab', 'kec', 'desa'];
 let curr_state	= -1;
 
@@ -22,7 +22,7 @@ function initMap() {
 	let width			= canvasWidth - margin.right - margin.left;
 	let height			= canvasHeight - margin.top - margin.bottom;
 
-	let projection		= d3.geoMercator()
+	projection			= d3.geoMercator()
 		.scale(width * 1.15)
 		.center([118, -1.85])
 		.translate([width / 2, height / 2]);
@@ -49,6 +49,8 @@ function zoom(id, state) {
 	let svg	= d3.select("svg#" + map_id + '> g');
 
 	if (path && svg.node() && (state !== _.last(states))) {
+		svg.select('g.pin-wrapper').remove();
+
 		let x, y;
 		let node	= svg.node().getBBox();
 
@@ -115,6 +117,29 @@ function zoom(id, state) {
 	}
 };
 
+function drawPoint(id) {
+	let svg	= d3.select("svg#" + map_id + '> g');
+	svg.select('g.pin-wrapper').remove();
+
+	centered[_.last(states)]	= id;
+	$(states.map((o) => ('.' + o + '-wrapper path')).join(', ')).addClass('unintended');
+
+	getMapData((err, result) => {
+		svg.append('g').attr('class', 'pin-wrapper')
+			.selectAll('.pin')
+			.data(result)
+			.enter().append('circle')
+				.attr('class', 'pin')
+				.attr('r', 4 / scale)
+				.attr('transform', (o) => {
+					let pix	= projection([o.long, o.lat]);
+					return ('translate(' + pix[0] + ',' + pix[1] + ')')
+				})
+				.style('fill', (o) => (o.color))
+
+	});
+}
+
 function drawMap(id, state) {
 	let svg	= d3.select("svg#" + map_id + '> g');
 
@@ -143,7 +168,7 @@ function drawMap(id, state) {
 				.style('font-size', (base_font / scale) + 'px')
 				.text((o) => (o.properties.name));
 
-			grouped.on('click', (o) => zoom(o.properties.id, state));
+			grouped.on('click', (o) => (_.last(states) == state ? drawPoint(o.properties.id) : zoom(o.properties.id, state) ));
 
 			setTimeout(() => colorMap(data, state), 500)
 		});
