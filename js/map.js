@@ -63,7 +63,8 @@ function zoom(id, state) {
 			dx = mappedGeo[state][id].bounds[1][0] - mappedGeo[state][id].bounds[0][0],
       		dy = mappedGeo[state][id].bounds[1][1] - mappedGeo[state][id].bounds[0][1],
 
-			scale = Math.max(node.width * .35 / dx, node.height * .35 / dy);
+			// scale = Math.max(node.width * .35 / dx, node.height * .35 / dy);
+			scale = dx > dy ? node.width * .35 / dx : node.height * .8 / dy;
 
 			if (centered[state]) {
 				// svg.select('g#' + 'wrapped-' + centered[state]).remove();
@@ -149,6 +150,13 @@ function drawMap(id, state) {
 		.await((err, data, raw) => {
 			let topo			= topojson.feature(raw, raw.objects.map);
 			mappedGeo[state]	= _.chain(topo).get('features', []).keyBy('properties.id').mapValues((o) => ({ centroid: path.centroid(o), bounds: path.bounds(o) })).value();
+
+			let bbox = topojson.bbox(raw);
+
+			// haversine([42.741, -71.3161], [42.806911, -71.290611], (distance) => {
+			haversine([bbox[0], bbox[1]], [bbox[2], bbox[1]], (distance) => {
+				
+			})
 
 			let grouped	= svg.append('g').attr('id', 'wrapped-' + id).attr('class', state + '-wrapper')
 				.selectAll('path.' + state).data(topo.features).enter().append('g')
