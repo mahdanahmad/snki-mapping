@@ -7,10 +7,10 @@ const async			= require('async');
 const XLSX 			= require('xlsx');
 const MongoDB		= require('mongodb');
 
-const xlsx_file		= 'data/xlsx/geocoded.xlsx';
-const map_file		= 'results/gadm36_IDN_4.csv';
+const xlsx_file		= 'data/xlsx/Master_Access_Points_Pilot_V02.xlsx';
 
-const DB_COLL		= 'agents';
+const db_coll		= 'agents';
+const type_coll		= 'types';
 
 const MongoClient	= MongoDB.MongoClient;
 const ObjectID		= MongoDB.ObjectID;
@@ -24,35 +24,33 @@ MongoClient.connect(db_url, { }, (err, client) => {
 
 	async.waterfall([
 		(flowCallback) => {
-			db.collection(DB_COLL).deleteMany({}, (err) => flowCallback(err));
+			db.collection(db_coll).deleteMany({}, (err) => flowCallback(err));
 		},
 		(flowCallback) => {
-			let mapped	= [];
-			csv
-				.fromPath(map_file, { headers: true })
-				.on("data", (row) => {
-					if (_.includes(['34', '52'], row.CC_4.slice(0, 2))) { mapped.push(row); }
-				})
-				.on("end", () => flowCallback(null, _.chain(mapped).keyBy('GID_4').mapValues('CC_4').value()));
+			db.collection(type_coll).deleteMany({}, (err) => flowCallback(err));
 		},
-		(mapped, flowCallback) => {
+		(flowCallback) => {
 			let workbook	= XLSX.readFile(xlsx_file);
 			let sheet		= workbook.Sheets[workbook.SheetNames[0]];
 
-			// let data		= XLSX.utils.sheet_to_json(sheet).forEach((o) => {
-			// 	console.log(o.GID_4 + ' => ' + mapped[o.GID_4]);
-			// });
+			function format_column_name(name) { return name.replace(/\s/g, "_"); }
+			let headers		= [];
+			let range		= XLSX.utils.decode_range(sheet['!ref']);
+			for(let C = range.s.c; C <= range.e.c; ++C) {
+    			let addr 	= XLSX.utils.encode_cell({ r:range.s.r, c:C });
+    			let cell 	= sheet[addr];
+    			if(!cell) continue;
+    			headers.push( _.snakeCase(cell.v));
+			}
 
-			let data		= XLSX.utils.sheet_to_json(sheet).map((o) => (
-				_.assign(o, !_.isNil(o.GID_4) ? {
-					prov_id	: (mapped[o.GID_4].slice(0,2)),
-					kab_id	: (mapped[o.GID_4].slice(0,4)),
-					kec_id	: (mapped[o.GID_4].slice(0,7)),
-					desa_id	: (mapped[o.GID_4])
-				} : {})
-			));
+			let data		= XLSX.utils.sheet_to_json(sheet, { header: headers, range: 1 }).map((o) => _.mapValues(o, (m) => (m == 'NA' ? null : m)));
+			let types		= _.chain(data).map('access_point_type').uniq().map((type) => ({ type, color: null })).value();
 
-			db.collection(DB_COLL).insertMany(data, (err) => flowCallback(err));
+			db.collection(type_coll).insertMany(types, (err, result) => {
+				let inserted	= _.chain(result.ops).map((o) => ([o.type, o._id.toString()])).fromPairs().value();
+
+				db.collection(db_coll).insertMany(data.map((o) => (_.assign(o, { access_point_id: inserted[o.access_point_type] }))), (err) => flowCallback(err));
+			})
 		},
 	], (err) => {
 		if (err) throw err;

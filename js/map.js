@@ -11,6 +11,7 @@ let base_font	= 10;
 let base_stroke	= .5;
 let base_opac	= .75;
 let scale		= 1;
+let ruler		= d3.scaleLinear();
 
 function initMap() {
 	d3.select(map_dest).selectAll("svg").remove();
@@ -33,20 +34,24 @@ function initMap() {
 		.attr("id", map_id)
 		.attr("width", canvasWidth)
 		.attr("height", canvasHeight)
-		.append('g')
-			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-	svg.append('rect')
+	let canvas	= svg.append('g')
+		.attr("id", 'canvas')
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	canvas.append('rect')
 		.attr('id', 'background')
 		.attr('width', width)
 		.attr('height', height)
 		.on('click', () => zoom(null));
 
 	drawMap(0, 'prov');
+
+	svg.append('id')
 }
 
 function zoom(id, state) {
-	let svg	= d3.select("svg#" + map_id + '> g');
+	let svg	= d3.select("svg#" + map_id + '> g#canvas');
 
 	if (path && svg.node() && (state !== _.last(states))) {
 		svg.select('g.pin-wrapper').remove();
@@ -119,7 +124,7 @@ function zoom(id, state) {
 };
 
 function drawPoint(id) {
-	let svg	= d3.select("svg#" + map_id + '> g');
+	let svg	= d3.select("svg#" + map_id + '> g#canvas');
 	svg.select('g.pin-wrapper').remove();
 
 	centered[_.last(states)]	= id;
@@ -142,7 +147,7 @@ function drawPoint(id) {
 }
 
 function drawMap(id, state) {
-	let svg	= d3.select("svg#" + map_id + '> g');
+	let svg	= d3.select("svg#" + map_id + '> g#canvas');
 
 	d3.queue()
 		.defer(getMapData)
@@ -155,7 +160,7 @@ function drawMap(id, state) {
 
 			// haversine([42.741, -71.3161], [42.806911, -71.290611], (distance) => {
 			haversine([bbox[0], bbox[1]], [bbox[2], bbox[1]], (distance) => {
-				
+
 			})
 
 			let grouped	= svg.append('g').attr('id', 'wrapped-' + id).attr('class', state + '-wrapper')

@@ -2,16 +2,8 @@ const _				= require('lodash');
 const async			= require('async');
 const moment		= require('moment');
 
+const types			= require('../models/types');
 const agents		= require('../models/agents');
-
-const palette		= {
-	"ATM" : '#fa5c18',
-	"Kantor Cabang" : '#ffd881',
-	"Kantor Cabang Pembantu" : '#edd5cd',
-	"Kantor Kas" : '#d97b7a',
-	"Kantor Pusat Operasional" : '#7189bf',
-	"Kantor Pusat Non Operasional" : '#72eaf5',
-}
 
 module.exports.index	= (input, callback) => {
 	let response        = 'OK';
@@ -19,17 +11,17 @@ module.exports.index	= (input, callback) => {
 	let message         = 'Get map data success.';
 	let result          = null;
 
-	const prov_id		= (input.prov	|| null);
-	const kab_id		= (input.kab	|| null);
-	const kec_id		= (input.kec	|| null);
+	const province_id	= (input.prov	|| null);
+	const kabupaten_id	= (input.kab	|| null);
+	const kecamatan_id	= (input.kec	|| null);
 	const desa_id		= (input.desa	|| null);
 
-	const states		= ['prov_id', 'kab_id', 'kec_id', 'desa_id'];
+	const states		= ['province_id', 'kabupaten_id', 'kecamatan_id', 'desa_id'];
 
 	async.waterfall([
 		(flowCallback) => {
-			let match	= _.omitBy({ prov_id, kab_id, kec_id, desa_id }, _.isNil);
-			let active	= _.chain({ prov_id, kab_id, kec_id, desa_id }).omitBy(_.isNil).keys().last().value();
+			let match	= _.omitBy({ province_id, kabupaten_id, kecamatan_id, desa_id }, _.isNil);
+			let active	= _.chain({ province_id, kabupaten_id, kecamatan_id, desa_id }).omitBy(_.isNil).keys().last().value();
 
 			if (_.last(states) !== active) {
 				agents.rawAggregate([
@@ -40,8 +32,8 @@ module.exports.index	= (input, callback) => {
 			} else {
 				agents.rawAggregate([
 					{ '$match': match },
-					{ '$project': { type: '$FAP Type', long: '$xcoord', lat: '$ycoord' } }
-				], {}, (err, result) => flowCallback(err, result.map((o) => _.assign(o, { color: palette[o.type] || null }))));
+					{ '$project': { _id: 1, long: '$longitude', lat: '$latitude' } }
+				], {}, (err, result) => flowCallback(err, result.map((o) => _.assign(o, { color: '#fa5c18' }))));
 			}
 
 		},
