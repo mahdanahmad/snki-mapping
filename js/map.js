@@ -70,9 +70,12 @@ function initMap() {
 		.attr('id', 'left-vertical')
 		.attr('d', vertical.toString());
 
+	let horizontal	= d3.path();
+	horizontal.moveTo(0,0);
+
 	ruler.append('path')
 		.attr('id', 'horizontal')
-		.attr('d', '');
+		.attr('d', horizontal.toString());
 
 	ruler.append('text')
 		.attr('text-anchor', 'end')
@@ -101,11 +104,9 @@ function zoom(id, state) {
 			dx = mappedGeo[state][id].bounds[1][0] - mappedGeo[state][id].bounds[0][0],
       		dy = mappedGeo[state][id].bounds[1][1] - mappedGeo[state][id].bounds[0][1],
 
-			// scale = Math.max(node.width * .35 / dx, node.height * .35 / dy);
 			scale = dx > dy ? node.width * .35 / dx : node.height * .8 / dy;
 
 			if (centered[state]) {
-				// svg.select('g#' + 'wrapped-' + centered[state]).remove();
 				svg.select('g#' + state + '-' + centered[state]).classed('hidden', false);
 
 				svg.selectAll(states.slice(curr_state + 1).map((o) => ('g.' + o + '-wrapper')).join(', ')).remove();
@@ -127,13 +128,6 @@ function zoom(id, state) {
 
 			svg.selectAll('path.unintended').classed('unintended', false);
 		} else {
-			// x = node.width / 2;
-			// y = node.height / 2;
-			// scale = 1;
-			//
-			// svg.select('g#' + states[curr_state + 1] + '-' + centered[states[curr_state + 1]]).classed('hidden', false);
-			// svg.selectAll('g.' + states[curr_state + 2] + '-wrapper').remove();
-			// centered[states[curr_state + 1]]	= null;
 			console.error('unhandled');
 		}
 
@@ -143,12 +137,12 @@ function zoom(id, state) {
 			.duration(duration)
 			.attr('transform', 'translate(' + node.width / 2 + ',' + node.height / 2 + ')scale(' + scale + ')translate(' + -x + ',' + -y + ')');
 
-		d3.selectAll('svg#' + map_id + ' path').transition()
+		d3.selectAll('svg#' + map_id + ' g#canvas path').transition()
 			.duration(duration)
 			// .style('stroke-opacity', base_opac)
 			.style('stroke-width', (base_stroke - ((curr_state + 1) * .1)) + 'px');
 
-		d3.selectAll('svg#' + map_id + ' text').transition()
+		d3.selectAll('svg#' + map_id + ' g#canvas text').transition()
 			.duration(duration)
 			.style('font-size', (base_font / scale) + 'px');
 
@@ -195,7 +189,33 @@ function drawMap(id, state) {
 			haversine([bbox[0], bbox[1]], [bbox[2], bbox[1]], (distance) => {
 				let ruler	= d3.select("svg#" + map_id + '> g#ruler');
 
-			})
+				let inStr	= Math.round(distance / 10).toString();
+				let length	= inStr.length - 1;
+				// let rounded	= (Math.round(parseInt(inStr) / Math.pow(10, length)) ? 1 : .1) * Math.pow(10, length);
+				let rounded	= Math.round(parseInt(inStr) / Math.pow(10, length)) * Math.pow(10, length);
+
+				let width	= rounded / distance * svg.node().getBBox().width;
+
+				let duration	= 750;
+
+				ruler.select('text')
+					.transition().duration(duration)
+					.attr('transform', 'translate(-' + (width + 5) + ',0)')
+					.text(rounded >= 1000 ? (rounded / 1000) + ' km' : rounded + ' m');
+
+				ruler.select('path#left-vertical')
+					.transition().duration(duration)
+					.attr('transform', 'translate(-' + width + ',0)');
+
+				let horipath	= d3.path();
+				horipath.moveTo(0,0);
+				horipath.lineTo(-width, 0);
+
+				ruler.select('path#horizontal')
+					.transition().duration(duration)
+					.attr('d', horipath.toString())
+
+			});
 
 			let grouped	= svg.append('g').attr('id', 'wrapped-' + id).attr('class', state + '-wrapper')
 				.selectAll('path.' + state).data(topo.features).enter().append('g')
