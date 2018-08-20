@@ -11,7 +11,7 @@ let base_font	= 10;
 let base_stroke	= .5;
 let base_opac	= .75;
 let scale		= 1;
-let ruler		= d3.scaleLinear();
+// let ruler		= d3.scaleLinear().domain([0, 1e8]);
 
 function initMap() {
 	d3.select(map_dest).selectAll("svg").remove();
@@ -19,7 +19,7 @@ function initMap() {
 	let canvasWidth		= $(map_dest).outerWidth(true);
 	let canvasHeight	= $(map_dest).outerHeight(true);
 
-	let margin 			= { top: 0, right: 0, bottom: 0, left: 0 };
+	let margin 			= { top: 0, right: 0, bottom: 30, left: 0 };
 	let width			= canvasWidth - margin.right - margin.left;
 	let height			= canvasHeight - margin.top - margin.bottom;
 
@@ -47,7 +47,40 @@ function initMap() {
 
 	drawMap(0, 'prov');
 
-	svg.append('id')
+	// ruler.range([0, width / 6]);
+	//
+	// svg.append("g")
+	// 	.attr("id", "ruler")
+	// 	.attr("transform", "translate(" + (width * 4.5 / 6) +  "," + height + ")")
+	// 	.call(d3.axisBottom(ruler).ticks(5));
+
+	let ruler	= svg.append('g')
+		.attr("id", 'ruler')
+		.attr('transform', 'translate(' + (width * 5.5 / 6) + ',' + height + ')');
+
+	let vertical	= d3.path();
+	vertical.moveTo(0, -10);
+	vertical.lineTo(0, 10);
+
+	ruler.append('path')
+		.attr('id', 'right-vertical')
+		.attr('d', vertical.toString());
+
+	ruler.append('path')
+		.attr('id', 'left-vertical')
+		.attr('d', vertical.toString());
+
+	ruler.append('path')
+		.attr('id', 'horizontal')
+		.attr('d', '');
+
+	ruler.append('text')
+		.attr('text-anchor', 'end')
+		.attr('alignment-baseline', 'middle')
+		.attr('x', -5)
+		.attr('y', 0)
+		.text('');
+
 }
 
 function zoom(id, state) {
@@ -160,6 +193,7 @@ function drawMap(id, state) {
 
 			// haversine([42.741, -71.3161], [42.806911, -71.290611], (distance) => {
 			haversine([bbox[0], bbox[1]], [bbox[2], bbox[1]], (distance) => {
+				let ruler	= d3.select("svg#" + map_id + '> g#ruler');
 
 			})
 
