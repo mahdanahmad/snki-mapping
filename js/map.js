@@ -11,7 +11,12 @@ let base_font	= 10;
 let base_stroke	= .5;
 let base_opac	= .75;
 let scale		= 1;
-// let ruler		= d3.scaleLinear().domain([0, 1e8]);
+
+let base_crcl	= 5;
+let incr_crcl	= 1.5;
+let pad_crcl	= 7.5;
+
+let duration	= 750;
 
 function initMap() {
 	d3.select(map_dest).selectAll("svg").remove();
@@ -47,13 +52,6 @@ function initMap() {
 
 	drawMap(0, 'prov');
 
-	// ruler.range([0, width / 6]);
-	//
-	// svg.append("g")
-	// 	.attr("id", "ruler")
-	// 	.attr("transform", "translate(" + (width * 4.5 / 6) +  "," + height + ")")
-	// 	.call(d3.axisBottom(ruler).ticks(5));
-
 	let ruler	= svg.append('g')
 		.attr("id", 'ruler')
 		.attr('transform', 'translate(' + (width * 5.5 / 6) + ',' + height + ')');
@@ -72,6 +70,7 @@ function initMap() {
 
 	let horizontal	= d3.path();
 	horizontal.moveTo(0,0);
+	horizontal.lineTo(0,0);
 
 	ruler.append('path')
 		.attr('id', 'horizontal')
@@ -84,6 +83,15 @@ function initMap() {
 		.attr('y', 0)
 		.text('');
 
+	let slider	= svg.append('g')
+		.attr('id', 'slider-wrapper')
+		.attr('transform', 'translate(' + (width / 2) + ',' + height + ')')
+			.append('g')
+			.attr('id', 'slider-container');
+
+	slider.append('circle')
+		.attr('class', 'national')
+		.attr('r', base_crcl);
 }
 
 function zoom(id, state) {
@@ -131,7 +139,7 @@ function zoom(id, state) {
 			console.error('unhandled');
 		}
 
-		let duration	= 750;
+		moveSlider();
 
 		svg.transition()
 			.duration(duration)
@@ -139,7 +147,6 @@ function zoom(id, state) {
 
 		d3.selectAll('svg#' + map_id + ' g#canvas path').transition()
 			.duration(duration)
-			// .style('stroke-opacity', base_opac)
 			.style('stroke-width', (base_stroke - ((curr_state + 1) * .1)) + 'px');
 
 		d3.selectAll('svg#' + map_id + ' g#canvas text').transition()
@@ -158,6 +165,9 @@ function drawPoint(id) {
 	$(states.map((o) => ('.' + o + '-wrapper path')).join(', ')).addClass('unintended');
 
 	getMapData((err, result) => {
+		curr_state++;
+		moveSlider();
+
 		svg.append('g').attr('class', 'pin-wrapper')
 			.selectAll('.pin')
 			.data(result)
@@ -185,18 +195,14 @@ function drawMap(id, state) {
 
 			let bbox = topojson.bbox(raw);
 
-			// haversine([42.741, -71.3161], [42.806911, -71.290611], (distance) => {
 			haversine([bbox[0], bbox[1]], [bbox[2], bbox[1]], (distance) => {
 				let ruler	= d3.select("svg#" + map_id + '> g#ruler');
 
 				let inStr	= Math.round(distance / 10).toString();
 				let length	= inStr.length - 1;
-				// let rounded	= (Math.round(parseInt(inStr) / Math.pow(10, length)) ? 1 : .1) * Math.pow(10, length);
 				let rounded	= Math.round(parseInt(inStr) / Math.pow(10, length)) * Math.pow(10, length);
 
 				let width	= rounded / distance * svg.node().getBBox().width;
-
-				let duration	= 750;
 
 				ruler.select('text')
 					.transition().duration(duration)
@@ -226,7 +232,6 @@ function drawMap(id, state) {
 				.attr('d', path)
 				.attr('class', state + ' color-6')
 				.attr('vector-effect', 'non-scaling-stroke')
-				// .style('stroke-opacity', base_opac)
 				.style('stroke-width', (base_stroke - ((curr_state + 1) * .1)) + 'px');
 
 			grouped.append('text')
@@ -269,4 +274,32 @@ function colorMap(data, state) {
 		}
 
 	}
+}
+
+function moveSlider() {
+	let wrapper		= d3.select("svg#" + map_id + '> g#slider-wrapper');
+	let container	= wrapper.select('g#slider-container');
+
+	let count		= container.selectAll('circle').size();
+	if ((curr_state + 1) >= count) {
+		let start_point	= (curr_state + 1) * (base_crcl * 2) + (curr_state) * pad_crcl + (curr_state * (curr_state + 1) * incr_crcl) - (base_crcl)
+
+		let added_pad	= d3.path();
+		added_pad.rect(start_point, -1, pad_crcl, 2);
+		container.append('path')
+			.attr('d', added_pad.toString())
+			.attr('class', states[curr_state]);
+
+		let next_rad	= base_crcl + (curr_state + 1) * incr_crcl;
+		container.append('circle')
+			.attr('r', next_rad)
+			.attr('cx', start_point + pad_crcl + next_rad)
+			.attr('class', states[curr_state]);
+
+	} else {
+		container.selectAll(states.slice(curr_state + 1).map((o) => ('.' + o)).join(', ')).remove();
+	}
+
+	container.transition().duration(duration)
+		.attr('transform', 'translate(-' + container.node().getBBox().width / 2 + ', 0)')
 }
