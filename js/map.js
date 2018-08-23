@@ -6,6 +6,7 @@ const states	= ['prov', 'kab', 'kec', 'desa'];
 let curr_state	= -1;
 
 let mappedGeo	= {};
+let coalesce	= {};
 
 let base_font	= 10;
 let base_stroke	= .5;
@@ -87,10 +88,11 @@ function initMap() {
 		.attr('id', 'slider-wrapper')
 		.attr('transform', 'translate(' + (width / 2) + ',' + height + ')')
 			.append('g')
-			.attr('id', 'slider-container');
+			.attr('id', 'slider-container')
+			.attr('transform', 'translate(-' + (base_crcl) + ',0)');
 
 	slider.append('circle')
-		.attr('class', 'national')
+		.attr('class', 'national cursor-pointer')
 		.attr('r', base_crcl);
 }
 
@@ -281,7 +283,7 @@ function moveSlider() {
 	let container	= wrapper.select('g#slider-container');
 
 	let count		= container.selectAll('circle').size();
-	if ((curr_state + 1) >= count) {
+	if ((curr_state + 1) >= count && count < states.length + 1) {
 		let start_point	= (curr_state + 1) * (base_crcl * 2) + (curr_state) * pad_crcl + (curr_state * (curr_state + 1) * incr_crcl) - (base_crcl)
 
 		let added_pad	= d3.path();
@@ -294,9 +296,9 @@ function moveSlider() {
 		container.append('circle')
 			.attr('r', next_rad)
 			.attr('cx', start_point + pad_crcl + next_rad)
-			.attr('class', states[curr_state]);
+			.attr('class', states[curr_state] + ' cursor-pointer');
 
-	} else {
+	} else if ((curr_state + 1) < count) {
 		container.selectAll(states.slice(curr_state + 1).map((o) => ('.' + o)).join(', ')).remove();
 	}
 
