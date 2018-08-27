@@ -4,7 +4,7 @@ let curr_state	= -1;
 
 let mappedGeo	= {};
 let coalesce	= {
-	national	: { name : 'Nasional' }
+	national	: { name : 'Nasional', scale: 1 }
 }
 
 let base_font	= 10;
@@ -92,11 +92,14 @@ function initMap() {
 		.attr('class', 'national cursor-pointer')
 		.attr('r', base_crcl)
 		.on('mouseover', onSliderHover)
-		.on('mouseout', onSliderOut);
+		.on('mouseout', onSliderOut)
+		.on('click', onSliderClick);
 
 	tooltip	= d3.select(map_dest).append('div')
 			.attr('id', 'slider-tooltip')
 			.attr('class', 'hidden');
+
+	_.set(coalesce, 'national.transform', 'translate(' + width / 2 + ',' + height / 2 + ')scale(' + 1 + ')translate(' + -width / 2 + ',' + -height / 2 + ')')
 }
 
 function zoom(id, state) {
@@ -147,9 +150,12 @@ function zoom(id, state) {
 
 		moveSlider();
 
+		let transform	= 'translate(' + node.width / 2 + ',' + node.height / 2 + ')scale(' + scale + ')translate(' + -x + ',' + -y + ')';
+		_.set(coalesce, state + '.transform', transform);
+		_.set(coalesce, state + '.scale', scale);
 		svg.transition()
 			.duration(duration)
-			.attr('transform', 'translate(' + node.width / 2 + ',' + node.height / 2 + ')scale(' + scale + ')translate(' + -x + ',' + -y + ')');
+			.attr('transform', transform);
 
 		d3.selectAll('svg#' + map_id + ' g#canvas path').transition()
 			.duration(duration)

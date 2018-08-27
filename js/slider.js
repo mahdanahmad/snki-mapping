@@ -20,7 +20,8 @@ function moveSlider() {
 			.attr('cx', start_point + pad_crcl + next_rad)
 			.attr('class', states[curr_state] + ' cursor-pointer')
 			.on('mouseover', onSliderHover)
-			.on('mouseout', onSliderOut);
+			.on('mouseout', onSliderOut)
+			.on('click', onSliderClick);
 
 	} else if ((curr_state + 1) < count) {
 		container.selectAll(states.slice(curr_state + 1).map((o) => ('.' + o)).join(', ')).remove();
@@ -49,4 +50,34 @@ function onSliderHover() {
 
 function onSliderOut() {
 	tooltip.classed('hidden', true);
+}
+
+function onSliderClick() {
+	let classed		= d3.select(this).attr('class').split(' ')[0];
+	if (!(curr_state == -1 && classed == 'national') && classed !== states[curr_state]) {
+		curr_state	= states.indexOf(classed);
+		moveSlider();
+
+		d3.select("svg#" + map_id + '> g#canvas')
+			.transition()
+			.duration(duration)
+			.attr('transform', coalesce[classed].transform);
+
+		d3.selectAll('svg#' + map_id + ' g#canvas path').transition()
+			.duration(duration)
+			.style('stroke-width', (base_stroke - ((curr_state + 1) * .1)) + 'px');
+
+		d3.selectAll('svg#' + map_id + ' g#canvas text').transition()
+			.duration(duration)
+			.style('font-size', (base_font / coalesce[classed].scale) + 'px');
+
+		moveRuler(coalesce[classed].distance);
+		d3.select("svg#" + map_id + '> g#canvas').selectAll(states.slice(curr_state + 2).map((o) => ('g.' + o + '-wrapper')).join(', ')).remove();
+		d3.select("svg#" + map_id + '> g#canvas').select('g#' + states[curr_state + 1] + '-' + centered[states[curr_state + 1]]).classed('hidden', false);
+		d3.select("svg#" + map_id + '> g#canvas').select('g.pin-wrapper').remove();
+		d3.selectAll(states.map((o) => ('.' + o + '-wrapper path')).join(', ')).classed('unintended', false);
+
+		centered = _.omit(centered, states.slice(curr_state + 1));
+		coalesce = _.omit(coalesce, states.slice(curr_state + 1));
+	}
 }
