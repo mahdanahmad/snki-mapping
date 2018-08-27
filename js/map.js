@@ -1,12 +1,11 @@
-let map_dest	= "#map-wrapper";
-let map_id		= "map-viz";
-
 let path, projection;
 const states	= ['prov', 'kab', 'kec', 'desa'];
 let curr_state	= -1;
 
 let mappedGeo	= {};
-let coalesce	= {};
+let coalesce	= {
+	national	: { name : 'Nasional' }
+}
 
 let base_font	= 10;
 let base_stroke	= .5;
@@ -16,8 +15,6 @@ let scale		= 1;
 let base_crcl	= 5;
 let incr_crcl	= 1.5;
 let pad_crcl	= 7.5;
-
-let duration	= 750;
 
 function initMap() {
 	d3.select(map_dest).selectAll("svg").remove();
@@ -93,7 +90,13 @@ function initMap() {
 
 	slider.append('circle')
 		.attr('class', 'national cursor-pointer')
-		.attr('r', base_crcl);
+		.attr('r', base_crcl)
+		.on('mouseover', onSliderHover)
+		.on('mouseout', onSliderOut);
+
+	tooltip	= d3.select(map_dest).append('div')
+			.attr('id', 'slider-tooltip')
+			.attr('class', 'hidden');
 }
 
 function zoom(id, state) {
@@ -137,6 +140,7 @@ function zoom(id, state) {
 			centered	= {};
 
 			svg.selectAll('path.unintended').classed('unintended', false);
+			moveRuler(coalesce.national.distance);
 		} else {
 			console.error('unhandled');
 		}
@@ -197,33 +201,7 @@ function drawMap(id, state) {
 
 			let bbox = topojson.bbox(raw);
 
-			haversine([bbox[0], bbox[1]], [bbox[2], bbox[1]], (distance) => {
-				let ruler	= d3.select("svg#" + map_id + '> g#ruler');
-
-				let inStr	= Math.round(distance / 10).toString();
-				let length	= inStr.length - 1;
-				let rounded	= Math.round(parseInt(inStr) / Math.pow(10, length)) * Math.pow(10, length);
-
-				let width	= rounded / distance * svg.node().getBBox().width;
-
-				ruler.select('text')
-					.transition().duration(duration)
-					.attr('transform', 'translate(-' + (width + 5) + ',0)')
-					.text(rounded >= 1000 ? (rounded / 1000) + ' km' : rounded + ' m');
-
-				ruler.select('path#left-vertical')
-					.transition().duration(duration)
-					.attr('transform', 'translate(-' + width + ',0)');
-
-				let horipath	= d3.path();
-				horipath.moveTo(0,0);
-				horipath.lineTo(-width, 0);
-
-				ruler.select('path#horizontal')
-					.transition().duration(duration)
-					.attr('d', horipath.toString())
-
-			});
+			haversine([bbox[0], bbox[1]], [bbox[2], bbox[1]], (distance) => { moveRuler(distance); });
 
 			let grouped	= svg.append('g').attr('id', 'wrapped-' + id).attr('class', state + '-wrapper')
 				.selectAll('path.' + state).data(topo.features).enter().append('g')
@@ -242,7 +220,10 @@ function drawMap(id, state) {
 				.style('font-size', (base_font / scale) + 'px')
 				.text((o) => (o.properties.name));
 
-			grouped.on('click', (o) => (_.last(states) == state ? drawPoint(o.properties.id) : zoom(o.properties.id, state) ));
+			grouped.on('click', (o) => {
+				_.set(coalesce, state + '.name', o.properties.name);
+				return _.last(states) == state ? drawPoint(o.properties.id) : zoom(o.properties.id, state) ;
+			});
 
 			setTimeout(() => colorMap(data, state), 500)
 		});
@@ -276,32 +257,4 @@ function colorMap(data, state) {
 		}
 
 	}
-}
-
-function moveSlider() {
-	let wrapper		= d3.select("svg#" + map_id + '> g#slider-wrapper');
-	let container	= wrapper.select('g#slider-container');
-
-	let count		= container.selectAll('circle').size();
-	if ((curr_state + 1) >= count && count < states.length + 1) {
-		let start_point	= (curr_state + 1) * (base_crcl * 2) + (curr_state) * pad_crcl + (curr_state * (curr_state + 1) * incr_crcl) - (base_crcl)
-
-		let added_pad	= d3.path();
-		added_pad.rect(start_point, -1, pad_crcl, 2);
-		container.append('path')
-			.attr('d', added_pad.toString())
-			.attr('class', states[curr_state]);
-
-		let next_rad	= base_crcl + (curr_state + 1) * incr_crcl;
-		container.append('circle')
-			.attr('r', next_rad)
-			.attr('cx', start_point + pad_crcl + next_rad)
-			.attr('class', states[curr_state] + ' cursor-pointer');
-
-	} else if ((curr_state + 1) < count) {
-		container.selectAll(states.slice(curr_state + 1).map((o) => ('.' + o)).join(', ')).remove();
-	}
-
-	container.transition().duration(duration)
-		.attr('transform', 'translate(-' + container.node().getBBox().width / 2 + ', 0)')
 }
