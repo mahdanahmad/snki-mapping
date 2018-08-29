@@ -5,6 +5,9 @@ const moment		= require('moment');
 const types			= require('../models/types');
 const agents		= require('../models/agents');
 
+// const pallete		= ['#99d0ec', '#38a8e2', '#0085ce', '#00659d', '#004e79'];
+const pallete		= ['#004e79', '#00659d', '#0085ce', '#38a8e2', '#99d0ec'];
+
 module.exports.index	= (input, callback) => {
 	let response        = 'OK';
 	let status_code     = 200;
@@ -28,7 +31,25 @@ module.exports.index	= (input, callback) => {
 					{ '$match': match },
 					{ '$group': { _id: '$' + states[states.indexOf(active) + 1], size: { $sum: 1 } } },
 					{ '$match': { _id: { $ne: null } } }
-				], {}, (err, result) => flowCallback(err, result));
+				], {}, (err, data) => {
+					let max		= _.chain(data).maxBy('size').get('size', 0).value();
+
+					let inStr	= Math.round(max).toString();
+					let length	= inStr.length - 1;
+					let rounded	= Math.ceil(parseInt(inStr) / Math.pow(10, length)) * Math.pow(10, length);
+
+					const range		= rounded / 5;
+					const fracture 	= _.range(0, rounded, range).reverse();
+
+					data.map((row) => {
+						let color	= '';
+						fracture.forEach((o, i) => { if (row.size >= o && _.isEmpty(color)) { color = pallete[i]; } });
+
+						_.assign(row, { color });
+					});
+
+					flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: o + ' - ' + (o + range), color: pallete[i] })).concat([{ text: 'No data', color: '#000' }]).reverse() });
+				});
 			} else {
 				agents.rawAggregate([
 					{ '$match': match },

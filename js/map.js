@@ -22,7 +22,7 @@ function initMap() {
 	let canvasWidth		= $(map_dest).outerWidth(true);
 	let canvasHeight	= $(map_dest).outerHeight(true);
 
-	let margin 			= { top: 0, right: 0, bottom: 30, left: 0 };
+	let margin 			= { top: 0, right: 0, bottom: 75, left: 0 };
 	let width			= canvasWidth - margin.right - margin.left;
 	let height			= canvasHeight - margin.top - margin.bottom;
 
@@ -51,8 +51,7 @@ function initMap() {
 	drawMap(0, 'prov');
 
 	let ruler	= svg.append('g')
-		.attr("id", 'ruler')
-		.attr('transform', 'translate(' + (width * 5.5 / 6) + ',' + height + ')');
+		.attr("id", 'ruler');
 
 	let vertical	= d3.path();
 	vertical.moveTo(0, -10);
@@ -81,6 +80,8 @@ function initMap() {
 		.attr('y', 0)
 		.text('');
 
+	ruler.attr('transform', 'translate(' + (width * 5.5 / 6) + ',' + (height + margin.bottom - ruler.node().getBBox().height) + ')')
+
 	let slider	= svg.append('g')
 		.attr('id', 'slider-wrapper')
 		.attr('transform', 'translate(' + (width / 2) + ',' + height + ')')
@@ -99,7 +100,13 @@ function initMap() {
 			.attr('id', 'slider-tooltip')
 			.attr('class', 'hidden');
 
-	_.set(coalesce, 'national.transform', 'translate(' + width / 2 + ',' + height / 2 + ')scale(' + 1 + ')translate(' + -width / 2 + ',' + -height / 2 + ')')
+	_.set(coalesce, 'national.transform', 'translate(' + width / 2 + ',' + height / 2 + ')scale(' + 1 + ')translate(' + -width / 2 + ',' + -height / 2 + ')');
+
+	let legend = svg.append('g')
+		.attr('id', 'legend-wrapper')
+		.attr('transform', 'translate(' + (width / 2) + ',' + (height + margin.bottom) + ')')
+			.append('g')
+			.attr('id', 'legend-container');
 }
 
 function zoom(id, state) {
@@ -144,6 +151,7 @@ function zoom(id, state) {
 
 			svg.selectAll('path.unintended').classed('unintended', false);
 			moveRuler(coalesce.national.distance);
+			refreshLegend();
 		} else {
 			console.error('unhandled');
 		}
@@ -231,36 +239,13 @@ function drawMap(id, state) {
 				return _.last(states) == state ? drawPoint(o.properties.id) : zoom(o.properties.id, state) ;
 			});
 
-			setTimeout(() => colorMap(data, state), 500)
+			setTimeout(() => colorMap(data.data, state), 500);
+			setTimeout(() => createLegend(data.legend, 'Amount of FAP'), 500);
 		});
 }
 
 function colorMap(data, state) {
 	$('.' + state).removeClass('unintended').removeClass((idx, className) => ((className.match (/(^|\s)color-\S+/g) || []).join(' ')) ).addClass('color-6');
 
-	if (!_.isEmpty(data)) {
-		let minData	= _.chain(data).minBy('size').get('size', null).value();
-		let maxData	= _.chain(data).maxBy('size').get('size', null).value();
-
-		if (minData == maxData) { minData = 0; }
-
-		if (!_.isNil(minData) && !_.isNil(maxData)) {
-			const range			= _.ceil((maxData - minData) / 5);
-			const fracture		= _.times(5, (i) => (_.ceil(maxData) - ((i + 1) * range)))
-
-			data.forEach((o) => { $( '#' + state + '-' + o._id + ' > path' ).removeClass((idx, className) => ((className.match (/(^|\s)color-\S+/g) || []).join(' ')) ).addClass(checkProvRange(o.size)); });
-
-			function checkProvRange(value) {
-				let className	= "";
-				_.forEach(fracture, (o, i) => {
-					if (value >= o && _.isEmpty(className)) { className = 'color-' + (i + 1); }
-				});
-
-				return !_.isEmpty(className) ? className : 'color-6';
-			}
-		} else {
-
-		}
-
-	}
+	data.forEach((o) => { $( '#' + state + '-' + o._id + ' > path' ).removeClass((idx, className) => ((className.match (/(^|\s)color-\S+/g) || []).join(' ')) ).css('fill', o.color); });
 }

@@ -79,5 +79,7 @@ function onSliderClick() {
 
 		centered = _.omit(centered, states.slice(curr_state + 1));
 		coalesce = _.omit(coalesce, states.slice(curr_state + 1));
+
+		refreshLegend();
 	}
 }
