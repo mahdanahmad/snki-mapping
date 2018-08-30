@@ -80,7 +80,7 @@ function initMap() {
 		.attr('y', 0)
 		.text('');
 
-	ruler.attr('transform', 'translate(' + (width * 5.5 / 6) + ',' + (height + margin.bottom - ruler.node().getBBox().height) + ')')
+	ruler.attr('transform', 'translate(' + (width * 5.75 / 6) + ',' + (height + margin.bottom - ruler.node().getBBox().height) + ')')
 
 	let slider	= svg.append('g')
 		.attr('id', 'slider-wrapper')

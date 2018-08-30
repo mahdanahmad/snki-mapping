@@ -1,6 +1,7 @@
 @import "statics";
 @import "mixins";
 
+@import "header";
 @import "map";
 
 a { cursor: pointer; text-decoration: none; color: black; }
@@ -31,4 +32,10 @@ html, body, body > div#root {
 }
 div#root {
     background: $default-back; position: relative;
+	#logo-wrapper {
+		position: fixed; left: 20px; bottom: 10px; width: 175px; z-index: 90;
+		img { display: inline-block; }
+		img:first-child { float: left; width: 49%;  }
+		img:last-child { float: right; width: 45%;  }
+	}
 }

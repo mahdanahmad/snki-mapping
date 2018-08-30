@@ -1,4 +1,4 @@
-let lgnd_width	= 125;
+let lgnd_width	= 90;
 
 function createLegend(data, title) {
 	let wrapper		= d3.select('g#legend-wrapper');
@@ -33,6 +33,7 @@ function createLegend(data, title) {
 			.attr('transform', 'translate(' + 20 + ',' + 9 + ')')
 			.text(o.text)
 	});
+	boxes.append('g').attr('transform', 'translate(' + (data.length * lgnd_width) + ',0)').append('circle').attr('r', 1).attr('fill-opacity', 0);
 
 	text.attr('transform', 'translate(' + (boxes.node().getBBox().width / 2) + ',0)');
 
