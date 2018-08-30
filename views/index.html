@@ -17,7 +17,7 @@
         <link rel="icon" type="image/x-icon" href="pulselab.ico">
         <link rel="shortcut icon" type="image/x-icon" href="pulselab.ico">
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
         <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"> -->
 
 		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
@@ -50,6 +50,20 @@
         <div id="root">
 			<div id="header">
 				<div id="logo">Financial Access <span>Map</span></div>
+				<div id="drops-wrapper">
+					<div id="filter-dropdown" class="dropdown cursor-pointer">
+						<img src="image/icons/icon_filter.png" alt="">
+						<div>Filter by</div>
+					</div>
+					<div id="base-dropdown" class="dropdown cursor-pointer">
+						<img src="image/icons/icon_base.png" alt="">
+						<div>Basemap layer</div>
+					</div>
+					<div id="region-dropdown" class="dropdown cursor-pointer">
+						<img src="image/icons/icon_region.png" alt="">
+						<div>Select <span>Province</span></div>
+					</div>
+				</div>
 			</div>
 			<div id="map-wrapper"></div>
 			<div id="logo-wrapper">
