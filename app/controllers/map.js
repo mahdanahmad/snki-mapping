@@ -4,6 +4,7 @@ const moment		= require('moment');
 
 const types			= require('../models/types');
 const agents		= require('../models/agents');
+const location		= require('../models/location');
 
 // const pallete		= ['#99d0ec', '#38a8e2', '#0085ce', '#00659d', '#004e79'];
 const pallete		= ['#004e79', '#00659d', '#0085ce', '#38a8e2', '#99d0ec'];
@@ -34,9 +35,13 @@ module.exports.index	= (input, callback) => {
 				], {}, (err, data) => {
 					let max		= _.chain(data).maxBy('size').get('size', 0).value();
 
-					let inStr	= Math.round(max).toString();
-					let length	= inStr.length - 1;
-					let rounded	= Math.ceil(parseInt(inStr) / Math.pow(10, length)) * Math.pow(10, length);
+					let rounded	= 0;
+					if (max <= 10) { rounded = 10; }
+					else {
+						let inStr	= Math.round(max).toString();
+						let length	= inStr.length - 1;
+						rounded		= Math.ceil(parseInt(inStr) / Math.pow(10, length)) * Math.pow(10, length);
+					}
 
 					const range		= rounded / 5;
 					const fracture 	= _.range(0, rounded, range).reverse();
@@ -57,6 +62,36 @@ module.exports.index	= (input, callback) => {
 				], {}, (err, result) => flowCallback(err, result.map((o) => _.assign(o, { color: '#fa5c18' }))));
 			}
 
+		},
+	], (err, asyncResult) => {
+		if (err) {
+			response    = 'FAILED';
+			status_code = 400;
+			message     = err;
+		} else {
+			result      = asyncResult;
+		}
+		callback({ response, status_code, message, result });
+	});
+};
+
+module.exports.location	= (input, callback) => {
+	let response        = 'OK';
+	let status_code     = 200;
+	let message         = 'Get location data success.';
+	let result          = null;
+
+	let parent			= null;
+	if (input.kec) { parent = input.kec }
+	else if (input.kab) { parent = input.kab }
+	else if (input.prov) { parent = input.prov }
+
+	async.waterfall([
+		(flowCallback) => {
+			location.rawAggregate([
+				{ '$match': { parent } },
+				{ '$project': { _id: 0, id: 1, name: 1 }}
+			], {}, (err, result) => flowCallback(err, result));
 		},
 	], (err, asyncResult) => {
 		if (err) {
