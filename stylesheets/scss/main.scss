@@ -27,7 +27,7 @@ input::-webkit-inner-spin-button, input::-webkit-outer-spin-button { -webkit-app
 .nopadding { @include nopadding(); }
 .hidden { display: none!important; }
 html, body, body > div#root {
-	width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden; font-family: $def-font-stack; font-size: 10px;
+	width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden; font-family: $def-font-stack; font-size: 9px;
 	-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: white;
 }
 div#root {

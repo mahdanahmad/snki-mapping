@@ -72,10 +72,10 @@ function onSliderClick() {
 			.style('font-size', (base_font / coalesce[classed].scale) + 'px');
 
 		moveRuler(coalesce[classed].distance);
-		d3.select("svg#" + map_id + '> g#canvas').selectAll(states.slice(curr_state + 2).map((o) => ('g.' + o + '-wrapper')).join(', ')).remove();
+		if (curr_state < (states.length - 2)) { d3.select("svg#" + map_id + '> g#canvas').selectAll(states.slice(curr_state + 2).map((o) => ('g.' + o + '-wrapper')).join(', ')).remove(); }
 		d3.select("svg#" + map_id + '> g#canvas').select('g#' + states[curr_state + 1] + '-' + centered[states[curr_state + 1]]).classed('hidden', false);
 		d3.select("svg#" + map_id + '> g#canvas').select('g.pin-wrapper').remove();
-		d3.selectAll(states.map((o) => ('.' + o + '-wrapper path')).join(', ')).classed('unintended', false);
+		d3.selectAll(states.slice(curr_state + 1).map((o) => ('.' + o + '-wrapper path')).join(', ')).classed('unintended', false);
 
 		centered = _.omit(centered, states.slice(curr_state + 1));
 		coalesce = _.omit(coalesce, states.slice(curr_state + 1));
