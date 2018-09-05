@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 60 57">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clip-Web_1920_3);
+      }
+    </style>
+    <clipPath id="clip-Web_1920_3">
+      <rect width="60" height="57"/>
+    </clipPath>
+  </defs>
+  <g id="Web_1920_3" data-name="Web 1920 – 3" class="cls-1">
+    <g id="Group_8" data-name="Group 8" transform="translate(1.467 -2.632)">
+      <g id="VMbFk4.tif_1_" transform="translate(16 13.573)">
+        <g id="Group_6" data-name="Group 6" transform="translate(0 0)">
+          <g id="Group_5" data-name="Group 5" transform="translate(0 0)">
+            <path id="Path_32" data-name="Path 32" d="M42.061,35.882c-5.537-5.013-10.18-10.643-12.077-18.062C28.241,10.971,31.588,4.4,37.9,2.025A12.9,12.9,0,0,1,55.2,12.159a17.077,17.077,0,0,1-1.589,9.579,43.251,43.251,0,0,1-10.381,13.82,4.087,4.087,0,0,1-.4.324Zm.37-2.807A41.91,41.91,0,0,0,51.362,20.92a15.093,15.093,0,0,0,1.512-8.345A10.583,10.583,0,1,0,32.1,16.524,23.637,23.637,0,0,0,35.1,23.959,47.39,47.39,0,0,0,42.431,33.075Z" transform="translate(-29.525 -1.191)"/>
+            <path id="Path_33" data-name="Path 33" d="M74.7,52.084a5.955,5.955,0,1,1,6.046,6.046A5.945,5.945,0,0,1,74.7,52.084Zm2.345-.015a3.617,3.617,0,1,0,3.64-3.625A3.711,3.711,0,0,0,77.044,52.069Z" transform="translate(-67.731 -39.173)"/>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
