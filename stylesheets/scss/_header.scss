@@ -5,7 +5,7 @@ $first_clr	: #006aa5;
 $second_clr	: #1F3257;
 
 #header {
-	width: calc(100% - #{$hPad * 2}); height: #{$header-height - ($vPad * 2)}; display: inline-block; padding: #{$vPad} #{$hPad}; overflow: visible;
+	width: calc(100% - #{$hPad * 2}); height: #{$header-height - ($vPad * 2)}; display: inline-block; padding: #{$vPad} #{$hPad}; overflow: visible; position: relative;
 	#logo {
 		width: 80px; height: 60px; word-spacing: 120px; padding: 30px 20px; border-radius: 2px;
 		color: white; font-size: 18px; font-weight: 700; line-height: 20px; span { color: #37d1fa; }
@@ -28,4 +28,18 @@ $second_clr	: #1F3257;
 		}
 	}
 
+}
+
+.jq-dropdown > div { border: none; @include clearfix(); }
+.jq-dropdown {
+	div.jq-dropdown-panel, ul.jq-dropdown-menu { background: #eee; border: none; }
+	&::before, &::after { border-bottom-color: #eee!important; }
+}
+#dropdown-region, #dropdown-regency {
+	ul {
+		max-height: 350px; overflow: auto;
+		li {
+			color: black; padding: 2px 20px; &:hover { background: #006fac; color: white; }
+		}
+	}
 }

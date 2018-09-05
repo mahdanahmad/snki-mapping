@@ -45,6 +45,7 @@
 		<script src="slider.js"></script>
 		<script src="ruler.js"></script>
 		<script src="legend.js"></script>
+		<script src="header.js"></script>
 		<script src="map.js"></script>
 
 		<script src="main.js"></script>
@@ -64,9 +65,9 @@
 						<div>Basemap layer</div>
 						<img src="image/icons/arrow.svg" alt="" class="hidden arrow">
 					</div>
-					<div id="region-dropdown" class="dropdown cursor-pointer">
+					<div id="region-dropdown" class="dropdown cursor-pointer" data-jq-dropdown="#dropdown-region">
 						<img src="image/icons/icon_region.svg" alt="" class="hidden icons">
-						<div>Select <span>Province</span></div>
+						<div>Select <span></span></div>
 						<img src="image/icons/arrow.svg" alt="" class="hidden arrow">
 					</div>
 				</div>
@@ -77,5 +78,7 @@
 				<img src="image/logo_snki.png" alt="">
 			</div>
         </div>
+
+		<div id="dropdown-region" class="jq-dropdown jq-dropdown-tip jq-dropdown-anchor-right"><ul class="jq-dropdown-menu cursor-pointer"></ul></div>
     </body>
 </html>

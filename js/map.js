@@ -239,6 +239,8 @@ function drawMap(id, state) {
 				return _.last(states) == state ? drawPoint(o.properties.id) : zoom(o.properties.id, state) ;
 			});
 
+			changeRegionHead();
+
 			setTimeout(() => colorMap(data.data, state), 500);
 			setTimeout(() => createLegend(data.legend, 'Amount of FAP'), 500);
 		});

@@ -12,5 +12,8 @@ router.get('/map', (req, res, next) => {
 router.get('/location', (req, res, next) => {
 	map.location(req.query, (result) => { res.status(result.status_code).json(result); });
 });
+router.get('/types', (req, res, next) => {
+	map.types((result) => { res.status(result.status_code).json(result); });
+});
 
 module.exports = router;

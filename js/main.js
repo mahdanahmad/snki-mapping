@@ -27,5 +27,6 @@ $( document ).ready(function() {
 	});
 
 	initMap();
+	changeRegionHead();
 
 });

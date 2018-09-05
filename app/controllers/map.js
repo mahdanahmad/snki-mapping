@@ -89,8 +89,9 @@ module.exports.location	= (input, callback) => {
 	async.waterfall([
 		(flowCallback) => {
 			location.rawAggregate([
-				{ '$match': { parent } },
-				{ '$project': { _id: 0, id: 1, name: 1 }}
+				{ '$match': { parent, id: { '$ne': '' } } },
+				{ '$project': { _id: 0, id: 1, name: 1 }},
+				{ '$sort': { id: 1 }}
 			], {}, (err, result) => flowCallback(err, result));
 		},
 	], (err, asyncResult) => {
@@ -104,3 +105,25 @@ module.exports.location	= (input, callback) => {
 		callback({ response, status_code, message, result });
 	});
 };
+
+module.exports.types	= (callback) => {
+	let response        = 'OK';
+	let status_code     = 200;
+	let message         = 'Get location data success.';
+	let result          = null;
+
+	async.waterfall([
+		(flowCallback) => {
+			agents.distinct('access_point_type', {}, (err, result) => flowCallback(err, result));
+		},
+	], (err, asyncResult) => {
+		if (err) {
+			response    = 'FAILED';
+			status_code = 400;
+			message     = err;
+		} else {
+			result      = asyncResult;
+		}
+		callback({ response, status_code, message, result });
+	});
+}
