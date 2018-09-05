@@ -16,7 +16,7 @@
 	}
 
 	#slider-tooltip {
-		position: absolute; padding: 5px 15px 7.5px; background: white; border-radius: 3px;
+		position: absolute; padding: 5px 15px 7.5px; background: white; border-radius: 3px; color: black;
 		top: 0px;
 		&:after {
 			content: " "; top: 100%; left: 50%; border: solid transparent;
