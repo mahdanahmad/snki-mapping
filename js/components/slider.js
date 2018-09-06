@@ -81,5 +81,6 @@ function onSliderClick() {
 		coalesce = _.omit(coalesce, states.slice(curr_state + 1));
 
 		refreshLegend();
+		changeRegionHead();
 	}
 }

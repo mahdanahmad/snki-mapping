@@ -42,12 +42,13 @@
 		<script src="helpers/fetcher.js"></script>
 		<script src="helpers/globalFunc.js"></script>
 
-		<script src="slider.js"></script>
-		<script src="ruler.js"></script>
-		<script src="legend.js"></script>
-		<script src="header.js"></script>
-		<script src="map.js"></script>
+		<script src="components/slider.js"></script>
+		<script src="components/ruler.js"></script>
+		<script src="components/legend.js"></script>
+		<script src="components/header.js"></script>
+		<script src="components/map.js"></script>
 
+		<script src="connector.js"></script>
 		<script src="main.js"></script>
     </head>
     <body class="">
@@ -55,7 +56,7 @@
 			<div id="header">
 				<div id="logo">Financial Access <span>Map</span></div>
 				<div id="drops-wrapper">
-					<div id="filter-dropdown" class="dropdown cursor-pointer">
+					<div id="filter-dropdown" class="dropdown cursor-pointer" data-jq-dropdown="#dropdown-filter">
 						<img src="image/icons/icon_filter.svg" alt="" class="hidden icons">
 						<div>Filter by</div>
 						<img src="image/icons/arrow.svg" alt="" class="hidden arrow">
@@ -79,6 +80,7 @@
 			</div>
         </div>
 
+		<div id="dropdown-filter" class="jq-dropdown jq-dropdown-tip jq-dropdown-anchor-right"><ul class="jq-dropdown-menu cursor-pointer"></ul></div>
 		<div id="dropdown-region" class="jq-dropdown jq-dropdown-tip jq-dropdown-anchor-right"><ul class="jq-dropdown-menu cursor-pointer"></ul></div>
     </body>
 </html>

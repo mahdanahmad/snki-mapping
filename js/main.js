@@ -28,5 +28,5 @@ $( document ).ready(function() {
 
 	initMap();
 	changeRegionHead();
-
+	changeFilterHead();
 });

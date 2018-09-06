@@ -9,6 +9,8 @@ const location		= require('../models/location');
 // const pallete		= ['#99d0ec', '#38a8e2', '#0085ce', '#00659d', '#004e79'];
 const pallete		= ['#004e79', '#00659d', '#0085ce', '#38a8e2', '#99d0ec'];
 
+const filt_field	= 'access_point_type';
+
 module.exports.index	= (input, callback) => {
 	let response        = 'OK';
 	let status_code     = 200;
@@ -20,11 +22,15 @@ module.exports.index	= (input, callback) => {
 	const kecamatan_id	= (input.kec	|| null);
 	const desa_id		= (input.desa	|| null);
 
+	const filter		= input.filter ? JSON.parse(input.filter) : null;
+
 	const states		= ['province_id', 'kabupaten_id', 'kecamatan_id', 'desa_id'];
 
 	async.waterfall([
 		(flowCallback) => {
 			let match	= _.omitBy({ province_id, kabupaten_id, kecamatan_id, desa_id }, _.isNil);
+			if (filter) { match[filt_field] = { '$in': filter }; }
+
 			let active	= _.chain({ province_id, kabupaten_id, kecamatan_id, desa_id }).omitBy(_.isNil).keys().last().value();
 
 			if (_.last(states) !== active) {
@@ -114,7 +120,7 @@ module.exports.types	= (callback) => {
 
 	async.waterfall([
 		(flowCallback) => {
-			agents.distinct('access_point_type', {}, (err, result) => flowCallback(err, result));
+			agents.distinct(filt_field, {}, (err, result) => flowCallback(err, result));
 		},
 	], (err, asyncResult) => {
 		if (err) {
