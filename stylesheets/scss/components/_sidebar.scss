@@ -1,0 +1,20 @@
+$top_color	: #062b57;
+$bot_color	: #152746;
+
+$toggl-size	: 50px;
+$off-color	: #006fac;
+$on-color	: white;
+
+#sidebar-wrapper {
+	position: fixed; top: 0px; left: 0px; z-index: 20;
+	#sidebar-content {
+		height: 100vh; width: 0px; transition: width .5s ease;
+		background: #{$top_color}; background: -moz-linear-gradient(top, #{$top_color} 0%, #{$bot_color} 100%); background: -webkit-linear-gradient(top, #{$top_color} 0%,#{$bot_color} 100%); background: linear-gradient(to bottom, #{$top_color} 0%,#{$bot_color} 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{$top_color}', endColorstr='#{$bot_color}',GradientType=0 );
+		&.expanded { width: 320px; }
+	}
+	#sidebar-toggler {
+		width: $toggl-size; height: $toggl-size; position: absolute; right: -$toggl-size; top: 50%; transform: translateY(-50%); background: $off-color; border-radius: 0 10px 10px 0;
+		svg { width: 75%; height: auto; position: absolute; left: 10%; top: 50%; transform: translateY(-50%); fill: $on-color; }
+	}
+	#sidebar-content.expanded + #sidebar-toggler { background: $on-color; svg { fill: $off-color; } }
+}

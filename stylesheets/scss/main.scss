@@ -1,8 +1,9 @@
-@import "statics";
-@import "mixins";
+@import "helpers/statics";
+@import "helpers/mixins";
 
-@import "header";
-@import "map";
+@import "components/header";
+@import "components/map";
+@import "components/sidebar";
 
 a { cursor: pointer; text-decoration: none; color: black; }
 ul { list-style-type: none; margin: 0px; padding: 0px; }

@@ -1,7 +1,7 @@
 moment.locale('id');
 
 $( document ).ready(function() {
-	jQuery( '#drops-wrapper img' ).each(function() {
+	jQuery( '#drops-wrapper img, #sidebar-wrapper img' ).each(function() {
 		let $img = jQuery(this);
 		let imgID = $img.attr('id');
 		let imgClass = $img.attr('class');

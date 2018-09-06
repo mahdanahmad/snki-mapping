@@ -152,6 +152,7 @@ function zoom(id, state) {
 			svg.selectAll('path.unintended').classed('unintended', false);
 			moveRuler(coalesce.national.distance);
 			refreshLegend();
+			changeRegionHead();
 		} else {
 			console.error('unhandled');
 		}
