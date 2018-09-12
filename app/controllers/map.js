@@ -62,10 +62,15 @@ module.exports.index	= (input, callback) => {
 					flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: o + ' - ' + (o + range), color: pallete[i] })).concat([{ text: 'No data', color: '#000' }]).reverse() });
 				});
 			} else {
-				agents.rawAggregate([
-					{ '$match': match },
-					{ '$project': { _id: 1, long: '$longitude', lat: '$latitude' } }
-				], {}, (err, result) => flowCallback(err, result.map((o) => _.assign(o, { color: '#fa5c18' }))));
+				types.findAll({}, {}, (err, alltypes) => {
+					if (err) { flowCallback(err); } else {
+						const mapped	= _.chain(alltypes).map((o) => ([o.type, o.color])).fromPairs().value();
+						agents.rawAggregate([
+							{ '$match': match },
+							{ '$project': { _id: 1, long: '$longitude', lat: '$latitude', type: '$' + filt_field } }
+						], {}, (err, result) => flowCallback(err, result.map((o) => _.assign(o, { color: mapped[o.type] }))));
+					}
+				})
 			}
 
 		},

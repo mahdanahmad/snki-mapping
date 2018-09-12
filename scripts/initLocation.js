@@ -27,6 +27,9 @@ MongoClient.connect(db_url, { }, (err, client) => {
 
 	async.waterfall([
 		(flowCallback) => {
+			db.collection(DB_COLL).deleteMany({}, (err) => flowCallback(err));
+		}
+		(flowCallback) => {
 			async.map(files, (filename, mapCallback) => {
 				let idx			= _.nth(filename, -5);
 				let filepath	=  csv_root + '/' + filename;
