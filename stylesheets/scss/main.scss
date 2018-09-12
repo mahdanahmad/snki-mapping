@@ -40,3 +40,56 @@ div#root {
 		img:last-child { float: right; width: 45%;  }
 	}
 }
+div#loading {
+	position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 90; background: rgba(black, .6);
+	align-items: center; display: flex; justify-content: center;
+	svg#mini-loader {
+		height: 75px; width: 75px;
+		path { fill: white; }
+		#b0 { animation: b0 4s infinite ease; transform-origin: 250px 250px; }
+		#b1 { animation: b1 4s infinite ease; }
+		#b2 { animation: b2 4s infinite ease; }
+		#b3 { animation: b3 4s infinite ease; }
+		#b4 { animation: b4 4s infinite ease; }
+
+		@keyframes b0 {
+			0% { @include transform(rotate(0)); }
+			25% { @include transform(rotate(-90deg)); }
+			50% { @include transform(rotate(-180deg)); }
+			75% { @include transform(rotate(-270deg)); }
+			100% { @include transform(rotate(-360deg)); }
+		}
+
+		@keyframes b1 {
+			0% { @include transform(translate(0, 0)); }
+			25% { @include transform(translate(0, 355px)); }
+			50% { @include transform(translate(355px, 355px)); }
+			75% { @include transform(translate(355px, 0)); }
+			100% { @include transform(translate(0, 0)); }
+		}
+
+		@keyframes b2 {
+			0% { @include transform(translate(0, 0)); }
+			25% { @include transform(translate(-355px, 0)); }
+			50% { @include transform(translate(-355px, 355px)); }
+			75% { @include transform(translate(0, 355px)); }
+			100% { @include transform(translate(0, 0)); }
+		}
+
+		@keyframes b3 {
+			0% { @include transform(translate(0, 0)); }
+			25% { @include transform(translate(0, -355px)); }
+			50% { @include transform(translate(-355px, -355px)); }
+			75% { @include transform(translate(-355px, 0)); }
+			100% { @include transform(translate(0, 0)); }
+		}
+
+		@keyframes b4 {
+			0% { @include transform(translate(0, 0)); }
+			25% { @include transform(translate(355px, 0)); }
+			50% { @include transform(translate(355px, -355px)); }
+			75% { @include transform(translate(0, -355px)); }
+			100% { @include transform(translate(0, 0)); }
+		}
+	}
+}

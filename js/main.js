@@ -30,4 +30,5 @@ $( document ).ready(function() {
 	changeFilterHead();
 
 	setTimeout(() => initMap(), 100);
+	setTimeout(() => toggleLoading(true), 750);
 });
