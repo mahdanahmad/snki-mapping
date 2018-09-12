@@ -26,7 +26,8 @@ $( document ).ready(function() {
 		}, 'xml');
 	});
 
-	initMap();
 	changeRegionHead();
 	changeFilterHead();
+
+	setTimeout(() => initMap(), 100);
 });

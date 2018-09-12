@@ -7,7 +7,7 @@ function getTypes(callback) { $.get(baseUrl + '/types', ( data ) => { callback(n
 // HELPER
 function constructParams() {
 	let checked	= $( filter_target + ' > ul > li > input:checked' ).map(function() { return $( this ).attr('value'); }).get()
-	let filter	= !_.isEmpty(checked) ? JSON.stringify(checked) : null;
-	
+	let filter	= !_.isNil(checked) ? JSON.stringify(checked) : null;
+
 	return _.chain({}).assign(centered, { filter }).omitBy(_.isNil).value()
 };

@@ -242,13 +242,13 @@ function drawMap(id, state) {
 
 			changeRegionHead();
 
-			setTimeout(() => colorMap(data.data, state), 500);
-			setTimeout(() => createLegend(data.legend, 'Amount of FAP'), 500);
+			setTimeout(() => colorMap(data.data, state), 300);
+			setTimeout(() => createLegend(data.legend, 'Amount of FAP'), 300);
 		});
 }
 
 function colorMap(data, state) {
-	$('.' + state).removeClass('unintended').removeClass((idx, className) => ((className.match (/(^|\s)color-\S+/g) || []).join(' ')) ).addClass('color-6');
+	$('.' + state).removeClass('unintended').css('fill', '').addClass('color-6');
 
 	data.forEach((o) => { $( '#' + state + '-' + o._id + ' > path' ).removeClass((idx, className) => ((className.match (/(^|\s)color-\S+/g) || []).join(' ')) ).css('fill', o.color); });
 }
