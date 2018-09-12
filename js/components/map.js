@@ -172,7 +172,7 @@ function zoom(id, state) {
 
 		d3.selectAll('svg#' + map_id + ' g#canvas text').transition()
 			.duration(duration)
-			.style('font-size', (base_font / scale) + 'px');
+			.style('font-size', (base_font / scale > 0.013 ? (base_font / scale) : 0.013) + 'px');
 
 
 	}
@@ -233,7 +233,7 @@ function drawMap(id, state) {
 			grouped.append('text')
 				.attr('x', (o) => (mappedGeo[state][o.properties.id].centroid[0]))
 				.attr('y', (o) => (mappedGeo[state][o.properties.id].centroid[1]))
-				.style('font-size', (base_font / scale) + 'px')
+				.style('font-size', (base_font / scale > 0.013 ? (base_font / scale) : 0.013) + 'px')
 				.text((o) => (o.properties.name));
 
 			grouped.on('click', (o) => {
