@@ -1,4 +1,4 @@
-let lgnd_width	= 90;
+let lgnd_width	= 100;
 
 function createLegend(data, title) {
 	let wrapper		= d3.select('g#legend-wrapper');

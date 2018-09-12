@@ -191,7 +191,7 @@ function drawPoint(id) {
 
 		svg.append('g').attr('class', 'pin-wrapper')
 			.selectAll('.pin')
-			.data(result)
+			.data(result.data)
 			.enter().append('circle')
 				.attr('class', 'pin')
 				.attr('r', 4 / scale)
@@ -201,6 +201,7 @@ function drawPoint(id) {
 				})
 				.style('fill', (o) => (o.color))
 
+		createLegend(result.legend, 'Type of Access Point')
 	});
 }
 
