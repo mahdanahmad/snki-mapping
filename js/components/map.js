@@ -205,26 +205,29 @@ function drawPoint(id) {
 	svg.select('g.pin-wrapper').remove();
 
 	centered[_.last(states)]	= id;
-	$(states.map((o) => ('.' + o + '-wrapper path')).join(', ')).addClass('unintended');
 
-	getMapData((err, result) => {
-		curr_state++;
-		moveSlider();
+	if ($( base_target + ' > ul > li > input:checked' ).attr('value') !== layers[1]) {
+		$(states.map((o) => ('.' + o + '-wrapper path')).join(', ')).addClass('unintended');
 
-		svg.append('g').attr('class', 'pin-wrapper')
-			.selectAll('.pin')
-			.data(result.data)
-			.enter().append('circle')
-				.attr('class', 'pin')
-				.attr('r', 4 / scale)
-				.attr('transform', (o) => {
-					let pix	= projection([o.long, o.lat]);
-					return ('translate(' + pix[0] + ',' + pix[1] + ')')
-				})
-				.style('fill', (o) => (o.color))
+		getMapData((err, result) => {
+			curr_state++;
+			moveSlider();
 
-		createLegend(result.legend, 'Type of Access Point')
-	});
+			svg.append('g').attr('class', 'pin-wrapper')
+				.selectAll('.pin')
+				.data(result.data)
+				.enter().append('circle')
+					.attr('class', 'pin')
+					.attr('r', 4 / scale)
+					.attr('transform', (o) => {
+						let pix	= projection([o.long, o.lat]);
+						return ('translate(' + pix[0] + ',' + pix[1] + ')')
+					})
+					.style('fill', (o) => (o.color))
+
+			createLegend(result.legend, 'Type of Access Point')
+		});
+	}
 }
 
 function drawMap(id, state) {

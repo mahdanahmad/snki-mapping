@@ -3,12 +3,10 @@
 	svg#map-viz {
 		rect#background { fill: none; pointer-events: all; }
 		text { fill: white; @include noselect(); }
+		path { stroke: #eee; fill-opacity: .75; &.unintended { fill: $default-back!important; }}
 
 		g#canvas {
 			text { text-anchor: middle; }
-			g:not(.network) {
-				path { stroke: #eee; fill-opacity: .75; &.unintended { fill: $default-back!important; }}
-			}
 			g.network {
 				path { stroke: none; fill-opacity: 1; }
 			}
