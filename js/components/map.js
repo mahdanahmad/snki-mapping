@@ -48,8 +48,6 @@ function initMap() {
 		.attr('height', height)
 		.on('click', () => zoom(null));
 
-	drawMap(0, 'prov');
-
 	let ruler	= svg.append('g')
 		.attr("id", 'ruler');
 
@@ -107,6 +105,29 @@ function initMap() {
 		.attr('transform', 'translate(' + (width / 2) + ',' + (height + margin.bottom) + ')')
 			.append('g')
 			.attr('id', 'legend-container');
+
+	d3.queue()
+		.defer(d3.json, 'network/2G.json')
+		.defer(d3.json, 'network/3G.json')
+		.defer(d3.json, 'network/4G.json')
+		.await((err, two, three, four) => {
+			_.forEach({ two, three, four }, (raw, key) => {
+				let topo	= topojson.feature(raw, raw.objects.map);
+
+				let grouped	= canvas.append('g')
+					.attr('id', 'wrapped-' + net_map[key])
+					.attr('class', 'network hidden')
+					.selectAll('path').data(topo.features).enter().append('g')
+
+				grouped.append('path')
+					.attr('d', path)
+					.attr('vector-effect', 'non-scaling-stroke')
+					.attr('fill', net_color[key]);
+			});
+
+			drawMap(0, 'prov');
+			setTimeout(() => toggleLoading(true), 1000);
+		});
 }
 
 function zoom(id, state) {
@@ -153,6 +174,7 @@ function zoom(id, state) {
 			moveRuler(coalesce.national.distance);
 			refreshLegend();
 			changeRegionHead();
+			defaultAmountFAP();
 		} else {
 			console.error('unhandled');
 		}
@@ -244,7 +266,7 @@ function drawMap(id, state) {
 			changeRegionHead();
 
 			setTimeout(() => colorMap(data.data, state), 300);
-			setTimeout(() => createLegend(data.legend, 'Amount of FAP'), 300);
+			if ($( base_target + ' > ul > li > input:checked' ).attr('value') !== layers[1]) { setTimeout(() => createLegend(data.legend, 'Amount of FAP'), 300); }
 		});
 }
 

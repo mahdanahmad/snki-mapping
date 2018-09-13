@@ -2,14 +2,21 @@
 	height: calc(100% - #{$header-height}); width: 100%; position: relative; display: inline-block;
 	svg#map-viz {
 		rect#background { fill: none; pointer-events: all; }
-		path { stroke: #eee; fill-opacity: .75; &.unintended { fill: $default-back!important; }}
 		text { fill: white; @include noselect(); }
 
-		g#canvas { text { text-anchor: middle; } }
+		g#canvas {
+			text { text-anchor: middle; }
+			g:not(.network) {
+				path { stroke: #eee; fill-opacity: .75; &.unintended { fill: $default-back!important; }}
+			}
+			g.network {
+				path { stroke: none; fill-opacity: 1; }
+			}
+		}
 		g#slider-wrapper { circle { fill: white; &:last-child { cursor: default!important; } } path { fill: white; stroke: white; } }
 	}
 
-	$colors	: #fff7a8 #dcd99f #a1a68d #8a9287 #7a8482 $default-back;
+	$colors	: #fff7a8 #dcd99f #a1a68d #8a9287 #7a8482 transparent;
 	@each $color in $colors {
 		$i: index($colors, $color);
 		.color-#{$i} { fill: $color; &:before { background-color: $color; }}

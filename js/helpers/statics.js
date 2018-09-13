@@ -6,3 +6,15 @@ let centered	= {};
 let duration	= 750;
 
 let tooltip;
+
+const layers	= ['Amount of FAP', 'Network Coverage'];
+const net_color	= {
+	two		: '#c8d7ea',
+	three	: '#f4b2da',
+	four	: '#cd9ed9'
+}
+const net_map	= {
+	two		: '2G',
+	three	: '3G',
+	four	: '4G'
+}

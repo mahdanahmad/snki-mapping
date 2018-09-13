@@ -45,7 +45,7 @@ $splash_clr	: #006fac;
 	li { padding: 2px 20px; }
 }
 
-#dropdown-filter {
+#dropdown-filter, #dropdown-base {
 	li {
 		padding: 2px 15px 5px;
 		input {display: none; }
@@ -72,5 +72,11 @@ $splash_clr	: #006fac;
 			input:checked + label > svg { stroke: white; }
 		}
 		&.toggler { padding-left: 35px; text-transform: uppercase; font-weight: bolder; }
+	}
+}
+#dropdown-base {
+	li, li:hover  {
+		label > svg { stroke: transparent; transition: none; }
+		input:checked + label > svg { path, polyline { transition: none; } }
 	}
 }

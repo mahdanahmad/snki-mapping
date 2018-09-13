@@ -9,7 +9,7 @@ function createLegend(data, title) {
 	let text	= container.append('text')
 		.attr('text-anchor', 'middle')
 		.attr('alignment-baseline', 'hanging')
-		.text(title.toUpperCase());
+		.text(!_.isEmpty(data) ? title.toUpperCase() : '');
 
 	let boxes	= container.append('g')
 		.attr('transform', 'translate(0,' + (text.node().getBBox().height * 1.75) + ')')
@@ -48,5 +48,5 @@ function createLegend(data, title) {
 }
 
 function refreshLegend() {
-	getMapData((err, result) => { createLegend(result.legend, 'Amount of FAP'); })
+	if ($( base_target + ' > ul > li > input:checked' ).attr('value') !== layers[1]) { getMapData((err, result) => { createLegend(result.legend, 'Amount of FAP'); }) } else { createLegend([], ''); }
 }
