@@ -13,7 +13,7 @@ $on-color	: white;
 		&.expanded { width: 320px; }
 	}
 	#sidebar-toggler {
-		width: $toggl-size; height: $toggl-size; position: absolute; right: -$toggl-size; top: 50%; transform: translateY(-50%); background: $off-color; border-radius: 0 10px 10px 0;
+		width: $toggl-size; height: $toggl-size; position: absolute; right: -$toggl-size; top: 50%; transform: translateY(-50%); background: $off-color; border-radius: 0 10px 10px 0; transition: all .5s linear;
 		svg { width: 75%; height: auto; position: absolute; left: 10%; top: 50%; transform: translateY(-50%); fill: $on-color; }
 	}
 	#sidebar-content.expanded + #sidebar-toggler { background: $on-color; svg { fill: $off-color; } }

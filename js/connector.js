@@ -33,8 +33,8 @@ function refreshLayer() {
 }
 
 function defaultAmountFAP() {
-	toggleLoading();
 	if (curr_state < (states.length - 1)) {
+		toggleLoading();
 		getMapData((err, data) => {
 			colorMap(data.data, states[curr_state + 1]);
 			createLegend(data.legend, layers[0]);
