@@ -2,7 +2,6 @@ function refreshView() {
 	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
 	switch (active) {
 		case layers[0]:
-			toggleLoading();
 			defaultAmountFAP();
 			break;
 		case layers[1]:
@@ -21,12 +20,11 @@ function refreshLayer() {
 
 		switch (active) {
 			case layers[0]:
-				toggleLoading();
 				defaultAmountFAP();
 				break;
 			case layers[1]:
 				d3.selectAll('g.network').classed('hidden', false);
-				refreshLegend();
+				createLegend(_.map(net_color, (o, key) => ({ text: net_map[key], color: o })), active);
 				break;
 			default: console.log('base unhandled');
 
@@ -35,6 +33,7 @@ function refreshLayer() {
 }
 
 function defaultAmountFAP() {
+	toggleLoading();
 	if (curr_state < (states.length - 1)) {
 		getMapData((err, data) => {
 			colorMap(data.data, states[curr_state + 1]);

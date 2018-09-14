@@ -174,7 +174,6 @@ function zoom(id, state) {
 			moveRuler(coalesce.national.distance);
 			refreshLegend();
 			changeRegionHead();
-			defaultAmountFAP();
 		} else {
 			console.error('unhandled');
 		}
@@ -233,10 +232,8 @@ function drawPoint(id) {
 function drawMap(id, state) {
 	let svg	= d3.select("svg#" + map_id + '> g#canvas');
 
-	d3.queue()
-		.defer(getMapData)
-		.defer(d3.json, 'json/' + id + '.json')
-		.await((err, data, raw) => {
+	let promise	= new Promise((resolve, reject) => {
+		d3.json('json/' + id + '.json', (err, raw) => {
 			let topo			= topojson.feature(raw, raw.objects.map);
 			mappedGeo[state]	= _.chain(topo).get('features', []).keyBy('properties.id').mapValues((o) => ({ centroid: path.centroid(o), bounds: path.bounds(o) })).value();
 
@@ -267,10 +264,16 @@ function drawMap(id, state) {
 			});
 
 			changeRegionHead();
-
-			setTimeout(() => colorMap(data.data, state), 300);
-			if ($( base_target + ' > ul > li > input:checked' ).attr('value') !== layers[1]) { setTimeout(() => createLegend(data.legend, 'Amount of FAP'), 300); }
+			setTimeout(() => { resolve() }, 300);
 		});
+	});
+
+	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+	if (_.includes([0], layers.indexOf(active))) {
+		promise.then(() => {
+			getMapData((err, data) => { colorMap(data.data, state); createLegend(data.legend, active); });
+		});
+	}
 }
 
 function colorMap(data, state) {

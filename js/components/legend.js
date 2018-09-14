@@ -48,5 +48,6 @@ function createLegend(data, title) {
 }
 
 function refreshLegend() {
-	if ($( base_target + ' > ul > li > input:checked' ).attr('value') !== layers[1]) { getMapData((err, result) => { createLegend(result.legend, 'Amount of FAP'); }) } else { createLegend([], ''); }
+	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+	if (_.includes([0], layers.indexOf(active))) { getMapData((err, result) => { createLegend(result.legend, 'Amount of FAP'); }) }
 }
