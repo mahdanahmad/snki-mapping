@@ -1,4 +1,5 @@
 let path, projection;
+// const states	= ['prov', 'kab', 'kec'];
 const states	= ['prov', 'kab', 'kec', 'desa'];
 let curr_state	= -1;
 
@@ -199,18 +200,18 @@ function zoom(id, state) {
 	}
 };
 
-function drawPoint(id) {
+function drawPoint(id, state) {
 	let svg	= d3.select("svg#" + map_id + '> g#canvas');
 	svg.select('g.pin-wrapper').remove();
 
-	centered[_.last(states)]	= id;
+	centered[state]	= id;
 
 	if ($( base_target + ' > ul > li > input:checked' ).attr('value') !== layers[1]) {
 		$(states.map((o) => ('.' + o + '-wrapper path')).join(', ')).addClass('unintended');
 
 		getMapData((err, result) => {
-			curr_state++;
-			moveSlider();
+			// curr_state++;
+			// moveSlider();
 
 			svg.append('g').attr('class', 'pin-wrapper')
 				.selectAll('.pin')
@@ -260,7 +261,8 @@ function drawMap(id, state) {
 
 			grouped.on('click', (o) => {
 				_.set(coalesce, state + '.name', o.properties.name);
-				return _.last(states) == state ? drawPoint(o.properties.id) : zoom(o.properties.id, state) ;
+				// return _.last(states) == state ? drawPoint(o.properties.id) : zoom(o.properties.id, state) ;
+				return zoom(o.properties.id, state);
 			});
 
 			changeRegionHead();
@@ -271,7 +273,11 @@ function drawMap(id, state) {
 	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
 	if (_.includes([0], layers.indexOf(active))) {
 		promise.then(() => {
-			getMapData((err, data) => { colorMap(data.data, state); createLegend(data.legend, active); });
+			if (!_.includes(states.slice(-1), state)) {
+				getMapData((err, data) => { colorMap(data.data, state); createLegend(data.legend, active); });
+			} else {
+				drawPoint(id);
+			}
 		});
 	}
 }

@@ -33,7 +33,7 @@ module.exports.index	= (input, callback) => {
 
 			let active	= _.chain({ province_id, kabupaten_id, kecamatan_id, desa_id }).omitBy(_.isNil).keys().last().value();
 
-			if (_.last(states) !== active) {
+			if (!_.includes(states.slice(-2), active)) {
 				agents.rawAggregate([
 					{ '$match': match },
 					{ '$group': { _id: '$' + states[states.indexOf(active) + 1], size: { $sum: 1 } } },
