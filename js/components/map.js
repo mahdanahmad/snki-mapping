@@ -200,11 +200,11 @@ function zoom(id, state) {
 	}
 };
 
-function drawPoint(id, state) {
+function drawPoint(id) {
 	let svg	= d3.select("svg#" + map_id + '> g#canvas');
 	svg.select('g.pin-wrapper').remove();
 
-	centered[state]	= id;
+	// centered[state]	= id;
 
 	if ($( base_target + ' > ul > li > input:checked' ).attr('value') !== layers[1]) {
 		$(states.map((o) => ('.' + o + '-wrapper path')).join(', ')).addClass('unintended');
