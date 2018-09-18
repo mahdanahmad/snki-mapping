@@ -44,8 +44,16 @@ $splash_clr	: #006fac;
 #dropdown-region {
 	li { padding: 2px 20px; }
 }
-
-#dropdown-filter, #dropdown-base {
+#dropdown-base {
+	li, li:hover  {
+		label > svg { stroke: transparent; transition: none; }
+		input:checked + label > svg { path, polyline { transition: none; } }
+	}
+}
+#dropdown-network {
+	ul { overflow: hidden!important; }
+}
+#dropdown-filter, #dropdown-base, #dropdown-network {
 	li {
 		padding: 2px 15px 5px;
 		input {display: none; }
@@ -62,21 +70,15 @@ $splash_clr	: #006fac;
 		}
 		input:checked + label {
 			svg {
-				stroke: $splash_clr;
+				stroke: $splash_clr; background: transparent!important;
 				path { stroke-dashoffset: 60; transition: all .3s linear; }
 				polyline { stroke-dashoffset: 42; transition: all .2s linear; transition-delay: .15s; }
 			}
 		}
 		&:hover {
-			label { svg { stroke: white; } }
+			label { svg { stroke: white!important; } }
 			input:checked + label > svg { stroke: white; }
 		}
 		&.toggler { padding-left: 35px; text-transform: uppercase; font-weight: bolder; }
-	}
-}
-#dropdown-base {
-	li, li:hover  {
-		label > svg { stroke: transparent; transition: none; }
-		input:checked + label > svg { path, polyline { transition: none; } }
 	}
 }

@@ -28,6 +28,7 @@ $( document ).ready(function() {
 
 	createBaseHead();
 	changeRegionHead();
+	createNetworkDrop();
 
 	changeFilterHead(() => {});
 

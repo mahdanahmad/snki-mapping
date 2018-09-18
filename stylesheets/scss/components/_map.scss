@@ -3,7 +3,10 @@
 	svg#map-viz {
 		rect#background { fill: none; pointer-events: all; }
 		text { fill: white; @include noselect(); }
-		path { stroke: #eee; fill-opacity: .75; &.unintended { fill: $default-back!important; }}
+		path { stroke: #eee; fill-opacity: .75;
+			&.unintended { fill: $default-back!important; }
+			&.seethrough { fill: transparent!important; }
+		}
 
 		g#canvas {
 			text { text-anchor: middle; }

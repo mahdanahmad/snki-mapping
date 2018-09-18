@@ -4,9 +4,9 @@ function refreshView() {
 		case layers[0]:
 			defaultAmountFAP();
 			break;
-		case layers[1]:
-			$( filter_target + ' > ul > li > input' ).each(function() { d3.select('g.network#wrapped-' + $(this).attr('value')).classed('hidden', !$( this ).prop('checked')); })
-			break;
+		// case layers[1]:
+		// 	$( filter_target + ' > ul > li > input' ).each(function() { d3.select('g.network#wrapped-' + $(this).attr('value')).classed('hidden', !$( this ).prop('checked')); })
+		// 	break;
 		default: console.log('unhandled refreshView');
 	}
 
@@ -22,10 +22,10 @@ function refreshLayer() {
 			case layers[0]:
 				defaultAmountFAP();
 				break;
-			case layers[1]:
-				d3.selectAll('g.network').classed('hidden', false);
-				createLegend(_.map(net_color, (o, key) => ({ text: net_map[key], color: o })), active);
-				break;
+			// case layers[1]:
+			// 	d3.selectAll('g.network').classed('hidden', false);
+			// 	createLegend(_.map(net_color, (o, key) => ({ text: net_map[key], color: o })), active);
+			// 	break;
 			default: console.log('base unhandled');
 
 		}
@@ -33,7 +33,7 @@ function refreshLayer() {
 }
 
 function defaultAmountFAP() {
-	if (curr_state < (states.length - 1)) {
+	if (curr_state < (states.length - 2)) {
 		toggleLoading();
 		getMapData((err, data) => {
 			colorMap(data.data, states[curr_state + 1]);

@@ -7,7 +7,7 @@ let duration	= 750;
 
 let tooltip;
 
-const layers	= ['Amount of FAP', 'Network Coverage'];
+const layers	= ['Amount of FAP'];
 const net_color	= {
 	two		: '#c8d7ea',
 	three	: '#f4b2da',

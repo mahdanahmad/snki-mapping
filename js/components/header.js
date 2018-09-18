@@ -32,7 +32,7 @@ function changeFilterHead(callback) {
 
 		switch (active) {
 			case layers[0]: getTypes((err, data) => { resolve(data); }); break;
-			case layers[1]: resolve(['2G', '3G', '4G']); break;
+			// case layers[1]: resolve(['2G', '3G', '4G']); break;
 			default: reject('unhandled filter');
 		}
 	});
@@ -57,7 +57,7 @@ function changeFilterHead(callback) {
 				clearTimeout(filter_time);
 				filter_time	= setTimeout(() => { refreshView(); }, awaitTime);
 
-				$(filter_target + ' > ul > li.toggler').html(filt_toggle[($( filter_target + ' > ul > li > input:checked' ).length <= $( filter_target + ' > ul > li:not(.toggler)' ).length) ? 0 : 1]);
+				$(filter_target + ' > ul > li.toggler').html(filt_toggle[($( filter_target + ' > ul > li > input:checked' ).length < $( filter_target + ' > ul > li:not(.toggler)' ).length) ? 0 : 1]);
 			});
 			$( filter_target + ' > ul > li.toggler' ).click(function(e) {
 				$( filter_target + ' > ul > li > input' ).prop('checked', !filt_toggle.indexOf($(this).html()));

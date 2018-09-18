@@ -161,7 +161,7 @@ function zoom(id, state) {
 			centered[state]	= id;
 
 			drawMap(id, states[curr_state + 1]);
-			svg.selectAll('path.' + state).classed('unintended', true);
+			 svg.selectAll('path.' + state).classed('unintended', true);
 		} else if (_.isNil(state)) {
 			x = node.width / 2;
 			y = node.height / 2;
@@ -208,6 +208,7 @@ function drawPoint(id) {
 
 	if ($( base_target + ' > ul > li > input:checked' ).attr('value') !== layers[1]) {
 		$(states.map((o) => ('.' + o + '-wrapper path')).join(', ')).addClass('unintended');
+		$( '#wrapped-' + id + ' path' ).addClass('seethrough');
 
 		getMapData((err, result) => {
 			// curr_state++;
@@ -274,7 +275,7 @@ function drawMap(id, state) {
 	if (_.includes([0], layers.indexOf(active))) {
 		promise.then(() => {
 			let willShowPoint	= _.includes(states.slice(-1), state);
-			d3.select('div#network-toggler').classed('hidden', !willShowPoint);
+			toggleNetwork(!willShowPoint);
 			if (willShowPoint) {
 				drawPoint(id);
 			} else {
