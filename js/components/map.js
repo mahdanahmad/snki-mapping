@@ -273,10 +273,12 @@ function drawMap(id, state) {
 	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
 	if (_.includes([0], layers.indexOf(active))) {
 		promise.then(() => {
-			if (!_.includes(states.slice(-1), state)) {
-				getMapData((err, data) => { colorMap(data.data, state); createLegend(data.legend, active); });
-			} else {
+			let willShowPoint	= _.includes(states.slice(-1), state);
+			d3.select('div#network-toggler').classed('hidden', !willShowPoint);
+			if (willShowPoint) {
 				drawPoint(id);
+			} else {
+				getMapData((err, data) => { colorMap(data.data, state); createLegend(data.legend, active); });
 			}
 		});
 	}

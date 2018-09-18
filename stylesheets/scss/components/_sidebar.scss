@@ -12,9 +12,20 @@ $on-color	: white;
 		background: #{$top_color}; background: -moz-linear-gradient(top, #{$top_color} 0%, #{$bot_color} 100%); background: -webkit-linear-gradient(top, #{$top_color} 0%,#{$bot_color} 100%); background: linear-gradient(to bottom, #{$top_color} 0%,#{$bot_color} 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{$top_color}', endColorstr='#{$bot_color}',GradientType=0 );
 		&.expanded { width: 320px; }
 	}
-	#sidebar-toggler {
-		width: $toggl-size; height: $toggl-size; position: absolute; right: -$toggl-size; top: 50%; transform: translateY(-50%); background: $off-color; border-radius: 0 10px 10px 0; transition: all .5s linear;
-		svg { width: 75%; height: auto; position: absolute; left: 10%; top: 50%; transform: translateY(-50%); fill: $on-color; }
+	#sidebar-buttons {
+		position: absolute; right: -$toggl-size; top: 50%; transform: translateY(-50%);
+		div {
+			position: relative; width: $toggl-size; height: $toggl-size; background: $off-color; border-radius: 0 10px 10px 0;
+			svg { height: auto; position: absolute; top: 50%; transform: translateY(-50%); fill: $on-color; }
+			&#sidebar-toggler {
+				transition: all .5s linear;
+				svg { width: 75%; left: 10%; }
+			}
+			&#network-toggler {
+				svg { width: 60%; left: 20%; }
+			}
+			&:first-child { margin-bottom: 10px; }
+		}
 	}
-	#sidebar-content.expanded + #sidebar-toggler { background: $on-color; svg { fill: $off-color; } }
+	#sidebar-content.expanded + #sidebar-buttons > #sidebar-toggler { background: $on-color; svg { fill: $off-color; } }
 }
