@@ -8,6 +8,7 @@ function getTypes(callback) { $.get(baseUrl + '/types', ( data ) => { callback(n
 function constructParams() {
 	let checked	= $( filter_target + ' > ul > li > input:checked' ).map(function() { return $( this ).attr('value'); }).get()
 	let filter	= !_.isNil(checked) ? JSON.stringify(checked) : null;
+	let layer	= $( base_target + ' > ul > li > input:checked' ).map(function() { return $( this ).attr('value'); }).get()[0];
 
-	return _.chain({}).assign(centered, { filter }).omitBy(_.isNil).value()
+	return _.chain({}).assign(centered, { filter, layer }).omitBy(_.isNil).value()
 };

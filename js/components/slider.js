@@ -4,8 +4,8 @@ function moveSlider() {
 	let wrapper		= d3.select("svg#" + map_id + '> g#slider-wrapper');
 	let container	= wrapper.select('g#slider-container');
 
-	let count		= container.selectAll('circle').size();
-	if ((curr_state + 1) >= count && count < states.length + 1) {
+	let count		= container.selectAll('circle').size() - 1;
+	if (curr_state >= count && count !== states.length) {
 		let start_point	= (curr_state + 1) * (base_crcl * 2) + (curr_state) * pad_crcl + (curr_state * (curr_state + 1) * incr_crcl) - (base_crcl)
 
 		let added_pad	= d3.path();
@@ -23,7 +23,7 @@ function moveSlider() {
 			.on('mouseout', onSliderOut)
 			.on('click', onSliderClick);
 
-	} else if ((curr_state + 1) < count) {
+	} else if (curr_state < count - 1) {
 		container.selectAll(states.slice(curr_state + 1).map((o) => ('.' + o)).join(', ')).remove();
 	}
 
@@ -72,7 +72,7 @@ function onSliderClick() {
 			.style('font-size', (base_font / coalesce[classed].scale) + 'px');
 
 		moveRuler(coalesce[classed].distance);
-		if (curr_state < (states.length - 2)) { d3.select("svg#" + map_id + '> g#canvas').selectAll(states.slice(curr_state + 2).map((o) => ('g.' + o + '-wrapper')).join(', ')).remove(); }
+		if (curr_state < (states.length - 2)) { d3.select("svg#" + map_id + '> g#canvas').selectAll(states.slice(curr_state + 1).map((o) => ('g.' + o + '-wrapper')).join(', ')).remove(); }
 		d3.select("svg#" + map_id + '> g#canvas').select('g#' + states[curr_state + 1] + '-' + centered[states[curr_state + 1]]).classed('hidden', false);
 		d3.select("svg#" + map_id + '> g#canvas').select('g.pin-wrapper').remove();
 		d3.selectAll(states.slice(curr_state + 1).map((o) => ('.' + o + '-wrapper path')).join(', ')).classed('unintended', false);

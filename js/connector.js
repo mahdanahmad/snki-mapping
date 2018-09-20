@@ -4,15 +4,16 @@ function refreshView() {
 		case layers[0]:
 			defaultAmountFAP();
 			break;
-		// case layers[1]:
-		// 	$( filter_target + ' > ul > li > input' ).each(function() { d3.select('g.network#wrapped-' + $(this).attr('value')).classed('hidden', !$( this ).prop('checked')); })
-		// 	break;
+		case layers[1]:
+			defaultAmountFAP();
+			break;
 		default: console.log('unhandled refreshView');
 	}
 
 }
 
 function refreshLayer() {
+	toggleNetwork();
 	changeFilterHead(() => {
 		let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
 		states.forEach((o) => colorMap([], o));
@@ -21,11 +22,11 @@ function refreshLayer() {
 		switch (active) {
 			case layers[0]:
 				defaultAmountFAP();
+				if (curr_state == states.length - 1) { toggleNetwork(false); }
 				break;
-			// case layers[1]:
-			// 	d3.selectAll('g.network').classed('hidden', false);
-			// 	createLegend(_.map(net_color, (o, key) => ({ text: net_map[key], color: o })), active);
-			// 	break;
+			case layers[1]:
+				defaultAmountFAP();
+				break;
 			default: console.log('base unhandled');
 
 		}
@@ -33,11 +34,14 @@ function refreshLayer() {
 }
 
 function defaultAmountFAP() {
-	if (curr_state < (states.length - 2)) {
+	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+	if (curr_state < (states.length - 2) || active == layers[1]) {
+		d3.select('g.pin-wrapper').remove();
+
 		toggleLoading();
 		getMapData((err, data) => {
 			colorMap(data.data, states[curr_state + 1]);
-			createLegend(data.legend, layers[0]);
+			createLegend(data.legend, active);
 
 			setTimeout(() => toggleLoading(true), 750);
 		});

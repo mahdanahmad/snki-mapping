@@ -1,4 +1,4 @@
-const state_head	= ['Provinsi', 'Kabupaten', 'Kelurahan', 'Desa'];
+const state_head	= ['Provinsi', 'Kabupaten', 'Kecamatan'];
 const title_target	= '#region-dropdown > div > span';
 
 const region_target	= '#dropdown-region';
@@ -11,19 +11,17 @@ const awaitTime		= 750;
 const filt_toggle	= ['Select All', 'Unselect All'];
 
 function changeRegionHead() {
-	d3.select(title_target).text(state_head[curr_state + 1]);
-	getLocation((err, data) => {
-		$( region_target + ' > ul' ).html(data.map((o) => ("<li id='region-" + o.id + "' value='" + o.id + "'>" + o.name + "</li>")).join(''));
-		$( region_target + ' > ul > li' ).click(function(e) {
-			$( region_target ).jqDropdown('hide');
+	if (state_head[curr_state + 1]) {
+		d3.select(title_target).text(state_head[curr_state + 1]);
+		getLocation((err, data) => {
+			$( region_target + ' > ul' ).html(data.map((o) => ("<li id='region-" + o.id + "' value='" + o.id + "'>" + o.name + "</li>")).join(''));
+			$( region_target + ' > ul > li' ).click(function(e) {
+				$( region_target ).jqDropdown('hide');
 
-			if (curr_state < states.length - 2) {
-				zoom($( this ).val(), states[curr_state + 1]);
-			} else {
-				drawPoint($( this ).attr('value'));
-			}
+				zoom($( this ).val(), states[curr_state + (curr_state < state_head.length - 1 ? 1 : 0)]);
+			});
 		});
-	});
+	}
 }
 
 function changeFilterHead(callback) {
@@ -32,7 +30,7 @@ function changeFilterHead(callback) {
 
 		switch (active) {
 			case layers[0]: getTypes((err, data) => { resolve(data); }); break;
-			// case layers[1]: resolve(['2G', '3G', '4G']); break;
+			case layers[1]: getTypes((err, data) => { resolve(data); }); break;
 			default: reject('unhandled filter');
 		}
 	});
@@ -86,6 +84,7 @@ function createBaseHead() {
 	$( base_target + ' > ul > li' ).click(function(e) {
 		let prev	= $(base_target + ' > ul > li > input:checked');
 		let current	= $(this).find('input');
+
 		if (prev.attr('value') !== current.attr('value')) {
 			current.prop('checked', true);
 			prev.prop('checked', false);

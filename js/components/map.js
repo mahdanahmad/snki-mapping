@@ -1,6 +1,6 @@
 let path, projection;
-// const states	= ['prov', 'kab', 'kec'];
-const states	= ['prov', 'kab', 'kec', 'desa'];
+const states	= ['prov', 'kab', 'kec'];
+// const states	= ['prov', 'kab', 'kec', 'desa'];
 let curr_state	= -1;
 
 let mappedGeo	= {};
@@ -126,7 +126,7 @@ function initMap() {
 					.attr('fill', net_color[key]);
 			});
 
-			drawMap(0, 'prov');
+			drawMap(0, 'national');
 			setTimeout(() => toggleLoading(true), 1000);
 		});
 }
@@ -134,7 +134,7 @@ function initMap() {
 function zoom(id, state) {
 	let svg	= d3.select("svg#" + map_id + '> g#canvas');
 
-	if (path && svg.node() && (state !== _.last(states))) {
+	if (path && svg.node()) {
 		svg.select('g.pin-wrapper').remove();
 
 		let x, y;
@@ -154,21 +154,21 @@ function zoom(id, state) {
 			if (centered[state]) {
 				svg.select('g#' + state + '-' + centered[state]).classed('hidden', false);
 
-				svg.selectAll(states.slice(curr_state + 1).map((o) => ('g.' + o + '-wrapper')).join(', ')).remove();
+				svg.selectAll(states.slice(curr_state).map((o) => ('g.' + o + '-wrapper')).join(', ')).remove();
 				centered = _.omit(centered, states.slice(curr_state + 1));
 			}
 			svg.select('g#' + state + '-' + id).classed('hidden', true);
 			centered[state]	= id;
 
-			drawMap(id, states[curr_state + 1]);
-			 svg.selectAll('path.' + state).classed('unintended', true);
+			drawMap(id, states[curr_state]);
+			svg.selectAll('path.' + state).classed('unintended', true);
 		} else if (_.isNil(state)) {
 			x = node.width / 2;
 			y = node.height / 2;
 			scale = 1;
 
 			svg.selectAll('g#' + _.head(states) + '-' + centered[_.head(states)]).classed('hidden', false);
-			svg.selectAll(_.tail(states).map((o) => ('g.' + o + '-wrapper')).join(', ')).remove();
+			svg.selectAll(states.map((o) => ('g.' + o + '-wrapper')).join(', ')).remove();
 			centered	= {};
 
 			svg.selectAll('path.unintended').classed('unintended', false);
@@ -232,12 +232,13 @@ function drawPoint(id) {
 }
 
 function drawMap(id, state) {
-	let svg	= d3.select("svg#" + map_id + '> g#canvas');
+	let svg			= d3.select("svg#" + map_id + '> g#canvas');
+	let next_state	= states[curr_state + 1];
 
 	let promise	= new Promise((resolve, reject) => {
 		d3.json('json/' + id + '.json', (err, raw) => {
-			let topo			= topojson.feature(raw, raw.objects.map);
-			mappedGeo[state]	= _.chain(topo).get('features', []).keyBy('properties.id').mapValues((o) => ({ centroid: path.centroid(o), bounds: path.bounds(o) })).value();
+			let topo				= topojson.feature(raw, raw.objects.map);
+			mappedGeo[next_state]	= _.chain(topo).get('features', []).keyBy('properties.id').mapValues((o) => ({ centroid: path.centroid(o), bounds: path.bounds(o) })).value();
 
 			let bbox = topojson.bbox(raw);
 
@@ -245,25 +246,24 @@ function drawMap(id, state) {
 
 			let grouped	= svg.append('g').attr('id', 'wrapped-' + id).attr('class', state + '-wrapper')
 				.selectAll('path.' + state).data(topo.features).enter().append('g')
-				.attr('id', (o) => (state + '-' + o.properties.id))
+				.attr('id', (o) => (next_state + '-' + o.properties.id))
 				.attr('class', 'grouped-' + state + ' cursor-pointer');
 
 			grouped.append('path')
 				.attr('d', path)
-				.attr('class', state + ' color-6')
+				.attr('class', next_state + ' color-6')
 				.attr('vector-effect', 'non-scaling-stroke')
 				.style('stroke-width', (base_stroke - ((curr_state + 1) * .1)) + 'px');
 
 			grouped.append('text')
-				.attr('x', (o) => (mappedGeo[state][o.properties.id].centroid[0]))
-				.attr('y', (o) => (mappedGeo[state][o.properties.id].centroid[1]))
+				.attr('x', (o) => (mappedGeo[next_state][o.properties.id].centroid[0]))
+				.attr('y', (o) => (mappedGeo[next_state][o.properties.id].centroid[1]))
 				.style('font-size', (base_font / scale > 0.013 ? (base_font / scale) : 0.013) + 'px')
 				.text((o) => (o.properties.name));
 
 			grouped.on('click', (o) => {
-				_.set(coalesce, state + '.name', o.properties.name);
-				// return _.last(states) == state ? drawPoint(o.properties.id) : zoom(o.properties.id, state) ;
-				return zoom(o.properties.id, state);
+				_.set(coalesce, next_state + '.name', o.properties.name);
+				return !_.isNil(next_state) ? zoom(o.properties.id, next_state) : null;
 			});
 
 			changeRegionHead();
@@ -271,22 +271,29 @@ function drawMap(id, state) {
 		});
 	});
 
-	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
-	if (_.includes([0], layers.indexOf(active))) {
-		promise.then(() => {
-			let willShowPoint	= _.includes(states.slice(-1), state);
-			toggleNetwork(!willShowPoint);
-			if (willShowPoint) {
-				drawPoint(id);
-			} else {
-				getMapData((err, data) => { colorMap(data.data, state); createLegend(data.legend, active); });
-			}
-		});
-	}
+	promise.then(() => {
+		let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+		switch (active) {
+			case layers[0]:
+				let willShowPoint	= curr_state >= (states.length - 1);
+				toggleNetwork(!willShowPoint);
+				if (willShowPoint) {
+					drawPoint(id);
+				} else {
+					getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
+				}
+				break;
+			case layers[1]:
+				getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
+				break;
+			default:
+
+		}
+	})
 }
 
 function colorMap(data, state) {
-	$('.' + state).removeClass('unintended').css('fill', '').addClass('color-6');
+	$('.' + state).removeClass('unintended seethrough').css('fill', '').addClass('color-6');
 
 	data.forEach((o) => { $( '#' + state + '-' + o._id + ' > path' ).removeClass((idx, className) => ((className.match (/(^|\s)color-\S+/g) || []).join(' ')) ).css('fill', o.color); });
 }
