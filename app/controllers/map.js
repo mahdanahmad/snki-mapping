@@ -97,8 +97,8 @@ module.exports.index	= (input, callback) => {
 
 							let max			= _.chain(data).maxBy('capita').get('capita', 0).ceil().value();
 
-							const range		= max / 5;
-							const fracture 	= _.range(0, max, range).reverse().map((o) => (_.round(o, 2)));
+							const range		= _.ceil(max / 5);
+							const fracture 	= _.range(0, (range * 5), range).reverse().map((o) => (_.round(o, 2)));
 
 							data.map((row) => {
 								let color	= '';
