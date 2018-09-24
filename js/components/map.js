@@ -111,7 +111,8 @@ function initMap() {
 		.defer(d3.json, 'network/2G.json')
 		.defer(d3.json, 'network/3G.json')
 		.defer(d3.json, 'network/4G.json')
-		.await((err, two, three, four) => {
+		.defer(d3.json, 'proximity/proximity.json')
+		.await((err, two, three, four, proximity) => {
 			_.forEach({ two, three, four }, (raw, key) => {
 				let topo	= topojson.feature(raw, raw.objects.map);
 
@@ -127,6 +128,7 @@ function initMap() {
 			});
 
 			drawMap(0, 'national');
+			drawProximity(canvas, proximity);
 			setTimeout(() => toggleLoading(true), 1000);
 		});
 }
@@ -200,7 +202,7 @@ function zoom(id, state) {
 	}
 };
 
-function drawPoint(id) {
+function drawPoint(id, holdLegend=false) {
 	let svg	= d3.select("svg#" + map_id + '> g#canvas');
 	svg.select('g.pin-wrapper').remove();
 
@@ -226,7 +228,7 @@ function drawPoint(id) {
 					})
 					.style('fill', (o) => (o.color))
 
-			createLegend(result.legend, 'Type of Access Point')
+			if (!holdLegend) { createLegend(result.legend, 'Type of Access Point'); }
 		});
 	}
 }
@@ -262,7 +264,7 @@ function drawMap(id, state) {
 				.text((o) => (o.properties.name));
 
 			grouped.on('click', (o) => {
-				_.set(coalesce, next_state + '.name', o.properties.name);
+				_.set(coalesce, next_state + '.name', state_head[curr_state + 1] + ' ' + o.properties.name);
 				return !_.isNil(next_state) ? zoom(o.properties.id, next_state) : null;
 			});
 
@@ -286,6 +288,9 @@ function drawMap(id, state) {
 			case layers[1]:
 				getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
 				break;
+			case layers[2]:
+				if ( curr_state >= (states.length - 1) ) { drawPoint(id, true); }
+				break;
 			default:
 
 		}
@@ -296,4 +301,20 @@ function colorMap(data, state) {
 	$('.' + state).removeClass('unintended seethrough').css('fill', '').addClass('color-6');
 
 	data.forEach((o) => { $( '#' + state + '-' + o._id + ' > path' ).removeClass((idx, className) => ((className.match (/(^|\s)color-\S+/g) || []).join(' ')) ).css('fill', o.color); });
+}
+
+function drawProximity(canvas, raw) {
+	let topo	= topojson.feature(raw, raw.objects.map);
+
+	let grouped	= canvas.append('g')
+		.attr('id', 'wrapped-proximity')
+		.attr('class', 'hidden')
+		.selectAll('path').data(topo.features).enter()
+			.append('g')
+			.attr('id', (o) => (prx_pref + _.snakeCase(o.properties.Name)));
+
+	grouped.append('path')
+		.attr('d', path)
+		.attr('vector-effect', 'non-scaling-stroke')
+		.attr('fill', (o) => (prx_color[_.snakeCase(o.properties.Name)]));
 }

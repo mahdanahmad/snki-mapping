@@ -20,6 +20,7 @@ $splash_clr	: #006fac;
 		.dropdown {
 			width: 30%; margin: 0 1.5%; display: inline-block; position: relative; z-index: 90;
 			border-bottom: 4px solid $splash_clr; border-radius: 2px;
+			float: right;
 			// img { display: inline-block; float: left; width: 10%; position: absolute; top: 50%; left: 1.3%; transform: translateY(-50%); color: white; }
 			svg {
 				fill: white; height: auto; position: absolute; display: block; top: 50%; transform: translateY(-50%);

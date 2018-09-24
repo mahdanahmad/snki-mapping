@@ -13,7 +13,7 @@ const filt_field	= 'access_point_type';
 const pop_field		= 'potential_population';
 const head_count	= 1000;
 
-const layers		= ['Amount of FAP', 'Access Point Per Capita'];
+const layers		= ['Amount of FAP', 'Access Point Per 1000 Adults', 'Driving Time From FAPs'];
 
 module.exports.index	= (input, callback) => {
 	let response        = 'OK';
@@ -110,6 +110,22 @@ module.exports.index	= (input, callback) => {
 							flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: o + ' - ' + _.round(o + range, 2), color: pallete[i] })).concat([{ text: 'No data', color: '#000' }]).reverse() });
 						});
 					});
+					break;
+				case layers[2]:
+					match	= _.omit(match, [filt_field]);
+					if (_.includes(states.slice(-2), active)) {
+						types.findAll({}, {}, (err, alltypes) => {
+							if (err) { flowCallback(err); } else {
+								const mapped	= _.chain(alltypes).map((o) => ([o.type, o.color])).fromPairs().value();
+								agents.rawAggregate([
+									{ '$match': match },
+									{ '$project': { _id: 1, long: '$longitude', lat: '$latitude', type: '$' + filt_field } }
+								], {}, (err, result) => flowCallback(err, { data: result.map((o) => _.assign(o, { color: mapped[o.type] })), legend: alltypes.filter((o) => (_.chain(result).map('type').uniq().includes(o.type).value())).map((o) => ({ text: o.type.length > 15 ? (o.type.substring(0, 13) + '...') : o.type, color: o.color }))  }));
+							}
+						})
+					} else {
+						flowCallback();
+					}
 					break;
 				default:
 					flowCallback('Lights on, and everybody go home.');
