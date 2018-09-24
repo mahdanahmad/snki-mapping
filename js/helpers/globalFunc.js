@@ -18,3 +18,16 @@ function haversine(first, second, callback) {
 
 	callback(earth_rad * c);
 }
+
+function countLenght(topo, callback) {
+	let bounds		= d3.geoBounds(topo);
+	let radians		= d3.geoDistance(bounds[0], bounds[1]);
+	let arc_length	= earth_rad * radians;
+
+	let projected	= [projection(bounds[0]), projection(bounds[1])];
+	let width		= projected[1][0] - projected[0][0];
+	let height		= projected[0][1] - projected[1][1];
+	let hypotenuse	= Math.sqrt((Math.pow(width, 2)) + (Math.pow(height, 2)));
+
+	callback($(map_dest).outerWidth(true) / (hypotenuse / arc_length));
+}

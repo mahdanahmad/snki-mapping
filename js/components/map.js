@@ -244,7 +244,12 @@ function drawMap(id, state) {
 
 			let bbox = topojson.bbox(raw);
 
-			haversine([bbox[0], bbox[1]], [bbox[2], bbox[1]], (distance) => { moveRuler(distance); });
+			// haversine([bbox[0], bbox[1]], [bbox[2], bbox[1]], (distance) => { moveRuler(distance); });
+			if ( !_.includes(states, state) ) {
+				countLenght(topo, (distance) => { length = distance; moveRuler(distance); });
+			} else {
+				moveRuler(length / scale);
+			}
 
 			let grouped	= svg.append('g').attr('id', 'wrapped-' + id).attr('class', state + '-wrapper')
 				.selectAll('path.' + state).data(topo.features).enter().append('g')

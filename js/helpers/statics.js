@@ -7,6 +7,8 @@ let duration	= 750;
 
 let tooltip;
 
+let length;
+
 const layers	= ['Amount of FAP', 'Access Point Per 1000 Adults', 'Driving Time From FAPs'];
 const net_color	= {
 	two		: '#c8d7ea',
