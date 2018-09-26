@@ -185,6 +185,8 @@ function zoom(id, state) {
 			refreshLegend();
 			changeRegionHead();
 			colorActive();
+
+			if ($( base_target + ' > ul > li > input:checked' ).attr('value') == layers[2]) { d3.selectAll('g.wrapper.national-wrapper path').classed('seethrough', true); }
 		} else {
 			console.error('unhandled');
 		}
