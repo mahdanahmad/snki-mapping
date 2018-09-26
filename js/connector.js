@@ -34,6 +34,7 @@ function refreshLayer() {
 		d3.selectAll('g.network').classed('hidden', true);
 
 		d3.select('div#filter-dropdown').classed('hidden', active == layers[2]);
+		d3.select('g#wrapped-background').classed('reverse', active == layers[2]);
 
 		switch (active) {
 			case layers[0]:
@@ -45,8 +46,8 @@ function refreshLayer() {
 				break;
 			case layers[2]:
 				d3.select('g#wrapped-proximity, g#wrapped-proximity > g').classed('hidden', false);
+				d3.selectAll('g.wrapper path').classed('seethrough', true);
 				createLegend(_.map(prx_color, (color, key) => ({ text: key.split('_').join(' - ') + ' minutes', color })), active);
-
 				if (curr_state >= (states.length - 1)) { drawPoint(centered[_.last(states)]); }
 				break;
 			default: console.log('base unhandled');

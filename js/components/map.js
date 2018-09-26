@@ -108,11 +108,16 @@ function initMap() {
 			.attr('id', 'legend-container');
 
 	d3.queue()
+		.defer(d3.json, 'json/0.json')
 		.defer(d3.json, 'network/2G.json')
 		.defer(d3.json, 'network/3G.json')
 		.defer(d3.json, 'network/4G.json')
 		.defer(d3.json, 'proximity/proximity.json')
-		.await((err, two, three, four, proximity) => {
+		.await((err, national, two, three, four, proximity) => {
+			canvas.append('g').attr('id', 'wrapped-background')
+				.selectAll('path.background').data(topojson.feature(national, national.objects.map).features).enter().append('path')
+					.attr('d', path);
+
 			_.forEach({ two, three, four }, (raw, key) => {
 				let topo	= topojson.feature(raw, raw.objects.map);
 
@@ -251,14 +256,14 @@ function drawMap(id, state) {
 				moveRuler(length / scale);
 			}
 
-			let grouped	= svg.append('g').attr('id', 'wrapped-' + id).attr('class', state + '-wrapper')
+			let grouped	= svg.append('g').attr('id', 'wrapped-' + id).attr('class', state + '-wrapper wrapper')
 				.selectAll('path.' + state).data(topo.features).enter().append('g')
 				.attr('id', (o) => (next_state + '-' + o.properties.id))
 				.attr('class', 'grouped-' + state + ' cursor-pointer');
 
 			grouped.append('path')
 				.attr('d', path)
-				.attr('class', next_state + ' color-6')
+				.attr('class', next_state + ' default-clr')
 				.attr('vector-effect', 'non-scaling-stroke')
 				.style('stroke-width', (base_stroke - ((curr_state + 1) * .1)) + 'px');
 
@@ -294,6 +299,8 @@ function drawMap(id, state) {
 				getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
 				break;
 			case layers[2]:
+				d3.selectAll('g.wrapper path').classed('seethrough', false);
+				d3.selectAll('g#wrapped-' + id + ' path').classed('seethrough', true);
 				if ( curr_state >= (states.length - 1) ) { drawPoint(id, true); }
 				break;
 			default:
@@ -303,9 +310,9 @@ function drawMap(id, state) {
 }
 
 function colorMap(data, state) {
-	$('.' + state).removeClass('unintended seethrough').css('fill', '').addClass('color-6');
+	$('.' + state).removeClass('unintended seethrough').css('fill', '').addClass('default-clr');
 
-	data.forEach((o) => { $( '#' + state + '-' + o._id + ' > path' ).removeClass((idx, className) => ((className.match (/(^|\s)color-\S+/g) || []).join(' ')) ).css('fill', o.color); });
+	data.forEach((o) => { $( '#' + state + '-' + o._id + ' > path' ).removeClass('default-clr').css('fill', o.color); });
 }
 
 function drawProximity(canvas, raw) {

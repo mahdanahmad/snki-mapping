@@ -9,7 +9,7 @@ let tooltip;
 
 let length;
 
-const layers	= ['Amount of FAP', 'Access Point Per 1000 Adults', 'Driving Time From FAPs'];
+const layers	= ['Number of FAP', 'Access Point Per 1000 Adults', 'Driving Time From FAPs'];
 const net_color	= {
 	two		: '#c8d7ea',
 	three	: '#f4b2da',
@@ -21,8 +21,8 @@ const net_map	= {
 	four	: '4G'
 }
 const prx_color	= {
-	'0_5'	: '#77b8ce',
-	'5_15'	: '#a0cddd',
-	'15_30'	: '#bbdbe7',
+	'0_5'	: '#889BF7',
+	'5_15'	: '#5B609D',
+	'15_30'	: '#383872',
 }
 const prx_pref	= 'prx-';

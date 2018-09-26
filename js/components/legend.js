@@ -6,13 +6,22 @@ function createLegend(data, title) {
 
 	container.selectAll('*').remove();
 
+	let ceiling	= container.append('rect')
+		.attr('id', 'ceiling')
+		.attr('class', 'background-box');
+
+	let floor	= container.append('rect')
+		.attr('id', 'floor')
+		.attr('class', 'background-box');
+
 	let text	= container.append('text')
+		.attr('id', 'legend-title')
 		.attr('text-anchor', 'middle')
 		.attr('alignment-baseline', 'hanging')
 		.text(!_.isEmpty(data) ? title.toUpperCase() : '');
 
 	let boxes	= container.append('g')
-		.attr('transform', 'translate(0,' + (text.node().getBBox().height * 1.75) + ')')
+		.attr('transform', 'translate(0,' + (text.node().getBBox().height * 2) + ')')
 		.attr('id', 'boxes-wrapper');
 
 	data.forEach((o, i) => {
@@ -31,20 +40,26 @@ function createLegend(data, title) {
 			.attr('text-anchor', 'start')
 			.attr('alignment-baseline', 'middle')
 			.attr('transform', 'translate(' + 20 + ',' + 9 + ')')
-			.text(o.text)
+			.text(o.text);
 	});
 	boxes.append('g').attr('transform', 'translate(' + (data.length * lgnd_width) + ',0)').append('circle').attr('r', 1).attr('fill-opacity', 0);
 
 	text.attr('transform', 'translate(' + (boxes.node().getBBox().width / 2) + ',0)');
 
 	container.attr('transform', 'translate(-' + (container.node().getBBox().width / 2)  + ',-' + (container.node().getBBox().height + 10) + ')');
-	container.append('rect')
-		.attr('x', -10)
+
+	let box_width	= container.node().getBBox().width + 20;
+	let box_height	= container.node().getBBox().height + 20;
+
+	ceiling.attr('x', -10)
 		.attr('y', -10)
-		.attr('width', container.node().getBBox().width + 20)
-		.attr('height', container.node().getBBox().height + 20)
-		.attr('fill', '#fff')
-		.attr('fill-opacity', .1);
+		.attr('width', box_width)
+		.attr('height', box_height * .45);
+
+	floor.attr('x', -10)
+		.attr('y', box_height * .45 - 10)
+		.attr('width', box_width)
+		.attr('height', box_height * .55);
 }
 
 function refreshLegend() {

@@ -1,27 +1,39 @@
 #map-wrapper {
-	height: calc(100% - #{$header-height}); width: 100%; position: relative; display: inline-block;
+	height: calc(100% - #{$header-height}); width: 100%; position: relative; display: inline-block; background: #D4DADC;
 	svg#map-viz {
 		rect#background { fill: none; pointer-events: all; }
-		text { fill: white; @include noselect(); }
-		path { stroke: #eee; fill-opacity: .75;
-			&.unintended { fill: $default-back!important; }
+		text { fill: black; @include noselect(); }
+		path {
+			stroke: #C5CCCC; fill-opacity: 1;
+			&.unintended { fill: $default-back!important; fill-opacity: .75; }
 			&.seethrough { fill: transparent!important; }
 		}
-
+		g#wrapped-background { path { fill: $default-back!important; stroke: none; fill-opacity: .75; } }
+		g#wrapped-background.reverse { path { fill: #FAFAF8!important; stroke: none; fill-opacity: 1; } }
 		g#canvas {
 			text { text-anchor: middle; }
 			g.network {
 				path { stroke: none; fill-opacity: 1; }
 			}
+			g.wrapper {
+				path.default-clr { fill: #FAFAF8; }
+			}
 		}
 		g#slider-wrapper { circle { fill: white; &:last-child { cursor: default!important; } } path { fill: white; stroke: white; } }
+		g#legend-container {
+			text#legend-title { fill: black; }
+			g#boxes-wrapper { text { fill: white; } }
+			rect#ceiling { fill: #000; fill-opacity: .1; }
+			rect#floor { fill: $default-back; fill-opacity: .75; }
+		}
+		g#ruler { path { fill: black; stroke: black; } }
 	}
 
-	$colors	: #fff7a8 #dcd99f #a1a68d #8a9287 #7a8482 transparent;
-	@each $color in $colors {
-		$i: index($colors, $color);
-		.color-#{$i} { fill: $color; &:before { background-color: $color; }}
-	}
+	// $colors	: #fff7a8 #dcd99f #a1a68d #8a9287 #7a8482 transparent;
+	// @each $color in $colors {
+	// 	$i: index($colors, $color);
+	// 	.color-#{$i} { fill: $color; &:before { background-color: $color; }}
+	// }
 
 	#slider-tooltip {
 		position: absolute; padding: 5px 15px 7.5px; background: white; border-radius: 3px; color: black;

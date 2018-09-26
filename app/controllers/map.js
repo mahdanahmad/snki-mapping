@@ -13,7 +13,7 @@ const filt_field	= 'access_point_type';
 const pop_field		= 'potential_population';
 const head_count	= 1000;
 
-const layers		= ['Amount of FAP', 'Access Point Per 1000 Adults', 'Driving Time From FAPs'];
+const layers		= ['Number of FAP', 'Access Point Per 1000 Adults', 'Driving Time From FAPs'];
 
 module.exports.index	= (input, callback) => {
 	let response        = 'OK';
@@ -65,7 +65,7 @@ module.exports.index	= (input, callback) => {
 								_.assign(row, { color });
 							});
 
-							flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: o + ' - ' + (o + range), color: pallete[i] })).concat([{ text: 'No data', color: '#000' }]).reverse() });
+							flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: o + ' - ' + (o + range), color: pallete[i] })).concat([{ text: 'No data', color: '#FAFAF8' }]).reverse() });
 						});
 					} else {
 						types.findAll({}, {}, (err, alltypes) => {
@@ -107,7 +107,7 @@ module.exports.index	= (input, callback) => {
 								_.assign(row, { color });
 							});
 
-							flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: o + ' - ' + _.round(o + range, 2), color: pallete[i] })).concat([{ text: 'No data', color: '#000' }]).reverse() });
+							flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: o + ' - ' + _.round(o + range, 2), color: pallete[i] })).concat([{ text: 'No data', color: '#FAFAF8' }]).reverse() });
 						});
 					});
 					break;
