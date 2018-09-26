@@ -216,7 +216,6 @@ function drawPoint(id, holdLegend=false) {
 	// centered[state]	= id;
 
 	if ($( base_target + ' > ul > li > input:checked' ).attr('value') !== layers[1]) {
-		$(states.map((o) => ('.' + o + '-wrapper path')).join(', ')).addClass('unintended');
 		$( '#wrapped-' + id + ' path' ).addClass('seethrough');
 
 		getMapData((err, result) => {

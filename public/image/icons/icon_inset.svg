@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clip-Custom_Size_1);
+      }
+    </style>
+    <clipPath id="clip-Custom_Size_1">
+      <rect width="50" height="50"/>
+    </clipPath>
+  </defs>
+  <g id="Custom_Size_1" data-name="Custom Size – 1" class="cls-1">
+    <g id="Group_2" data-name="Group 2" transform="translate(5.95 3.378)">
+      <g id="Group_1" data-name="Group 1" transform="translate(8.93 16.746)">
+        <path id="Path_1" data-name="Path 1" d="M50.681,96.262a9.781,9.781,0,1,1,9.781-9.781A9.793,9.793,0,0,1,50.681,96.262Zm0-17.706a7.9,7.9,0,1,0,7.9,7.9A7.915,7.915,0,0,0,50.681,78.556Z" transform="translate(-40.9 -76.7)"/>
+        <rect id="Rectangle_1" data-name="Rectangle 1" width="2.511" height="11.004" transform="translate(15.691 18.749) rotate(-36.489)"/>
+      </g>
+      <path id="Path_2" data-name="Path 2" d="M.109,6.812,13.733,0,26.4,6.266l11-3.6V30.3l-9.454,2.511,1.878-3.34,4.388-1.048V6.746l-6.4,2.205V19.169l-2.751-2.882V9.039L15.3,4.017V14.868l-2.9,2.249V3.8L2.882,8.34,2.664,30.5l4.891-2.62.677,2.9L0,35.042Z"/>
+    </g>
+  </g>
+</svg>

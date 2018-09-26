@@ -57,6 +57,7 @@ function refreshLayer() {
 }
 
 function defaultAmountFAP() {
+	$(states.concat(['national']).map((o) => ('.' + o + '-wrapper path')).join(', ')).addClass('unintended');
 	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
 	if (curr_state < (states.length - 1) || active == layers[1]) {
 		toggleLoading();

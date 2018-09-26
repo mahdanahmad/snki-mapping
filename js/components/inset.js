@@ -1,4 +1,5 @@
 const inset_id		= 'inset-wrapper';
+const inset_toggle	= '#inset-toggler';
 
 const inset_width	= 20; // percentage
 const inset_height	= 20; // percentage
@@ -33,6 +34,13 @@ function initInset(data) {
 			.attr('id', (o) => ('inset-' + o.properties.id))
 			.attr('d', in_path);
 
+	canvas.append('image')
+		.attr('class', 'cursor-pointer')
+		.attr('xlink:href', '/image/icons/icon_close.svg')
+		.attr('width', 30)
+		.attr('height', 30)
+		.attr('transform', 'translate(' + (canvasWidth - 15) + ', -15)')
+		.on('click', () => { toggleInset(true); });
 }
 
 function colorActive(id) {

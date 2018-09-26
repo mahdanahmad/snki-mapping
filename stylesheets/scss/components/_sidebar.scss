@@ -32,4 +32,8 @@ $on-color	: white;
 		}
 	}
 	#sidebar-content.expanded + #sidebar-buttons > #sidebar-toggler { background: $on-color; svg { fill: $off-color; } }
+	#inset-toggler {
+		position: absolute; right: -$toggl-size; bottom: 100px; width: $toggl-size; height: $toggl-size; background: $off-color; border-radius: 0 10px 10px 0;
+		svg { width: 60%; left: 15%; height: auto; position: absolute; top: 50%; transform: translateY(-50%); fill: $on-color; }
+	}
 }

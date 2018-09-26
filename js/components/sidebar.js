@@ -54,3 +54,8 @@ function toggleText() {
 	d3.select(text_id).classed('off', value);
 
 }
+
+function toggleInset(show=false) {
+	d3.select('g#' + inset_id).classed('hidden', show);
+	d3.select(inset_toggle).classed('hidden', !show);
+}

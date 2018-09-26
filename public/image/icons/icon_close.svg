@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clip-Custom_Size_1);
+      }
+
+      .cls-2, .cls-5 {
+        fill: none;
+      }
+
+      .cls-2 {
+        stroke: #001427;
+        stroke-width: 3px;
+      }
+
+      .cls-3 {
+        fill: #001427;
+        font-size: 28px;
+        font-family: ArialRoundedMTBold, Arial Rounded MT Bold;
+      }
+
+      .cls-4 {
+        stroke: none;
+      }
+
+      .cls-5 {
+        fill: #D4DADC;
+      }
+    </style>
+    <clipPath id="clip-Custom_Size_1">
+      <rect width="50" height="50"/>
+    </clipPath>
+  </defs>
+  <g id="Custom_Size_1" data-name="Custom Size – 1" class="cls-1">
+    <g id="Ellipse_1" data-name="Ellipse 1" class="cls-2" transform="translate(5.088 5.088)">
+      <circle class="cls-4" cx="19.912" cy="19.912" r="19.912"/>
+      <circle class="cls-5" cx="19.912" cy="19.912" r="18.412"/>
+    </g>
+    <text id="x" class="cls-3" transform="translate(17.415 32.036)"><tspan x="0" y="0">x</tspan></text>
+  </g>
+</svg>
