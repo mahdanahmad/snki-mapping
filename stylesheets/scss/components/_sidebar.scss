@@ -6,13 +6,40 @@ $toggl-size	: 50px;
 $off-color	: #006fac;
 $on-color	: white;
 
+$side_width	: 25vw;
+
+$top_pad	: 150px;
+$bot_pad	: 80px;
+
 #sidebar-wrapper {
-	position: fixed; top: 0px; left: 0px; z-index: 20;
+	position: fixed; top: 0px; left: -$side_width; z-index: 20; transition: all .5s ease;
 	#sidebar-content {
-		height: 100vh; width: 0px; transition: width .5s ease;
+		height: calc(100vh - #{$top_pad + $bot_pad}); position: relative; width: $side_width; padding: $top_pad 0px $bot_pad;
 		// background: #{$top_color}; background: -moz-linear-gradient(top, #{$top_color} 0%, #{$bot_color} 100%); background: -webkit-linear-gradient(top, #{$top_color} 0%,#{$bot_color} 100%); background: linear-gradient(to bottom, #{$top_color} 0%,#{$bot_color} 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{$top_color}', endColorstr='#{$bot_color}',GradientType=0 );
 		background: $side_color;
-		&.expanded { width: 25vw; }
+		#sidebar-tabs {
+			width: calc(100% - 20px - 5px); height: 45px; padding: 0 20px 0 5px; overflow: visible; display: flex;
+			.tab {
+				flex: 1 1 0; height: 100%; position: relative;
+				overflow: hidden; margin:0 -15px 0 0;
+				.tab-box {
+					height: 50px; background: white; border-radius: 4px; margin:0 10px 0; box-shadow: 0 0 2px #fff inset; border: 1px solid #ccc;
+					-webkit-transform: perspective(100px) rotateX(30deg);
+					-moz-transform: perspective(100px) rotateX(30deg);
+				}
+				.tab-text {
+					width: calc(100% - 50px); padding: 0px 25px;
+					position: absolute; left: 0px; top: 50%; transform: translateY(-35%);
+					text-align: center; font-size: 12px; color: black;
+					@include ellipsis();
+				}
+				&.active {
+					z-index: 40; position: relative; padding-bottom: 1px;
+					.tab-box { background: $side_color; box-shadow: 0 0 2px 0 #fff inset; border-color: $side_color; }
+					.tab-text { color: white; }
+				}
+			}
+		}
 	}
 	#sidebar-buttons {
 		position: absolute; right: -$toggl-size; top: 50%; transform: translateY(-50%);
@@ -33,9 +60,12 @@ $on-color	: white;
 			&:not(:last-child) { margin-bottom: 10px; }
 		}
 	}
-	#sidebar-content.expanded + #sidebar-buttons > #sidebar-toggler { background: $on-color; svg { fill: $off-color; } }
 	#inset-toggler {
 		position: absolute; right: -$toggl-size; bottom: 100px; width: $toggl-size; height: $toggl-size; background: $off-color; border-radius: 0 10px 10px 0;
 		svg { width: 60%; left: 15%; height: auto; position: absolute; top: 50%; transform: translateY(-50%); fill: $on-color; }
+	}
+	&.expanded {
+		left: 0;
+		#sidebar-buttons > #sidebar-toggler { background: $on-color; svg { fill: $off-color; } }
 	}
 }

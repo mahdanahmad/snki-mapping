@@ -10,6 +10,11 @@ let tooltip;
 let length;
 
 const layers	= ['Number of FAP', 'Access Point Per 1000 Adults', 'Driving Time From FAPs'];
+const tab_heads	= [
+	['Type of Access Points', 'FAP/PAP distribution', 'Network Coverage'],
+	['Access Point Per 1000 Adults'],
+	['Driving Time From FAPs'],
+];
 const net_color	= {
 	// two		: '#c8d7ea',
 	// three	: '#f4b2da',

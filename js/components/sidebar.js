@@ -5,9 +5,10 @@ const net_target	= '#dropdown-network';
 const net_toggle	= ['Select All', 'Unselect All'];
 
 const text_id		= '#text-toggler';
+const tabs_id		= '#sidebar-tabs';
 
 function toggleSide() {
-	$( sidewrap + ' > ' + sidecont ).toggleClass('expanded');
+	$( sidewrap ).toggleClass('expanded');
 }
 
 function createNetworkDrop() {
@@ -58,4 +59,26 @@ function toggleText() {
 function toggleInset(show=false) {
 	d3.select('g#' + inset_id).classed('hidden', show);
 	d3.select(inset_toggle).classed('hidden', !show);
+}
+
+function initTabs() {
+	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+
+	$( sidecont + ' > ' + tabs_id ).html(tab_heads[layers.indexOf(active)].map((o, i) => (
+		"<div class='tab cursor-pointer" + (!i ? ' active' : '') + "'>" +
+			"<div class='tab-box'></div>" +
+			"<div class='tab-text'>" + o + "</div>" +
+		"</div>"
+	)).join(''));
+
+	$( sidecont + ' > ' + tabs_id + ' > div' ).click(function(e) {
+		let active	= $( tabs_id + ' > div.active' );
+		let target	= $( this ).find('.tab-text').text();
+
+		if (active.find('.tab-text').text() !== target) {
+			active.removeClass('active');
+			$( this ).addClass('active');
+			console.log(target);
+		}
+	})
 }

@@ -32,5 +32,7 @@ $( document ).ready(function() {
 
 	changeFilterHead(() => {});
 
+	initTabs();
+
 	setTimeout(() => initMap(), 100);
 });

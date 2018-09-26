@@ -51,8 +51,9 @@ function refreshLayer() {
 				if (curr_state >= (states.length - 1)) { drawPoint(centered[_.last(states)]); }
 				break;
 			default: console.log('base unhandled');
-
 		}
+
+		initTabs();
 	});
 }
 
