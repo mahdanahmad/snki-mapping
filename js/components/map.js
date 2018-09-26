@@ -107,6 +107,8 @@ function initMap() {
 			.append('g')
 			.attr('id', 'legend-container');
 
+	svg.append('g').attr('id', inset_id);
+
 	d3.queue()
 		.defer(d3.json, 'json/0.json')
 		.defer(d3.json, 'network/2G.json')
@@ -114,9 +116,7 @@ function initMap() {
 		.defer(d3.json, 'network/4G.json')
 		.defer(d3.json, 'proximity/proximity.json')
 		.await((err, national, two, three, four, proximity) => {
-			canvas.append('g').attr('id', 'wrapped-background')
-				.selectAll('path.background').data(topojson.feature(national, national.objects.map).features).enter().append('path')
-					.attr('d', path);
+			initInset(national);
 
 			_.forEach({ two, three, four }, (raw, key) => {
 				let topo	= topojson.feature(raw, raw.objects.map);
@@ -169,6 +169,8 @@ function zoom(id, state) {
 
 			drawMap(id, states[curr_state]);
 			svg.selectAll('path.' + state).classed('unintended', true);
+
+			if ( state == _.head(states) ) { colorActive(id); }
 		} else if (_.isNil(state)) {
 			x = node.width / 2;
 			y = node.height / 2;
@@ -182,6 +184,7 @@ function zoom(id, state) {
 			moveRuler(coalesce.national.distance);
 			refreshLegend();
 			changeRegionHead();
+			colorActive();
 		} else {
 			console.error('unhandled');
 		}
@@ -202,7 +205,6 @@ function zoom(id, state) {
 		d3.selectAll('svg#' + map_id + ' g#canvas text').transition()
 			.duration(duration)
 			.style('font-size', (base_font / scale > 0.013 ? (base_font / scale) : 0.013) + 'px');
-
 
 	}
 };
@@ -242,14 +244,13 @@ function drawMap(id, state) {
 	let svg			= d3.select("svg#" + map_id + '> g#canvas');
 	let next_state	= states[curr_state + 1];
 
+	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+
 	let promise	= new Promise((resolve, reject) => {
 		d3.json('json/' + id + '.json', (err, raw) => {
 			let topo				= topojson.feature(raw, raw.objects.map);
 			mappedGeo[next_state]	= _.chain(topo).get('features', []).keyBy('properties.id').mapValues((o) => ({ centroid: path.centroid(o), bounds: path.bounds(o) })).value();
 
-			let bbox = topojson.bbox(raw);
-
-			// haversine([bbox[0], bbox[1]], [bbox[2], bbox[1]], (distance) => { moveRuler(distance); });
 			if ( !_.includes(states, state) ) {
 				countLenght(topo, (distance) => { length = distance; moveRuler(distance); });
 			} else {
@@ -261,9 +262,11 @@ function drawMap(id, state) {
 				.attr('id', (o) => (next_state + '-' + o.properties.id))
 				.attr('class', 'grouped-' + state + ' cursor-pointer');
 
+			if (active == layers[2]) { d3.selectAll('g.wrapper path').classed('seethrough', false); }
+
 			grouped.append('path')
 				.attr('d', path)
-				.attr('class', next_state + ' default-clr')
+				.attr('class', next_state + ' default-clr' + (active == layers[2] ? ' seethrough': ''))
 				.attr('vector-effect', 'non-scaling-stroke')
 				.style('stroke-width', (base_stroke - ((curr_state + 1) * .1)) + 'px');
 
@@ -285,7 +288,6 @@ function drawMap(id, state) {
 	});
 
 	promise.then(() => {
-		let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
 		switch (active) {
 			case layers[0]:
 				let willShowPoint	= curr_state >= (states.length - 1);
@@ -300,8 +302,6 @@ function drawMap(id, state) {
 				getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
 				break;
 			case layers[2]:
-				d3.selectAll('g.wrapper path').classed('seethrough', false);
-				d3.selectAll('g#wrapped-' + id + ' path').classed('seethrough', true);
 				if ( curr_state >= (states.length - 1) ) { drawPoint(id, true); }
 				break;
 			default:

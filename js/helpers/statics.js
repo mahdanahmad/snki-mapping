@@ -11,9 +11,12 @@ let length;
 
 const layers	= ['Number of FAP', 'Access Point Per 1000 Adults', 'Driving Time From FAPs'];
 const net_color	= {
-	two		: '#c8d7ea',
-	three	: '#f4b2da',
-	four	: '#cd9ed9'
+	// two		: '#c8d7ea',
+	// three	: '#f4b2da',
+	// four	: '#cd9ed9'
+	two		: '#8bbdbe',
+	three	: '#75cccd',
+	four	: '#447f8b'
 }
 const net_map	= {
 	two		: '2G',
@@ -21,8 +24,8 @@ const net_map	= {
 	four	: '4G'
 }
 const prx_color	= {
-	'0_5'	: '#889BF7',
-	'5_15'	: '#5B609D',
-	'15_30'	: '#383872',
+	'0_5'	: '#efedf5',
+	'5_15'	: '#bcbddc',
+	'15_30'	: '#756bb1',
 }
 const prx_pref	= 'prx-';

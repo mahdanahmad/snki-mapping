@@ -82,5 +82,6 @@ function onSliderClick() {
 
 		refreshLegend();
 		changeRegionHead();
+		if (curr_state == -1) { colorActive(); }
 	}
 }
