@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clip-Custom_Size_1);
+      }
+
+      .cls-2 {
+        font-size: 30px;
+        font-family: Montserrat-Bold, Montserrat;
+        font-weight: 700;
+      }
+    </style>
+    <clipPath id="clip-Custom_Size_1">
+      <rect width="50" height="50"/>
+    </clipPath>
+  </defs>
+  <g id="Custom_Size_1" data-name="Custom Size – 1" class="cls-1">
+    <text id="Aa" class="cls-2" transform="translate(5 32)"><tspan x="0" y="0">Aa</tspan></text>
+    <rect id="Rectangle_1" data-name="Rectangle 1" width="39" height="3" transform="translate(5 37)"/>
+  </g>
+</svg>

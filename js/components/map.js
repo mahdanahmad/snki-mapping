@@ -270,6 +270,7 @@ function drawMap(id, state) {
 			grouped.append('text')
 				.attr('x', (o) => (mappedGeo[next_state][o.properties.id].centroid[0]))
 				.attr('y', (o) => (mappedGeo[next_state][o.properties.id].centroid[1]))
+				.attr('class', ($( text_id + ' > input' ).prop('checked') ? '' : 'hidden'))
 				.style('font-size', (base_font / scale > 0.013 ? (base_font / scale) : 0.013) + 'px')
 				.text((o) => (o.properties.name));
 

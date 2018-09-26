@@ -24,7 +24,11 @@ $on-color	: white;
 			&#network-toggler {
 				svg { width: 60%; left: 20%; }
 			}
-			&:first-child { margin-bottom: 10px; }
+			&#text-toggler {
+				svg { width: 50%; left: 20%; }
+				&.off { background: $on-color; svg { fill: $off-color; } }
+			}
+			&:not(:last-child) { margin-bottom: 10px; }
 		}
 	}
 	#sidebar-content.expanded + #sidebar-buttons > #sidebar-toggler { background: $on-color; svg { fill: $off-color; } }

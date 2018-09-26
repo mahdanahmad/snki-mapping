@@ -4,6 +4,8 @@ const sidecont		= '#sidebar-content';
 const net_target	= '#dropdown-network';
 const net_toggle	= ['Select All', 'Unselect All'];
 
+const text_id		= '#text-toggler';
+
 function toggleSide() {
 	$( sidewrap + ' > ' + sidecont ).toggleClass('expanded');
 }
@@ -41,4 +43,14 @@ function toggleNetwork(hidden=true) {
 	} else {
 		$( net_target + ' > ul > li > input' ).each(function() { d3.select('g.network#wrapped-' + $(this).attr('value')).classed('hidden', !$( this ).prop('checked')); })
 	}
+}
+
+function toggleText() {
+	let input 	= $( text_id + ' > input' );
+	let value	= input.prop('checked');
+
+	input.prop('checked', !value);
+	d3.selectAll('g.wrapper text').classed('hidden', value);
+	d3.select(text_id).classed('off', value);
+
 }
