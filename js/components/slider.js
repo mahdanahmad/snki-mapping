@@ -83,5 +83,6 @@ function onSliderClick() {
 		refreshLegend();
 		changeRegionHead();
 		if (curr_state == -1) { colorActive(); }
+		if ($( sidewrap ).hasClass('expanded')) { refreshAnalytic(); }
 	}
 }

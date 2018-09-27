@@ -107,7 +107,8 @@ function createRadar() {
 			tooltip.append('text').attr('text-anchor', 'middle').attr('alignment-baseline', 'middle');
 
 			let bbox	= canvas.node().getBBox();
-			canvas.attr('transform', 'translate(' + (margin.left + (width > bbox.width ? (bbox.width - width / 2) : 0) ) + ',' + (margin.top + (height > bbox.height ? (bbox.height - height / 2) : 0)) + ')');
+			canvas.attr('transform', 'translate(' + margin.left + ',' + (margin.top + (height > bbox.height ? ((height - bbox.height) / 2) : 0)) + ')');
+			console.log(bbox);
 		} else {
 			canvas.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 			canvas.append('text').attr('id', 'error').text(err_chart)
