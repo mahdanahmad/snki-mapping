@@ -1,4 +1,4 @@
-const pie_colors	= ['#ca3100', '#3a99ba'];
+const pie_colors	= ['#0083BE', '#00B1E0'];
 
 function createPie() {
 	let canvasWidth		= $(chart_dest).width();
