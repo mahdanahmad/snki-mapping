@@ -57,6 +57,33 @@ function refreshLayer() {
 	});
 }
 
+function refreshAnalytic() {
+	d3.select(chart_dest).selectAll('svg').remove();
+
+	let activeLayer	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+	let activeTab	= $( tabs_id + ' > div.active' ).text();
+
+	switch (true) {
+		case activeLayer == layers[0] && activeTab == tab_heads[0][0]:
+			createRadar();
+			break;
+		case activeLayer == layers[0] && activeTab == tab_heads[0][1]:
+			console.log(activeTab);
+			break;
+		case activeLayer == layers[0] && activeTab == tab_heads[0][2]:
+			console.log(activeTab);
+			break;
+		case activeLayer == layers[1] && activeTab == tab_heads[1][0]:
+			console.log(activeTab);
+			break;
+		case activeLayer == layers[2] && activeTab == tab_heads[2][0]:
+			console.log(activeTab);
+			break;
+		default:
+			console.error('unhandled analytics');
+	}
+}
+
 function defaultAmountFAP() {
 	$(states.concat(['national']).map((o) => ('.' + o + '-wrapper path')).join(', ')).addClass('unintended');
 	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');

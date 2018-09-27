@@ -30,7 +30,7 @@ $( document ).ready(function() {
 	changeRegionHead();
 	createNetworkDrop();
 
-	changeFilterHead(() => {});
+	changeFilterHead(() => {  });
 
 	initTabs();
 

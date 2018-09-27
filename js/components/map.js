@@ -208,6 +208,7 @@ function zoom(id, state) {
 			.duration(duration)
 			.style('font-size', (base_font / scale > 0.013 ? (base_font / scale) : 0.013) + 'px');
 
+		if ($( sidewrap ).hasClass('expanded')) { refreshAnalytic(); }
 	}
 };
 

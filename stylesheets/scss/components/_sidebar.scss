@@ -40,6 +40,23 @@ $bot_pad	: 80px;
 				}
 			}
 		}
+		#sidebar-chart {
+			width: calc(100% - 40px); height: calc(100% - 45px - 40px); padding: 20px;
+			svg#radar-viz {
+				#line-wrapper { line { stroke: $sea-color; stroke-width: .3px; } }
+				#level-wrapper { text { fill: $sea-color; } }
+				#axis-wrapper {
+					line { stroke: $sea-color; stroke-width: 1px; }
+					text { fill: $sea-color; }
+				}
+				#circle-wrapper { circle { fill: white; } }
+				#tooltip-wrapper {
+					rect { fill: black; fill-opacity: .75; }
+					text { font-size: 10px; fill: $sea-color; }
+				}
+				#error { font-size: 12px; fill: $sea-color; }
+			}
+		}
 	}
 	#sidebar-buttons {
 		position: absolute; right: -$toggl-size; top: 50%; transform: translateY(-50%);

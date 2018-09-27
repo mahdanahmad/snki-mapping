@@ -9,6 +9,7 @@ const tabs_id		= '#sidebar-tabs';
 
 function toggleSide() {
 	$( sidewrap ).toggleClass('expanded');
+	refreshAnalytic();
 }
 
 function createNetworkDrop() {
@@ -78,7 +79,7 @@ function initTabs() {
 		if (active.find('.tab-text').text() !== target) {
 			active.removeClass('active');
 			$( this ).addClass('active');
-			console.log(target);
+			refreshAnalytic();
 		}
 	})
 }

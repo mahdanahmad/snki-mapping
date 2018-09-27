@@ -4,6 +4,8 @@ function getMapData(callback) { $.get(baseUrl + '/map', constructParams(), ( dat
 function getLocation(callback) { $.get(baseUrl + '/location', constructParams(), ( data ) => { callback(null, data.result); }) }
 function getTypes(callback) { $.get(baseUrl + '/types', ( data ) => { callback(null, data.result); }) }
 
+function getDistribution(callback, type='') { $.get(baseUrl + '/distribution', _.assign({ type }, constructParams()), ( data ) => { callback(null, data.result); }) }
+
 // HELPER
 function constructParams() {
 	let checked	= $( filter_target + ' > ul > li > input:checked' ).map(function() { return $( this ).attr('value'); }).get()
