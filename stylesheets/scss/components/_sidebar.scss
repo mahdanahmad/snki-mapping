@@ -54,8 +54,14 @@ $bot_pad	: 80px;
 					rect { fill: black; fill-opacity: .75; }
 					text { font-size: 10px; fill: $sea-color; }
 				}
-				#error { font-size: 12px; fill: $sea-color; }
 			}
+			svg#pie-viz {
+				g.arc {
+					text { font-size: 11px; fill: $sea-color; }
+					// path { stroke: $sea-color; }
+				}
+			}
+			#error { font-size: 12px; fill: $sea-color; }
 		}
 	}
 	#sidebar-buttons {

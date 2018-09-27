@@ -1,8 +1,6 @@
 const radar_lvl	= 5;
 const radians	= 2 * Math.PI;
 
-const message	= 'No data.';
-
 function createRadar() {
 	let canvasWidth		= $(chart_dest).width();
 	let canvasHeight	= $(chart_dest).height();
@@ -25,8 +23,7 @@ function createRadar() {
 		if (!_.isEmpty(result)) {
 			let maxValue	= _.chain(result).maxBy('sum').get('sum', 0).value();
 			maxValue		= _.ceil(maxValue, -(maxValue.toString().length - 2));
-			if (maxValue < 100) { maxValue = 100; }
-			if (maxValue < 10) { maxValue = 10; }
+			if (maxValue < 10) { maxValue = 10; } else if (maxValue < 100) { maxValue = 100; }
 			let allAxis		= _.map(result, '_id');
 			let total		= allAxis.length;
 			let radius		= size / 2;
@@ -113,7 +110,7 @@ function createRadar() {
 			canvas.attr('transform', 'translate(' + (margin.left + (width > bbox.width ? (bbox.width - width / 2) : 0) ) + ',' + (margin.top + (height > bbox.height ? (bbox.height - height / 2) : 0)) + ')');
 		} else {
 			canvas.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-			canvas.append('text').attr('id', 'error').text(message)
+			canvas.append('text').attr('id', 'error').text(err_chart)
 				.attr('text-anchor', 'middle').attr('alignment-baseline', 'middle')
 				.attr('x', width / 2).attr('y', height / 2);
 		}

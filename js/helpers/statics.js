@@ -3,6 +3,9 @@ const map_id		= "map-viz";
 
 const chart_dest	= '#sidebar-chart';
 const radar_id		= 'radar-viz';
+const pie_id		= 'pie-viz';
+
+const err_chart		= 'No data.';
 
 let centered		= {};
 
