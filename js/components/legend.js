@@ -65,7 +65,7 @@ function createLegend(data, title) {
 function refreshLegend() {
 	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
 	if (_.includes([0,1], layers.indexOf(active))) {
-		getMapData((err, result) => { colorMap(result.data, states[curr_state + 1]); createLegend(result.legend, 'Amount of FAP'); })
+		getMapData((err, result) => { colorMap(result.data, states[curr_state + 1]); createLegend(result.legend, active); })
 		toggleNetwork();
 	}
 }

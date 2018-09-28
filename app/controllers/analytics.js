@@ -7,6 +7,8 @@ const agents		= require('../models/agents');
 const location		= require('../models/location');
 
 const filt_field	= 'access_point_type';
+const pop_field		= 'potential_population';
+const head_count	= 1000;
 
 module.exports.distribution	= (input, callback) => {
 	let response        = 'OK';
@@ -64,7 +66,6 @@ module.exports.distribution	= (input, callback) => {
 				}, (err, results) => {
 					flowCallback(null, { data, total, represent: _.mapValues(results, (o) => (_.round(total / o * 100, 2)) + '%') });
 				})
-				// flowCallback(null, { data: temp });
 			}
 		}
 	], (err, asyncResult) => {
@@ -77,4 +78,67 @@ module.exports.distribution	= (input, callback) => {
 		}
 		callback({ response, status_code, message, result });
 	});
-};;
+};
+
+module.exports.pupulation	= (input, callback) => {
+	let response        = 'OK';
+	let status_code     = 200;
+	let message         = 'Get pupulation data success.';
+	let result          = null;
+
+	const type_state	= ['group', 'types'];
+
+	const province_id	= (input.prov	|| null);
+	const kabupaten_id	= (input.kab	|| null);
+	const kecamatan_id	= (input.kec	|| null);
+	const desa_id		= (input.desa	|| null);
+	const layer			= (input.layer	|| _.first(layers));
+
+	const filter		= input.filter ? JSON.parse(input.filter) : null;
+
+	const states		= ['province_id', 'kabupaten_id', 'kecamatan_id', 'desa_id'];
+
+	let parent			= _.chain({ province_id, kabupaten_id, kecamatan_id, desa_id }).omitBy(_.isNil).map().last().value() || null;
+
+	async.waterfall([
+		(flowCallback) => {
+			location.rawAggregate([
+				{ '$match': { parent, id: { '$ne': '' } } },
+				{ '$project': { potential_population: 1, name: 1, id: 1, _id: 0 } }
+			], {}, (err, result) => flowCallback(err, result));
+		},
+		(loc_below, flowCallback) => {
+			let match	= _.omitBy({ province_id, kabupaten_id, kecamatan_id, desa_id }, _.isNil);
+			if (filter) { match[filt_field] = { '$in': filter }; }
+
+			let active	= _.chain({ province_id, kabupaten_id, kecamatan_id, desa_id }).omitBy(_.isNil).keys().last().value();
+
+			agents.rawAggregate([
+				{ '$match': match },
+				{ '$group': { _id: '$' + states[states.indexOf(active) + 1], size: { $sum: 1 } } },
+				{ '$match': { _id: { $ne: null } } }
+			], {}, (err, ap_count) => {
+				const mapped_ap	= _.chain(ap_count).map((o) => ([o._id, o.size])).fromPairs().value();
+
+				flowCallback(err, _.chain(loc_below).map((o) => {
+					let ap_count	= (mapped_ap[o.id] || 0);
+					let capita		= (ap_count ? _.round(ap_count / (o[pop_field] / head_count), 2) : 0);
+
+					return (_.assign(o, { ap_count, capita }));
+				}).orderBy(['capita', 'ap_count'], ['desc', 'desc']).value());
+			});
+		},
+		(data, flowCallback) => {
+			location.findOne({id: parent}, (err, result) => flowCallback(null, { data, details: _.omit(result, ['_id', 'parent']) }));
+		}
+	], (err, asyncResult) => {
+		if (err) {
+			response    = 'FAILED';
+			status_code = 400;
+			message     = err;
+		} else {
+			result      = asyncResult;
+		}
+		callback({ response, status_code, message, result });
+	});
+};
