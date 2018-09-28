@@ -150,6 +150,10 @@ class Model {
 		});
 	}
 
+	count(query, callback) {
+		db.getCollection(this.tableName).count(query, (err, result) => callback(err, result));
+	}
+
 	getLastId(callback) {
 		let cate_table	= 'categories';
 		if (this.tableName == cate_table) {

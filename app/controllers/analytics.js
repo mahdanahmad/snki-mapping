@@ -27,6 +27,7 @@ module.exports.distribution	= (input, callback) => {
 	const type			= _.includes(type_state, input.type) ? _.indexOf(type_state, input.type) : 0;
 
 	const states		= ['province_id', 'kabupaten_id', 'kecamatan_id', 'desa_id'];
+	const keys			= ['national', 'prov', 'kab', 'kec', 'desa'];
 
 	async.waterfall([
 		(flowCallback) => {
@@ -49,6 +50,23 @@ module.exports.distribution	= (input, callback) => {
 				flowCallback(err, data);
 			});
 		},
+		(data, flowCallback) => {
+			let total	= _.sumBy(data, 'sum');
+			if (type) {
+				flowCallback(null, { data, total });
+			} else {
+				let match	= _.omitBy({ province_id, kabupaten_id, kecamatan_id, desa_id }, _.isNil);
+
+				async.mapValues(_.chain(_.size(match)).times((o) => ([keys[o], _.pick(match, states.slice(0, o))])).fromPairs().value(), (query, key, mapCallback) => {
+					if (filter) { query[filt_field] = { '$in': filter }; }
+
+					agents.count(query, (err, result) => mapCallback(err, result));
+				}, (err, results) => {
+					flowCallback(null, { data, total, represent: _.mapValues(results, (o) => (_.round(total / o * 100, 2)) + '%') });
+				})
+				// flowCallback(null, { data: temp });
+			}
+		}
 	], (err, asyncResult) => {
 		if (err) {
 			response    = 'FAILED';

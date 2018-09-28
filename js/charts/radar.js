@@ -20,11 +20,11 @@ function createRadar() {
 	let tooltip;
 
 	getDistribution((err, result) => {
-		if (!_.isEmpty(result)) {
-			let maxValue	= _.chain(result).maxBy('sum').get('sum', 0).value();
+		if (!_.isEmpty(result.data)) {
+			let maxValue	= _.chain(result.data).maxBy('sum').get('sum', 0).value();
 			maxValue		= _.ceil(maxValue, -(maxValue.toString().length - 2));
 			if (maxValue < 10) { maxValue = 10; } else if (maxValue < 100) { maxValue = 100; }
-			let allAxis		= _.map(result, '_id');
+			let allAxis		= _.map(result.data, '_id');
 			let total		= allAxis.length;
 			let radius		= size / 2;
 
@@ -72,7 +72,7 @@ function createRadar() {
 			.text((o) => (o))
 
 			canvas.append('g').attr('id', 'circle-wrapper')
-			.selectAll('circle').data(result).enter().append('circle')
+			.selectAll('circle').data(result.data).enter().append('circle')
 			.attr('r', 4)
 			.attr('class', 'cursor-pointer')
 			.attr('data-id', (o) => (o._id))
@@ -109,7 +109,7 @@ function createRadar() {
 			let bbox	= canvas.node().getBBox();
 			canvas.attr('transform', 'translate(' + margin.left + ',' + (margin.top + (height > bbox.height ? ((height - bbox.height) / 2) : 0)) + ')');
 
-			d3.select(misc_floor).text('Total Access Point: ' + _.sumBy(result, 'sum'));
+			d3.select(misc_floor).text('Total Access Point: ' + result.total);
 		} else {
 			canvas.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 			canvas.append('text').attr('id', 'error').text(err_chart)

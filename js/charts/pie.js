@@ -32,11 +32,11 @@ function createPie() {
 		.innerRadius(radius - 40);
 
 	getDistribution((err, result) => {
-		if (!_.isEmpty(result)) {
-			result	= _.sortBy(result, '_id');
-			let arc = canvas.selectAll(".arc").data(pie(result)).enter().append("g").attr("class", "arc");
+		if (!_.isEmpty(result.data)) {
+			result.data	= _.sortBy(result.data, '_id');
+			let arc = canvas.selectAll(".arc").data(pie(result.data)).enter().append("g").attr("class", "arc");
 
-			let total	= _.sumBy(result, 'sum');
+			let total	= result.total;
 
 			arc.append("path")
 				.attr("d", path)
@@ -52,6 +52,7 @@ function createPie() {
 			canvas.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
 
 			d3.select(misc_floor).text('Total Access Point: ' + total);
+			d3.select(misc_adds).text(_.map(result.represent, (o, key) => (o + ' of ' + (key == 'national' ? 'National' : coalesce[key].name))).join(', '));
 		} else {
 			canvas.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 			canvas.append('text').attr('id', 'error').text(err_chart)

@@ -39,8 +39,8 @@ const net_map		= {
 	four	: '4G'
 }
 const prx_color		= {
-	'0_5'	: '#efedf5',
+	'0_5'	: '#756bb1',
 	'5_15'	: '#bcbddc',
-	'15_30'	: '#756bb1',
+	'15_30'	: '#efedf5',
 }
 const prx_pref		= 'prx-';
