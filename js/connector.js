@@ -1,5 +1,6 @@
 function refreshView() {
 	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+	if ($( sidewrap ).hasClass('expanded')) { refreshAnalytic(); }
 	switch (active) {
 		case layers[0]:
 			defaultAmountFAP();
@@ -27,6 +28,7 @@ function refreshLayer() {
 
 	d3.select('g.pin-wrapper').remove();
 	d3.select('g#wrapped-proximity').classed('hidden', true);
+	toggleSide(false);
 
 	changeFilterHead(() => {
 		let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
@@ -62,6 +64,10 @@ function refreshAnalytic() {
 
 	let activeLayer	= $( base_target + ' > ul > li > input:checked' ).attr('value');
 	let activeTab	= $( tabs_id + ' > div.active' ).text();
+
+	$( misc_ceil ).html(( curr_state == -1 ? 'National' : coalesce[states[curr_state]].name ));
+	$( misc_floor ).html('');
+	$( misc_adds ).html('');
 
 	switch (true) {
 		case activeLayer == layers[0] && activeTab == tab_heads[0][0]:

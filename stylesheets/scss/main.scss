@@ -3,6 +3,9 @@
 @import "helpers/statics";
 @import "helpers/mixins";
 
+@import "components/charts/pie";
+@import "components/charts/radar";
+
 @import "components/header";
 @import "components/map";
 @import "components/sidebar";

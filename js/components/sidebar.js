@@ -7,9 +7,10 @@ const net_toggle	= ['Select All', 'Unselect All'];
 const text_id		= '#text-toggler';
 const tabs_id		= '#sidebar-tabs';
 
-function toggleSide() {
-	$( sidewrap ).toggleClass('expanded');
-	refreshAnalytic();
+function toggleSide(bool) {
+	$( sidewrap ).toggleClass('expanded', bool);
+
+	if ($( sidewrap ).hasClass('expanded')) { refreshAnalytic(); }
 }
 
 function createNetworkDrop() {

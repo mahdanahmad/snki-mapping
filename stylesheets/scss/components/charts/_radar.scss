@@ -1,0 +1,13 @@
+svg#radar-viz {
+	#line-wrapper { line { stroke: $sea-color; stroke-width: .3px; } }
+	#level-wrapper { text { fill: $sea-color; } }
+	#axis-wrapper {
+		line { stroke: $sea-color; stroke-width: 1px; }
+		text { fill: $sea-color; }
+	}
+	#circle-wrapper { circle { fill: white; } }
+	#tooltip-wrapper {
+		rect { fill: black; fill-opacity: .75; }
+		text { font-size: 10px; fill: $sea-color; }
+	}
+}

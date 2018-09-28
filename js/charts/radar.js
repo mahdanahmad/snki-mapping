@@ -108,7 +108,8 @@ function createRadar() {
 
 			let bbox	= canvas.node().getBBox();
 			canvas.attr('transform', 'translate(' + margin.left + ',' + (margin.top + (height > bbox.height ? ((height - bbox.height) / 2) : 0)) + ')');
-			console.log(bbox);
+
+			d3.select(misc_floor).text('Total Access Point: ' + _.sumBy(result, 'sum'));
 		} else {
 			canvas.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 			canvas.append('text').attr('id', 'error').text(err_chart)

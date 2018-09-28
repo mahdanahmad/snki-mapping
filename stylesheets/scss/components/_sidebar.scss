@@ -11,6 +11,8 @@ $side_width	: 25vw;
 $top_pad	: 150px;
 $bot_pad	: 80px;
 
+$misc_hgt	: 100px;
+
 #sidebar-wrapper {
 	position: fixed; top: 0px; left: -$side_width; z-index: 20; transition: all .5s ease;
 	#sidebar-content {
@@ -41,27 +43,15 @@ $bot_pad	: 80px;
 			}
 		}
 		#sidebar-chart {
-			width: calc(100% - 40px); height: calc(100% - 45px - 40px); padding: 20px;
-			svg#radar-viz {
-				#line-wrapper { line { stroke: $sea-color; stroke-width: .3px; } }
-				#level-wrapper { text { fill: $sea-color; } }
-				#axis-wrapper {
-					line { stroke: $sea-color; stroke-width: 1px; }
-					text { fill: $sea-color; }
-				}
-				#circle-wrapper { circle { fill: white; } }
-				#tooltip-wrapper {
-					rect { fill: black; fill-opacity: .75; }
-					text { font-size: 10px; fill: $sea-color; }
-				}
-			}
-			svg#pie-viz {
-				g.arc {
-					text { font-size: 11px; fill: $sea-color; }
-					// path { stroke: $sea-color; }
-				}
-			}
+			width: calc(100% - 40px); height: calc(100% - 45px - 40px - #{$misc_hgt}); padding: 20px;
 			#error { font-size: 12px; fill: $sea-color; }
+		}
+		#sidebar-misc {
+			width: 100%; height: $misc_hgt; text-align: center; font-size: 11px;
+			& > div:not(:last-child) { margin-bottom: 5px; }
+			#misc-ceil { font-size: 12px; font-weight: bolder; text-transform: uppercase; letter-spacing: .5px; }
+			#misc-floor {  }
+			#misc-additional {  }
 		}
 	}
 	#sidebar-buttons {

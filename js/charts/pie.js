@@ -50,6 +50,8 @@ function createPie() {
 				.text((o) => (o.data._id + ' ' + _.round(o.data.sum / total * 100, 1) + '%'));
 
 			canvas.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+
+			d3.select(misc_floor).text('Total Access Point: ' + total);
 		} else {
 			canvas.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 			canvas.append('text').attr('id', 'error').text(err_chart)

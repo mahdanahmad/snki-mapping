@@ -280,7 +280,7 @@ function drawMap(id, state) {
 				.text((o) => (o.properties.name));
 
 			grouped.on('click', (o) => {
-				_.set(coalesce, next_state + '.name', state_head[curr_state + 1] + ' ' + o.properties.name);
+				_.set(coalesce, next_state + '.name', state_head[states.indexOf(next_state)] + ' ' + o.properties.name);
 				return !_.isNil(next_state) ? zoom(o.properties.id, next_state) : null;
 			});
 
