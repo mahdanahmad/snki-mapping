@@ -20,7 +20,7 @@ router.get('/types', (req, res, next) => {
 router.get('/distribution', (req, res, next) => {
 	analytics.distribution(req.query, (result) => { res.status(result.status_code).json(result); })
 });
-router.get('/pupulation', (req, res, next) => {
+router.get('/population', (req, res, next) => {
 	analytics.pupulation(req.query, (result) => { res.status(result.status_code).json(result); })
 });
 

@@ -79,27 +79,22 @@ function createRadar() {
 			.attr('cx', (o) => (size / 2 * (1 - (o.sum / maxValue) * Math.sin(allAxis.indexOf(o._id) * radians / total))))
 			.attr('cy', (o) => (size / 2 * (1 - (o.sum / maxValue) * Math.cos(allAxis.indexOf(o._id) * radians / total))))
 			.on('mouseover', function(o) {
-				tooltip.select('text')
-				.text(o.sum);
+				tooltip.select('text').text(o.sum);
 
 				tooltip.select('rect')
-				.attr('width', tooltip.select('text').node().getBBox().width + 15)
-				.attr('height', tooltip.select('text').node().getBBox().height + 10);
+					.attr('width', tooltip.select('text').node().getBBox().width + 15)
+					.attr('height', tooltip.select('text').node().getBBox().height + 10);
 
 				tooltip.select('text')
-				.attr('x', tooltip.select('rect').node().getBBox().width / 2)
-				.attr('y', tooltip.select('rect').node().getBBox().height / 2);
+					.attr('x', tooltip.select('rect').node().getBBox().width / 2)
+					.attr('y', tooltip.select('rect').node().getBBox().height / 2);
 
 				tooltip
-				.attr('transform', 'translate(' + (parseFloat(d3.select(this).attr('cx')) - (tooltip.node().getBBox().width / 2)) + ',' + (parseFloat(d3.select(this).attr('cy')) - (tooltip.node().getBBox().height + 10)) + ')')
-				.transition(200)
-				.style('opacity', 1);
+					.attr('transform', 'translate(' + (parseFloat(d3.select(this).attr('cx')) - (tooltip.node().getBBox().width / 2)) + ',' + (parseFloat(d3.select(this).attr('cy')) - (tooltip.node().getBBox().height + 10)) + ')')
+					.transition(200)
+					.style('opacity', 1);
 			})
-			.on('mouseout', function() {
-				tooltip
-				.transition(200)
-				.style('opacity', 0);
-			})
+			.on('mouseout', function() { tooltip.style('opacity', 0).attr('transform', 'translate(' + -tooltip.node().getBBox().width + ',' + -tooltip.node().getBBox().height + ')'); });
 
 			tooltip	= canvas.append('g').attr('id', 'tooltip-wrapper').style('opacity', 0);
 

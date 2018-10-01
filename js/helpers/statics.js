@@ -4,6 +4,7 @@ const map_id		= "map-viz";
 const chart_dest	= '#sidebar-chart';
 const radar_id		= 'radar-viz';
 const pie_id		= 'pie-viz';
+const bar_id		= 'bar-viz';
 
 const misc_ceil		= '#misc-ceil';
 const misc_floor	= '#misc-floor';

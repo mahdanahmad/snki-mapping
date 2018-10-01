@@ -15,7 +15,7 @@ function createPie() {
 		.attr('width', canvasWidth)
 		.attr('height', canvasHeight)
 		.append('g')
-			.attr('id', 'canvas')
+			.attr('id', 'canvas');
 
 	let color	= d3.scaleOrdinal(pie_colors);
 

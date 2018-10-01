@@ -1,0 +1,13 @@
+svg#bar-viz {
+	.bar { fill: $sea-color; }
+	text.capita { fill: $border-color; &.outside { fill: $sea-color; } }
+	.tick {
+		line { display: none; }
+		text { fill: $sea-color; @include noselect(); }
+	}
+	path.domain { stroke: $sea-color; }
+	#tooltip-wrapper {
+		rect { fill: black; fill-opacity: .75; }
+		text { font-size: 10px; fill: $sea-color; }
+	}
+}

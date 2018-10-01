@@ -80,7 +80,7 @@ function refreshAnalytic() {
 			console.log(activeTab);
 			break;
 		case activeLayer == layers[1] && activeTab == tab_heads[1][0]:
-			console.log(activeTab);
+			createBar();
 			break;
 		case activeLayer == layers[2] && activeTab == tab_heads[2][0]:
 			console.log(activeTab);

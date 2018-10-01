@@ -125,11 +125,11 @@ module.exports.pupulation	= (input, callback) => {
 					let capita		= (ap_count ? _.round(ap_count / (o[pop_field] / head_count), 2) : 0);
 
 					return (_.assign(o, { ap_count, capita }));
-				}).orderBy(['capita', 'ap_count'], ['desc', 'desc']).value());
+				}).orderBy(['capita', 'ap_count'], ['asc', 'asc']).value());
 			});
 		},
 		(data, flowCallback) => {
-			location.findOne({id: parent}, (err, result) => flowCallback(null, { data, details: _.omit(result, ['_id', 'parent']) }));
+			location.findOne({id: parent}, (err, result) => flowCallback(null, { data, details: _.chain(result).omit(['_id', 'parent']).assign({ total: _.sumBy(data, 'ap_count') }).value() }));
 		}
 	], (err, asyncResult) => {
 		if (err) {
