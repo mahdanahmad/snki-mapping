@@ -44,6 +44,6 @@ const prx_color		= {
 	'0_5'	: '#756bb1',
 	'5_15'	: '#bcbddc',
 	'15_30'	: '#efedf5',
-	'>30'	: '#d4dadc'
+	'>30'	: '#bdb7ca'
 }
 const prx_pref		= 'prx-';
