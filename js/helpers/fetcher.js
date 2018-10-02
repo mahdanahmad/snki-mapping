@@ -6,6 +6,7 @@ function getTypes(callback) { $.get(baseUrl + '/types', ( data ) => { callback(n
 
 function getDistribution(callback, type='') { $.get(baseUrl + '/distribution', _.assign({ type }, constructParams()), ( data ) => { callback(null, data.result); }) }
 function getPopulation(callback) { $.get(baseUrl + '/population', constructParams(), ( data ) => { callback(null, data.result); }) }
+function getProximity(callback) { $.get(baseUrl + '/proximity', constructParams(), ( data ) => { callback(null, data.result); }) }
 
 // HELPER
 function constructParams() {

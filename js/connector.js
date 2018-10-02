@@ -83,7 +83,7 @@ function refreshAnalytic() {
 			createBar();
 			break;
 		case activeLayer == layers[2] && activeTab == tab_heads[2][0]:
-			console.log(activeTab);
+			createTreemap();
 			break;
 		default:
 			console.error('unhandled analytics');

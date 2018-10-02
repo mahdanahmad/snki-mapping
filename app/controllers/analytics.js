@@ -86,8 +86,6 @@ module.exports.pupulation	= (input, callback) => {
 	let message         = 'Get pupulation data success.';
 	let result          = null;
 
-	const type_state	= ['group', 'types'];
-
 	const province_id	= (input.prov	|| null);
 	const kabupaten_id	= (input.kab	|| null);
 	const kecamatan_id	= (input.kec	|| null);
@@ -130,6 +128,46 @@ module.exports.pupulation	= (input, callback) => {
 		},
 		(data, flowCallback) => {
 			location.findOne({id: parent}, (err, result) => flowCallback(null, { data, details: _.chain(result).omit(['_id', 'parent']).assign({ total: _.sumBy(data, 'ap_count') }).value() }));
+		}
+	], (err, asyncResult) => {
+		if (err) {
+			response    = 'FAILED';
+			status_code = 400;
+			message     = err;
+		} else {
+			result      = asyncResult;
+		}
+		callback({ response, status_code, message, result });
+	});
+};
+
+module.exports.proximity	= (input, callback) => {
+	let response        = 'OK';
+	let status_code     = 200;
+	let message         = 'Get proximity data success.';
+	let result          = null;
+
+	const province_id	= (input.prov	|| null);
+	const kabupaten_id	= (input.kab	|| null);
+	const kecamatan_id	= (input.kec	|| null);
+	const desa_id		= (input.desa	|| null);
+
+	const filter		= input.filter ? JSON.parse(input.filter) : null;
+
+	const states		= ['province_id', 'kabupaten_id', 'kecamatan_id', 'desa_id'];
+
+	let id				= _.chain({ province_id, kabupaten_id, kecamatan_id, desa_id }).omitBy(_.isNil).map().last().value() || null;
+	// let id				= '5206071';
+
+	async.waterfall([
+		(flowCallback) => {
+			location.rawAggregate([
+				{ '$match': { id } },
+				{ '$project': { '0_5': 1, '5_15': 1, '15_30': 1, '>30': 1, _id: 0 } }
+			], {}, (err, result) => flowCallback(err, {
+				'name': 'treemap',
+				'children': _.map(result[0], (size, key) => ({ name: _.chain(key).split('_').map((o) => (o + '%')).join(' - ').value(), size, key }))
+			}));
 		}
 	], (err, asyncResult) => {
 		if (err) {

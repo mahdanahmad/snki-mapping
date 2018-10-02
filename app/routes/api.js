@@ -23,5 +23,8 @@ router.get('/distribution', (req, res, next) => {
 router.get('/population', (req, res, next) => {
 	analytics.pupulation(req.query, (result) => { res.status(result.status_code).json(result); })
 });
+router.get('/proximity', (req, res, next) => {
+	analytics.proximity(req.query, (result) => { res.status(result.status_code).json(result); })
+});
 
 module.exports = router;
