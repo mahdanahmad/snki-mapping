@@ -1,0 +1,11 @@
+svg#radial-viz {
+	.axis {
+		line, circle { stroke: $sea-color; stroke-width: 1px; stroke-opacity: .3; }
+		circle { fill: none; }
+		text { fill: $sea-color; @include noselect(); }
+	}
+	#tooltip-wrapper {
+		rect { fill: black; fill-opacity: .75; }
+		text { font-size: 10px; fill: $sea-color; }
+	}
+}

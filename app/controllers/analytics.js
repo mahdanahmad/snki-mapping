@@ -80,6 +80,50 @@ module.exports.distribution	= (input, callback) => {
 	});
 };
 
+module.exports.network	= (input, callback) => {
+	let response        = 'OK';
+	let status_code     = 200;
+	let message         = 'Get network data success.';
+	let result          = null;
+
+	const type_state	= ['group', 'types'];
+
+	const province_id	= (input.prov	|| null);
+	const kabupaten_id	= (input.kab	|| null);
+	const kecamatan_id	= (input.kec	|| null);
+	const desa_id		= (input.desa	|| null);
+	const layer			= (input.layer	|| _.first(layers));
+
+	const filter		= input.filter ? JSON.parse(input.filter) : null;
+
+	const type			= _.includes(type_state, input.type) ? _.indexOf(type_state, input.type) : 0;
+
+	const states		= ['province_id', 'kabupaten_id', 'kecamatan_id', 'desa_id'];
+
+	async.waterfall([
+		(flowCallback) => {
+			let match	= _.omitBy({ province_id, kabupaten_id, kecamatan_id, desa_id }, _.isNil);
+			if (filter) { match[filt_field] = { '$in': filter }; }
+
+			agents.rawAggregate([
+				{ '$match': match },
+				{ '$group': { '_id': null, '2G' : { '$sum': '$2_g' }, '3G' : { '$sum': '$3_g' }, '4G' : { '$sum' : '$4_g' }, 'total' : { '$sum' : 1 } } },
+			], {}, (err, result) => {
+				flowCallback(err, { data: _.chain(result[0]).omit(['_id', 'total']).map((size, id) => ({ id, size })).sortBy('id').value(), total: (result[0] ? result[0].total : 0) });
+			});
+		},
+	], (err, asyncResult) => {
+		if (err) {
+			response    = 'FAILED';
+			status_code = 400;
+			message     = err;
+		} else {
+			result      = asyncResult;
+		}
+		callback({ response, status_code, message, result });
+	});
+};
+
 module.exports.pupulation	= (input, callback) => {
 	let response        = 'OK';
 	let status_code     = 200;

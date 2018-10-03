@@ -5,6 +5,7 @@ function getLocation(callback) { $.get(baseUrl + '/location', constructParams(),
 function getTypes(callback) { $.get(baseUrl + '/types', ( data ) => { callback(null, data.result); }) }
 
 function getDistribution(callback, type='') { $.get(baseUrl + '/distribution', _.assign({ type }, constructParams()), ( data ) => { callback(null, data.result); }) }
+function getNetwork(callback) { $.get(baseUrl + '/network', constructParams(), ( data ) => { callback(null, data.result); }) }
 function getPopulation(callback) { $.get(baseUrl + '/population', constructParams(), ( data ) => { callback(null, data.result); }) }
 function getProximity(callback) { $.get(baseUrl + '/proximity', constructParams(), ( data ) => { callback(null, data.result); }) }
 

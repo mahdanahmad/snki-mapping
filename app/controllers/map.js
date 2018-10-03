@@ -46,7 +46,6 @@ module.exports.index	= (input, callback) => {
 							{ '$group': { _id: '$' + states[states.indexOf(active) + 1], size: { $sum: 1 } } },
 							{ '$match': { _id: { $ne: null } } }
 						], {}, (err, data) => {
-							console.log(data);
 							let max		= _.chain(data).maxBy('size').get('size', 0).value();
 
 							let rounded	= 0;

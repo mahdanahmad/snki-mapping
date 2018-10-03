@@ -43,58 +43,58 @@ function createRadar() {
 
 			//Text indicators
 			canvas.append('g').attr('id', 'level-wrapper')
-			.selectAll('text').data(_.chain(0).range(maxValue, maxValue / radar_lvl).map((o) => (o + (maxValue / radar_lvl))).value()).enter().append('text')
-			.attr('x', (o, i) => ( radius * ((i + 1) / radar_lvl) * (1 * Math.cos(0)) + 5 ))
-			.attr('y', (o, i) => ( radius * ((i + 1) / radar_lvl) * (1 * Math.sin(0)) - 5 ))
-			.attr('class', 'cursor-default')
-			.attr('text-anchor', 'start')
-			.attr('alignment-baseline', 'baseline')
-			.attr('transform', (o, i) => ('translate(' + (size / 2 - (radius * ((i + 1) / radar_lvl)) ) + ', ' + (size / 2 - (radius * ((i + 1) / radar_lvl))) + ')'))
-			.text((o) => (o))
+				.selectAll('text').data(_.chain(0).range(maxValue, maxValue / radar_lvl).map((o) => (o + (maxValue / radar_lvl))).value()).enter().append('text')
+				.attr('x', (o, i) => ( radius * ((i + 1) / radar_lvl) * (1 * Math.cos(0)) + 5 ))
+				.attr('y', (o, i) => ( radius * ((i + 1) / radar_lvl) * (1 * Math.sin(0)) - 5 ))
+				.attr('class', 'cursor-default')
+				.attr('text-anchor', 'start')
+				.attr('alignment-baseline', 'baseline')
+				.attr('transform', (o, i) => ('translate(' + (size / 2 - (radius * ((i + 1) / radar_lvl)) ) + ', ' + (size / 2 - (radius * ((i + 1) / radar_lvl))) + ')'))
+				.text((o) => (o))
 
 			let axis	= canvas.append('g').attr('id', 'axis-wrapper')
-			.selectAll('.axis').data(allAxis).enter().append('g')
-			.attr('class', 'axis cursor-default');
+				.selectAll('.axis').data(allAxis).enter().append('g')
+				.attr('class', 'axis cursor-default');
 
 			axis.append('line')
-			.attr('x1', size / 2)
-			.attr('y1', size / 2)
-			.attr('x2', (o, i) => (size / 2 * (1 - Math.sin(i * radians / total))))
-			.attr('y2', (o, i) => (size / 2 * (1 - Math.cos(i * radians / total))));
+				.attr('x1', size / 2)
+				.attr('y1', size / 2)
+				.attr('x2', (o, i) => (size / 2 * (1 - Math.sin(i * radians / total))))
+				.attr('y2', (o, i) => (size / 2 * (1 - Math.cos(i * radians / total))));
 
 			axis.append('text')
-			.attr('text-anchor', 'middle')
-			.attr('alignment-baseline', 'baseline')
-			.attr('dy', '1.5em')
-			.attr('transform', 'translate(0, -10)')
-			.attr('x', (o, i) => (size / 2 * (1 - .65 * Math.sin(i * radians / total)) - 60 * Math.sin(i * radians / total)))
-			.attr('y', (o, i) => (size / 2 * (1 - Math.cos( i * radians / total)) - 20 * Math.cos(i * radians / total)))
-			.text((o) => (o))
+				.attr('text-anchor', 'middle')
+				.attr('alignment-baseline', 'baseline')
+				.attr('dy', '1.5em')
+				.attr('transform', 'translate(0, -10)')
+				.attr('x', (o, i) => (size / 2 * (1 - .65 * Math.sin(i * radians / total)) - 60 * Math.sin(i * radians / total)))
+				.attr('y', (o, i) => (size / 2 * (1 - Math.cos( i * radians / total)) - 20 * Math.cos(i * radians / total)))
+				.text((o) => (o))
 
 			canvas.append('g').attr('id', 'circle-wrapper')
-			.selectAll('circle').data(result.data).enter().append('circle')
-			.attr('r', 4)
-			.attr('class', 'cursor-pointer')
-			.attr('data-id', (o) => (o._id))
-			.attr('cx', (o) => (size / 2 * (1 - (o.sum / maxValue) * Math.sin(allAxis.indexOf(o._id) * radians / total))))
-			.attr('cy', (o) => (size / 2 * (1 - (o.sum / maxValue) * Math.cos(allAxis.indexOf(o._id) * radians / total))))
-			.on('mouseover', function(o) {
-				tooltip.select('text').text(o.sum);
+				.selectAll('circle').data(result.data).enter().append('circle')
+				.attr('r', 4)
+				.attr('class', 'cursor-pointer')
+				.attr('data-id', (o) => (o._id))
+				.attr('cx', (o) => (size / 2 * (1 - (o.sum / maxValue) * Math.sin(allAxis.indexOf(o._id) * radians / total))))
+				.attr('cy', (o) => (size / 2 * (1 - (o.sum / maxValue) * Math.cos(allAxis.indexOf(o._id) * radians / total))))
+				.on('mouseover', function(o) {
+					tooltip.select('text').text(o.sum);
 
-				tooltip.select('rect')
-					.attr('width', tooltip.select('text').node().getBBox().width + 15)
-					.attr('height', tooltip.select('text').node().getBBox().height + 10);
+					tooltip.select('rect')
+						.attr('width', tooltip.select('text').node().getBBox().width + 15)
+						.attr('height', tooltip.select('text').node().getBBox().height + 10);
 
-				tooltip.select('text')
-					.attr('x', tooltip.select('rect').node().getBBox().width / 2)
-					.attr('y', tooltip.select('rect').node().getBBox().height / 2);
+					tooltip.select('text')
+						.attr('x', tooltip.select('rect').node().getBBox().width / 2)
+						.attr('y', tooltip.select('rect').node().getBBox().height / 2);
 
-				tooltip
-					.attr('transform', 'translate(' + (parseFloat(d3.select(this).attr('cx')) - (tooltip.node().getBBox().width / 2)) + ',' + (parseFloat(d3.select(this).attr('cy')) - (tooltip.node().getBBox().height + 10)) + ')')
-					.transition(200)
-					.style('opacity', 1);
-			})
-			.on('mouseout', function() { tooltip.style('opacity', 0).attr('transform', 'translate(' + -tooltip.node().getBBox().width + ',' + -tooltip.node().getBBox().height + ')'); });
+					tooltip
+						.attr('transform', 'translate(' + (parseFloat(d3.select(this).attr('cx')) - (tooltip.node().getBBox().width / 2)) + ',' + (parseFloat(d3.select(this).attr('cy')) - (tooltip.node().getBBox().height + 10)) + ')')
+						.transition(200)
+						.style('opacity', 1);
+				})
+				.on('mouseout', function() { tooltip.style('opacity', 0).attr('transform', 'translate(' + -tooltip.node().getBBox().width + ',' + -tooltip.node().getBBox().height + ')'); });
 
 			tooltip	= canvas.append('g').attr('id', 'tooltip-wrapper').style('opacity', 0);
 

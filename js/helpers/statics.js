@@ -6,6 +6,7 @@ const radar_id		= 'radar-viz';
 const pie_id		= 'pie-viz';
 const bar_id		= 'bar-viz';
 const tree_id		= 'treemap-viz';
+const radial_id		= 'radial-viz';
 
 const misc_ceil		= '#misc-ceil';
 const misc_floor	= '#misc-floor';

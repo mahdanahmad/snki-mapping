@@ -77,7 +77,7 @@ function refreshAnalytic() {
 			createPie();
 			break;
 		case activeLayer == layers[0] && activeTab == tab_heads[0][2]:
-			console.log(activeTab);
+			createRadial();
 			break;
 		case activeLayer == layers[1] && activeTab == tab_heads[1][0]:
 			createBar();
