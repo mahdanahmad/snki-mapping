@@ -225,17 +225,51 @@ function drawPoint(id, holdLegend=false) {
 			// curr_state++;
 			// moveSlider();
 
-			svg.append('g').attr('class', 'pin-wrapper')
-				.selectAll('.pin')
-				.data(result.data)
+			let wrapper	= svg.append('g').attr('class', 'pin-wrapper');
+
+			let pinSize		= 4 / scale;
+			let triangle	= d3.path();
+			triangle.moveTo(0, -pinSize);
+			triangle.lineTo(pinSize, pinSize);
+			triangle.lineTo(-pinSize, pinSize);
+			triangle.lineTo(0, -pinSize);
+			triangle.closePath();
+
+			wrapper.selectAll('circle')
+				.data(result.data.filter((o) => (o.shape == 'circle')))
 				.enter().append('circle')
 					.attr('class', 'pin')
-					.attr('r', 4 / scale)
+					.attr('r', pinSize)
 					.attr('transform', (o) => {
 						let pix	= projection([o.long, o.lat]);
 						return ('translate(' + pix[0] + ',' + pix[1] + ')')
 					})
-					.style('fill', (o) => (o.color))
+					.style('fill', (o) => (o.color));
+
+			wrapper.selectAll('rect')
+				.data(result.data.filter((o) => (o.shape == 'rect')))
+				.enter().append('rect')
+					.attr('class', 'pin')
+					.attr('x', -pinSize)
+					.attr('y', -pinSize)
+					.attr('width', pinSize * 2)
+					.attr('height', pinSize * 2)
+					.attr('transform', (o) => {
+						let pix	= projection([o.long, o.lat]);
+						return ('translate(' + pix[0] + ',' + pix[1] + ')')
+					})
+					.style('fill', (o) => (o.color));
+
+			wrapper.selectAll('path')
+				.data(result.data.filter((o) => (o.shape == 'triangle')))
+				.enter().append('path')
+					.attr('class', 'pin')
+					.attr('d', triangle.toString())
+					.attr('transform', (o) => {
+						let pix	= projection([o.long, o.lat]);
+						return ('translate(' + pix[0] + ',' + pix[1] + ')')
+					})
+					.style('fill', (o) => (o.color));
 
 			if (!holdLegend) { createLegend(result.legend, 'Type of Access Point'); }
 		});

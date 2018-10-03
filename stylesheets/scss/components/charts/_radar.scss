@@ -5,7 +5,7 @@ svg#radar-viz {
 		line { stroke: $sea-color; stroke-width: 1px; }
 		text { fill: $sea-color; }
 	}
-	#circle-wrapper { circle { fill: white; } }
+	// #circle-wrapper { circle { fill: white; } }
 	#tooltip-wrapper {
 		rect { fill: black; fill-opacity: .75; }
 		text { font-size: 10px; fill: $sea-color; }

@@ -1,6 +1,14 @@
 const radar_lvl	= 5;
 const radians	= 2 * Math.PI;
 
+let point_size	= 8;
+let point_path	= d3.path();
+point_path.moveTo(0, -(point_size / 2));
+point_path.lineTo((point_size / 2), (point_size / 2));
+point_path.lineTo(-(point_size / 2), (point_size / 2));
+point_path.lineTo(0, -(point_size / 2));
+point_path.closePath();
+
 function createRadar() {
 	let canvasWidth		= $(chart_dest).width();
 	let canvasHeight	= $(chart_dest).height();
@@ -22,8 +30,13 @@ function createRadar() {
 	getDistribution((err, result) => {
 		if (!_.isEmpty(result.data)) {
 			let maxValue	= _.chain(result.data).maxBy('sum').get('sum', 0).value();
-			maxValue		= _.ceil(maxValue, -(maxValue.toString().length - 2));
-			if (maxValue < 10) { maxValue = 10; } else if (maxValue < 100) { maxValue = 100; }
+			if (maxValue < 10) {
+				maxValue = 10;
+			} else if (maxValue < 100) {
+				maxValue = _.ceil(maxValue, -1);
+			} else {
+				maxValue = _.ceil(maxValue, -(maxValue.toString().length - 2));
+			}
 			let allAxis		= _.map(result.data, '_id');
 			let total		= allAxis.length;
 			let radius		= size / 2;
@@ -71,30 +84,40 @@ function createRadar() {
 				.attr('y', (o, i) => (size / 2 * (1 - Math.cos( i * radians / total)) - 20 * Math.cos(i * radians / total)))
 				.text((o) => (o))
 
-			canvas.append('g').attr('id', 'circle-wrapper')
-				.selectAll('circle').data(result.data).enter().append('circle')
-				.attr('r', 4)
+			let wrapper		= canvas.append('g').attr('id', 'circle-wrapper')
+
+			wrapper
+				.selectAll('circle').data(result.data.filter((o) => (o.shape == 'circle'))).enter().append('circle')
+				.attr('r', point_size / 2)
 				.attr('class', 'cursor-pointer')
 				.attr('data-id', (o) => (o._id))
 				.attr('cx', (o) => (size / 2 * (1 - (o.sum / maxValue) * Math.sin(allAxis.indexOf(o._id) * radians / total))))
 				.attr('cy', (o) => (size / 2 * (1 - (o.sum / maxValue) * Math.cos(allAxis.indexOf(o._id) * radians / total))))
-				.on('mouseover', function(o) {
-					tooltip.select('text').text(o.sum);
+				.style('fill', (o) => o.color)
+				.on('mouseover', onMouseover)
+				.on('mouseout', onMouseout);
 
-					tooltip.select('rect')
-						.attr('width', tooltip.select('text').node().getBBox().width + 15)
-						.attr('height', tooltip.select('text').node().getBBox().height + 10);
+			wrapper
+				.selectAll('rect').data(result.data.filter((o) => (o.shape == 'rect'))).enter().append('rect')
+				.attr('x', (o) => (size / 2 * (1 - (o.sum / maxValue) * Math.sin(allAxis.indexOf(o._id) * radians / total)) - (point_size / 2)))
+				.attr('y', (o) => (size / 2 * (1 - (o.sum / maxValue) * Math.cos(allAxis.indexOf(o._id) * radians / total)) - (point_size / 2)))
+				.attr('width', point_size)
+				.attr('height', point_size)
+				.attr('class', 'cursor-pointer')
+				.attr('data-id', (o) => (o._id))
+				.style('fill', (o) => o.color)
+				.on('mouseover', onMouseover)
+				.on('mouseout', onMouseout);
 
-					tooltip.select('text')
-						.attr('x', tooltip.select('rect').node().getBBox().width / 2)
-						.attr('y', tooltip.select('rect').node().getBBox().height / 2);
-
-					tooltip
-						.attr('transform', 'translate(' + (parseFloat(d3.select(this).attr('cx')) - (tooltip.node().getBBox().width / 2)) + ',' + (parseFloat(d3.select(this).attr('cy')) - (tooltip.node().getBBox().height + 10)) + ')')
-						.transition(200)
-						.style('opacity', 1);
-				})
-				.on('mouseout', function() { tooltip.style('opacity', 0).attr('transform', 'translate(' + -tooltip.node().getBBox().width + ',' + -tooltip.node().getBBox().height + ')'); });
+			wrapper
+				.selectAll('path').data(result.data.filter((o) => (o.shape == 'triangle'))).enter().append('path')
+				.attr('d', point_path)
+				.attr('transform', (o) => ('translate(' + (size / 2 * (1 - (o.sum / maxValue) * Math.sin(allAxis.indexOf(o._id) * radians / total))) + ',' + (size / 2 * (1 - (o.sum / maxValue) * Math.cos(allAxis.indexOf(o._id) * radians / total))) + ')'))
+				.attr('class', 'cursor-pointer')
+				.attr('data-id', (o) => (o._id))
+				.style('fill', (o) => o.color)
+				.on('mouseover', onMouseover)
+				.on('mouseout', onMouseout);
 
 			tooltip	= canvas.append('g').attr('id', 'tooltip-wrapper').style('opacity', 0);
 
@@ -105,6 +128,43 @@ function createRadar() {
 			canvas.attr('transform', 'translate(' + margin.left + ',' + (margin.top + (height > bbox.height ? ((height - bbox.height) / 2) : 0)) + ')');
 
 			d3.select(misc_floor).text('Total Access Point: ' + result.total);
+
+			function onMouseover(o) {
+				tooltip.select('text').text(o.sum);
+
+				tooltip.select('rect')
+					.attr('width', tooltip.select('text').node().getBBox().width + 15)
+					.attr('height', tooltip.select('text').node().getBBox().height + 10);
+
+				tooltip.select('text')
+					.attr('x', tooltip.select('rect').node().getBBox().width / 2)
+					.attr('y', tooltip.select('rect').node().getBBox().height / 2);
+
+
+				let xPos, yPos;
+				switch (o.shape) {
+					case 'circle':
+						xPos	= (parseFloat(d3.select(this).attr('cx')) - (tooltip.node().getBBox().width / 2));
+						yPos	= (parseFloat(d3.select(this).attr('cy')) - (tooltip.node().getBBox().height + 10));
+						break;
+					case 'rect':
+						xPos	= (parseFloat(d3.select(this).attr('x')) - (tooltip.node().getBBox().width / 2) + (point_size / 2));
+						yPos	= (parseFloat(d3.select(this).attr('y')) - (tooltip.node().getBBox().height + 10) + (point_size / 2));
+						break;
+					case 'triangle':
+						let string		= d3.select(this).attr('transform');
+						let position	= string.slice(string.indexOf('(') + 1, -1).split(',').map((o) => (parseFloat(o)));
+						xPos	= (position[0] - (tooltip.node().getBBox().width / 2));
+						yPos	= (position[1] - (tooltip.node().getBBox().height + 10));
+						break;
+					default:
+				}
+
+				tooltip
+					.attr('transform', 'translate(' + xPos + ',' + yPos + ')')
+					.style('opacity', 1);
+			}
+			function onMouseout() { tooltip.style('opacity', 0).attr('transform', 'translate(' + -tooltip.node().getBBox().width + ',' + -tooltip.node().getBBox().height + ')'); }
 		} else {
 			canvas.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 			canvas.append('text').attr('id', 'error').text(err_chart)

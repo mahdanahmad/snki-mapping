@@ -18,6 +18,9 @@
 			g.wrapper {
 				path.default-clr { fill: $land-color; }
 			}
+			g.pin-wrapper {
+				path { stroke: none; }
+			}
 		}
 		g#slider-wrapper { circle { fill: white; &:last-child { cursor: default!important; } } path { fill: white; stroke: white; } }
 		g#legend-container {
@@ -33,6 +36,10 @@
 			g#inset-map {
 				path { fill: $land-color; stroke: $sea-color; &.active { fill: $prov-active; } }
 			}
+		}
+
+		g#legend-wrapper {
+			path { stroke: none; }
 		}
 	}
 

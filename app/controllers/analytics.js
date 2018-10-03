@@ -55,7 +55,15 @@ module.exports.distribution	= (input, callback) => {
 		(data, flowCallback) => {
 			let total	= _.sumBy(data, 'sum');
 			if (type) {
-				flowCallback(null, { data, total });
+				types.rawAggregate([
+					{ '$match': { 'type': { '$in': data.map((o) => o._id) } } },
+					{ '$project': { _id: 0, 'type': 1, 'color': 1, 'shape': 1 } }
+				], {}, (err, result) => {
+					if (err) { flowCallback(err); } else {
+						let mapped	= _.chain(result).map((o) => ([o.type, _.omit(o, 'type')])).fromPairs().value();
+						flowCallback(null, { data: data.map((o) => (_.assign(o, mapped[o._id]))), total })
+					}
+				});
 			} else {
 				let match	= _.omitBy({ province_id, kabupaten_id, kecamatan_id, desa_id }, _.isNil);
 

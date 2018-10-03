@@ -70,11 +70,11 @@ module.exports.index	= (input, callback) => {
 					} else {
 						types.findAll({}, {}, (err, alltypes) => {
 							if (err) { flowCallback(err); } else {
-								const mapped	= _.chain(alltypes).map((o) => ([o.type, o.color])).fromPairs().value();
+								const mapped	= _.chain(alltypes).map((o) => ([o.type, { color: o.color, shape: o.shape }])).fromPairs().value();
 								agents.rawAggregate([
 									{ '$match': match },
 									{ '$project': { _id: 1, long: '$longitude', lat: '$latitude', type: '$' + filt_field } }
-								], {}, (err, result) => flowCallback(err, { data: result.map((o) => _.assign(o, { color: mapped[o.type] })), legend: alltypes.filter((o) => (_.chain(result).map('type').uniq().includes(o.type).value())).map((o) => ({ text: o.type.length > 15 ? (o.type.substring(0, 13) + '...') : o.type, color: o.color }))  }));
+								], {}, (err, result) => flowCallback(err, { data: result.map((o) => _.assign(o, mapped[o.type])), legend: alltypes.filter((o) => (_.chain(result).map('type').uniq().includes(o.type).value())).map((o) => ({ text: o.type.length > 15 ? (o.type.substring(0, 13) + '...') : o.type, color: o.color, shape: o.shape }))  }));
 							}
 						})
 					}
@@ -116,11 +116,11 @@ module.exports.index	= (input, callback) => {
 					if (_.includes(states.slice(-2), active)) {
 						types.findAll({}, {}, (err, alltypes) => {
 							if (err) { flowCallback(err); } else {
-								const mapped	= _.chain(alltypes).map((o) => ([o.type, o.color])).fromPairs().value();
+								const mapped	= _.chain(alltypes).map((o) => ([o.type, { color: o.color, shape: o.shape }])).fromPairs().value();
 								agents.rawAggregate([
 									{ '$match': match },
 									{ '$project': { _id: 1, long: '$longitude', lat: '$latitude', type: '$' + filt_field } }
-								], {}, (err, result) => flowCallback(err, { data: result.map((o) => _.assign(o, { color: mapped[o.type] })), legend: alltypes.filter((o) => (_.chain(result).map('type').uniq().includes(o.type).value())).map((o) => ({ text: o.type.length > 15 ? (o.type.substring(0, 13) + '...') : o.type, color: o.color }))  }));
+								], {}, (err, result) => flowCallback(err, { data: result.map((o) => _.assign(o, mapped[o.type])), legend: alltypes.filter((o) => (_.chain(result).map('type').uniq().includes(o.type).value())).map((o) => ({ text: o.type.length > 15 ? (o.type.substring(0, 13) + '...') : o.type, color: o.color, shape: o.shape }))  }));
 							}
 						})
 					} else {

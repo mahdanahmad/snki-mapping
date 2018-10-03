@@ -1,5 +1,13 @@
 let lgnd_width	= 100;
 
+let box_size	= 15;
+let box_path	= d3.path();
+box_path.moveTo((box_size / 2), 0);
+box_path.lineTo(box_size, box_size);
+box_path.lineTo(0, box_size);
+box_path.lineTo((box_size / 2), 0);
+box_path.closePath();
+
 function createLegend(data, title) {
 	let wrapper		= d3.select('g#legend-wrapper');
 	let container	= wrapper.select('g#legend-container');
@@ -29,12 +37,27 @@ function createLegend(data, title) {
 			.attr('class', 'boxes')
 			.attr('transform', 'translate(' + (lgnd_width * i) + ',0)');
 
-		box.append('rect')
-			.attr('x', 0)
-			.attr('y', 0)
-			.attr('width', 15)
-			.attr('height', 15)
-			.attr('fill', o.color);
+		switch (o.shape) {
+			case 'triangle':
+				box.append('path')
+					.attr('d', box_path.toString())
+					.attr('fill', o.color);
+				break;
+			case 'circle':
+				box.append('circle')
+					.attr('r', box_size / 2)
+					.attr('cx', box_size / 2)
+					.attr('cy', box_size / 2)
+					.attr('fill', o.color);
+				break;
+			default:
+				box.append('rect')
+					.attr('x', 0)
+					.attr('y', 0)
+					.attr('width', box_size)
+					.attr('height', box_size)
+					.attr('fill', o.color);
+		}
 
 		box.append('text')
 			.attr('text-anchor', 'start')
