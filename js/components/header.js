@@ -31,7 +31,8 @@ function changeFilterHead(callback) {
 		switch (active) {
 			case layers[0]: getTypes((err, data) => { resolve(data); }); break;
 			case layers[1]: getTypes((err, data) => { resolve(data); }); break;
-			case layers[2]: resolve(_.map(prx_color, (color, key) => (key.split('_').join(' - ') + ' minutes' ))); break;
+			case layers[2]: getTypes((err, data) => { resolve(data); }); break;
+			case layers[3]: resolve(_.map(prx_color, (color, key) => (key.split('_').join(' - ') + ' minutes' ))); break;
 			default: reject('unhandled filter');
 		}
 	});

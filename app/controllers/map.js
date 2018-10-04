@@ -13,7 +13,9 @@ const filt_field	= 'access_point_type';
 const pop_field		= 'potential_population';
 const head_count	= 1000;
 
-const layers		= ['Number of FAP', 'Access Point Per 1000 Adults', 'Driving Time From FAPs'];
+const layers		= ['Number of FAP', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From FAPs'];
+
+const nodata_clr	= '#FAFAF8';
 
 module.exports.index	= (input, callback) => {
 	let response        = 'OK';
@@ -65,7 +67,7 @@ module.exports.index	= (input, callback) => {
 								_.assign(row, { color });
 							});
 
-							flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: o + ' - ' + (o + range), color: pallete[i] })).concat([{ text: 'No data', color: '#FAFAF8' }]).reverse() });
+							flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: o + ' - ' + (o + range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
 						});
 					} else {
 						types.findAll({}, {}, (err, alltypes) => {
@@ -80,6 +82,37 @@ module.exports.index	= (input, callback) => {
 					}
 					break;
 				case layers[1]:
+					let parent	= _.chain({ province_id, kabupaten_id, kecamatan_id, desa_id }).omitBy(_.isNil).map().last().value() || null;
+					location.rawAggregate([
+						{ '$match': { parent, id: { '$ne': '' } } },
+						{ '$project': { _id: '$id', size: '$' + pop_field,  } }
+					], {}, (err, data) => {
+						if (err) { flowCallback(err); } else {
+							let max		= _.chain(data).maxBy('size').get('size', 0).value();
+
+							let rounded	= 0;
+							if (max <= 10) { rounded = 10; } else {
+								let inStr	= Math.round(max).toString();
+								let length	= inStr.length - 1;
+								rounded		= Math.ceil(parseInt(inStr) / Math.pow(10, length)) * Math.pow(10, length);
+							}
+
+							const range		= rounded / 5;
+							const fracture 	= _.range(0, rounded, range).reverse();
+
+							data.map((row) => {
+								let color	= '';
+								if (_.isNil(row.size)) { color = nodata_clr; }
+								fracture.forEach((o, i) => { if (row.size >= o && _.isEmpty(color)) { color = pallete[i]; } });
+
+								_.assign(row, { color });
+							});
+
+							flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: nFormatter(o) + ' - ' + nFormatter(o + range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
+						}
+					});
+					break;
+				case layers[2]:
 					agents.rawAggregate([
 						{ '$match': match },
 						{ '$group': { _id: '$' + states[states.indexOf(active) + 1], size: { $sum: 1 } } },
@@ -107,11 +140,11 @@ module.exports.index	= (input, callback) => {
 								_.assign(row, { color });
 							});
 
-							flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: o + ' - ' + _.round(o + range, 2), color: pallete[i] })).concat([{ text: 'No data', color: '#FAFAF8' }]).reverse() });
+							flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: o + ' - ' + _.round(o + range, 2), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
 						});
 					});
 					break;
-				case layers[2]:
+				case layers[3]:
 					match	= _.omit(match, [filt_field]);
 					if (_.includes(states.slice(-2), active)) {
 						types.findAll({}, {}, (err, alltypes) => {
@@ -194,4 +227,21 @@ module.exports.types	= (callback) => {
 		}
 		callback({ response, status_code, message, result });
 	});
+}
+
+function nFormatter(num) {
+	let digits	= 2;
+	let standar = [
+		{ value: 1, symbol: "" },
+		{ value: 1E3, symbol: "ribu" },
+		{ value: 1E6, symbol: "juta" },
+		{ value: 1E9, symbol: "milyar" },
+		{ value: 1E12, symbol: "triliun" },
+		{ value: 1E15, symbol: "kuadriliun" },
+		{ value: 1E18, symbol: "kuantiliun" }
+	];
+	let re = /\.0+$|(\.[0-9]*[1-9])0+$/;
+	let i;
+	for (i = standar.length - 1; i > 0; i--) { if (num >= standar[i].value) { break; } }
+	return (num / standar[i].value).toFixed(digits).replace(re, "$1") + ' ' + standar[i].symbol;
 }

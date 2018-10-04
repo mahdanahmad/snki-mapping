@@ -9,6 +9,9 @@ function refreshView() {
 			defaultAmountFAP();
 			break;
 		case layers[2]:
+			defaultAmountFAP();
+			break;
+		case layers[3]:
 			$( filter_target + ' > ul > li:not(.toggler)' ).each(function() {
 				let input	= $( this ).find('input');
 
@@ -35,8 +38,8 @@ function refreshLayer() {
 		states.forEach((o) => colorMap([], o));
 		d3.selectAll('g.network').classed('hidden', true);
 
-		d3.select('div#filter-dropdown').classed('hidden', active == layers[2]);
-		d3.select('g#wrapped-background').classed('reverse', active == layers[2]);
+		d3.select('div#filter-dropdown').classed('hidden', active == layers[3]);
+		d3.select('g#wrapped-background').classed('reverse', active == layers[3]);
 
 		switch (active) {
 			case layers[0]:
@@ -47,6 +50,9 @@ function refreshLayer() {
 				defaultAmountFAP();
 				break;
 			case layers[2]:
+				defaultAmountFAP();
+				break;
+			case layers[3]:
 				d3.select('g#wrapped-proximity, g#wrapped-proximity > g').classed('hidden', false);
 				d3.selectAll('g.wrapper path').classed('seethrough', true);
 				createLegend(_.map(prx_color, (color, key) => ({ text: key.split('_').join(' - ') + ' minutes', color })), active);
@@ -83,6 +89,9 @@ function refreshAnalytic() {
 			createBar();
 			break;
 		case activeLayer == layers[2] && activeTab == tab_heads[2][0]:
+			createBar();
+			break;
+		case activeLayer == layers[3] && activeTab == tab_heads[3][0]:
 			createTreemap();
 			break;
 		default:
@@ -93,7 +102,7 @@ function refreshAnalytic() {
 function defaultAmountFAP() {
 	$(states.concat(['national']).map((o) => ('.' + o + '-wrapper path')).join(', ')).addClass('unintended');
 	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
-	if (curr_state < (states.length - 1) || active == layers[1]) {
+	if (curr_state < (states.length - 1) || _.includes([3], layers.indexOf(active))) {
 		toggleLoading();
 		getMapData((err, data) => {
 			colorMap(data.data, states[curr_state + 1]);

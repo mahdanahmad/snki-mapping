@@ -186,7 +186,7 @@ function zoom(id, state) {
 			changeRegionHead();
 			colorActive();
 
-			if ($( base_target + ' > ul > li > input:checked' ).attr('value') == layers[2]) { d3.selectAll('g.wrapper.national-wrapper path').classed('seethrough', true); }
+			if ($( base_target + ' > ul > li > input:checked' ).attr('value') == layers[3]) { d3.selectAll('g.wrapper.national-wrapper path').classed('seethrough', true); }
 		} else {
 			console.error('unhandled');
 		}
@@ -218,7 +218,7 @@ function drawPoint(id, holdLegend=false) {
 
 	// centered[state]	= id;
 
-	if ($( base_target + ' > ul > li > input:checked' ).attr('value') !== layers[1]) {
+	if ($( base_target + ' > ul > li > input:checked' ).attr('value') !== layers[2]) {
 		$( '#wrapped-' + id + ' path' ).addClass('seethrough');
 
 		getMapData((err, result) => {
@@ -298,11 +298,11 @@ function drawMap(id, state) {
 				.attr('id', (o) => (next_state + '-' + o.properties.id))
 				.attr('class', 'grouped-' + state + ' cursor-pointer');
 
-			if (active == layers[2]) { d3.selectAll('g.wrapper path').classed('seethrough', false); }
+			if (active == layers[3]) { d3.selectAll('g.wrapper path').classed('seethrough', false); }
 
 			grouped.append('path')
 				.attr('d', path)
-				.attr('class', next_state + ' default-clr' + (active == layers[2] ? ' seethrough': ''))
+				.attr('class', next_state + ' default-clr' + (active == layers[3] ? ' seethrough': ''))
 				.attr('vector-effect', 'non-scaling-stroke')
 				.style('stroke-width', (base_stroke - ((curr_state + 1) * .1)) + 'px');
 
@@ -338,6 +338,9 @@ function drawMap(id, state) {
 				getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
 				break;
 			case layers[2]:
+				getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
+				break;
+			case layers[3]:
 				if ( curr_state >= (states.length - 1) ) { drawPoint(id, true); }
 				break;
 			default:
