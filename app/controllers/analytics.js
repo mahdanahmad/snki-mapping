@@ -218,7 +218,7 @@ module.exports.proximity	= (input, callback) => {
 				{ '$project': { '0_5': 1, '5_15': 1, '15_30': 1, '>30': 1, _id: 0 } }
 			], {}, (err, result) => flowCallback(err, {
 				'name': 'treemap',
-				'children': _.map(result[0], (size, key) => ({ name: _.chain(key).split('_').map((o) => (o + '%')).join(' - ').value(), size, key }))
+				'children': _.map(result[0], (size, key) => ({ name: _.chain(key).split('_').join(' - ').value() + ' minutes', size, key }))
 			}));
 		}
 	], (err, asyncResult) => {
