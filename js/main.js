@@ -1,6 +1,8 @@
 moment.locale('id');
 
 $( document ).ready(function() {
+	// $( document ).tooltip({});
+
 	jQuery( '#drops-wrapper img, #sidebar-wrapper img' ).each(function() {
 		let $img = jQuery(this);
 		let imgID = $img.attr('id');
