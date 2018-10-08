@@ -230,7 +230,45 @@ module.exports.types	= (callback) => {
 }
 
 module.exports.points	= (input, callback) => {
-	
+	let response        = 'OK';
+	let status_code     = 200;
+	let message         = 'Get map data success.';
+	let result          = null;
+
+	const province_id	= (input.prov	|| null);
+	const kabupaten_id	= (input.kab	|| null);
+	const kecamatan_id	= (input.kec	|| null);
+	const desa_id		= (input.desa	|| null);
+
+	const filter		= input.filter ? JSON.parse(input.filter) : null;
+
+	const states		= ['province_id', 'kabupaten_id', 'kecamatan_id', 'desa_id'];
+
+	async.waterfall([
+		(flowCallback) => {
+			let match	= _.omitBy({ province_id, kabupaten_id, kecamatan_id, desa_id }, _.isNil);
+			if (filter) { match[filt_field] = { '$in': filter }; }
+
+			types.findAll({}, {}, (err, alltypes) => {
+				if (err) { flowCallback(err); } else {
+					const mapped	= _.chain(alltypes).map((o) => ([o.type, { color: o.color, shape: o.shape }])).fromPairs().value();
+					agents.rawAggregate([
+						{ '$match': match },
+						{ '$project': { _id: 1, long: '$longitude', lat: '$latitude', type: '$' + filt_field } }
+					], {}, (err, result) => flowCallback(err, { data: result.map((o) => _.assign(o, mapped[o.type])), legend: alltypes.filter((o) => (_.chain(result).map('type').uniq().includes(o.type).value())).map((o) => ({ text: o.type.length > 15 ? (o.type.substring(0, 13) + '...') : o.type, color: o.color, shape: o.shape }))  }));
+				}
+			});
+		},
+	], (err, asyncResult) => {
+		if (err) {
+			response    = 'FAILED';
+			status_code = 400;
+			message     = err;
+		} else {
+			result      = asyncResult;
+		}
+		callback({ response, status_code, message, result });
+	});
 };
 
 function nFormatter(num) {

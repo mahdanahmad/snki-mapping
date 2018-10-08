@@ -3,6 +3,7 @@ let baseUrl	= 'api';
 function getMapData(callback) { $.get(baseUrl + '/map', constructParams(), ( data ) => { callback(null, data.result); }) }
 function getLocation(callback) { $.get(baseUrl + '/location', constructParams(), ( data ) => { callback(null, data.result); }) }
 function getTypes(callback) { $.get(baseUrl + '/types', ( data ) => { callback(null, data.result); }) }
+function getPoints(callback) { $.get(baseUrl + '/points', constructParams(), ( data ) => { callback(null, data.result); }) }
 
 function getDistribution(callback, type='') { $.get(baseUrl + '/distribution', _.assign({ type }, constructParams()), ( data ) => { callback(null, data.result); }) }
 function getNetwork(callback) { $.get(baseUrl + '/network', constructParams(), ( data ) => { callback(null, data.result); }) }

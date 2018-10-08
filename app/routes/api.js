@@ -16,6 +16,9 @@ router.get('/location', (req, res, next) => {
 router.get('/types', (req, res, next) => {
 	map.types((result) => { res.status(result.status_code).json(result); });
 });
+router.get('/points', (req, res, next) => {
+	map.points(req.query, (result) => { res.status(result.status_code).json(result); });
+});
 
 router.get('/distribution', (req, res, next) => {
 	analytics.distribution(req.query, (result) => { res.status(result.status_code).json(result); })

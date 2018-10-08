@@ -152,6 +152,7 @@ function zoom(id, state) {
 
 	if (path && svg.node()) {
 		svg.select('g.pin-wrapper').remove();
+		if ($( point_id + ' > input' ).prop('checked')) { svg.select('g#' + point_wrapper).remove(); }
 
 		let x, y;
 		let node	= svg.node().getBBox();
@@ -218,6 +219,7 @@ function zoom(id, state) {
 			.style('font-size', (base_font / scale > 0.013 ? (base_font / scale) : 0.013) + 'px');
 
 		if ($( sidewrap ).hasClass('expanded')) { refreshAnalytic(); }
+		if ($( point_id + ' > input' ).prop('checked')) { freeDrawPoint(); }
 	}
 };
 
