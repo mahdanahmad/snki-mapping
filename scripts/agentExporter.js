@@ -41,7 +41,7 @@ const type_details	= {
 
 function setType(o) {
 	if (o.bank == 'BANK') {
-		if (_.includes(['Laku Pandai', 'Laku Pandai / LKD'], o.access_point)) { return 'banking agents'; }
+		if (_.includes(['Laku Pandai', 'Laku Pandai / LKD'], o.access_point)) { return 'Banking Agents'; }
 		else if (_.includes(['ATM'], o.access_point)) { return o.access_point; }
 		else { return bank_cate[o.bank_category]; }
 	} else {
