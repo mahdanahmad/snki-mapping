@@ -115,7 +115,8 @@ function initMap() {
 		.defer(d3.json, 'network/3G.json')
 		.defer(d3.json, 'network/4G.json')
 		.defer(d3.json, 'proximity/proximity.json')
-		.await((err, national, two, three, four, proximity) => {
+		.defer(d3.json, 'road.json')
+		.await((err, national, two, three, four, proximity, road) => {
 			initInset(national);
 
 			_.forEach({ two, three, four }, (raw, key) => {
@@ -132,8 +133,16 @@ function initMap() {
 					.attr('fill', net_color[key]);
 			});
 
+			canvas.append('g').attr('id', 'maps-wrapper');
 			drawMap(0, 'national');
 			drawProximity(canvas, proximity);
+
+			canvas.append('g').attr('id', 'road-wrapper').attr('class', 'cursor-pointer hidden')
+				.selectAll('path').data(topojson.feature(road, road.objects.map).features).enter().append('g').append('path')
+					.attr('d', path)
+					.attr('vector-effect', 'non-scaling-stroke')
+					.attr('fill', 'none');
+
 			setTimeout(() => toggleLoading(true), 1000);
 		});
 }
@@ -213,7 +222,7 @@ function zoom(id, state) {
 };
 
 function drawPoint(id, holdLegend=false) {
-	let svg	= d3.select("svg#" + map_id + '> g#canvas');
+	let svg	= d3.select("svg#" + map_id + '> g#canvas > g#maps-wrapper');
 	svg.select('g.pin-wrapper').remove();
 
 	// centered[state]	= id;
@@ -277,7 +286,7 @@ function drawPoint(id, holdLegend=false) {
 }
 
 function drawMap(id, state) {
-	let svg			= d3.select("svg#" + map_id + '> g#canvas');
+	let svg			= d3.select("svg#" + map_id + '> g#canvas > g#maps-wrapper');
 	let next_state	= states[curr_state + 1];
 
 	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');

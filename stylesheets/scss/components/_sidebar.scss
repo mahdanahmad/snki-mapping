@@ -68,6 +68,14 @@ $misc_hgt	: 60px;
 			}
 			&#text-toggler {
 				svg { width: 50%; left: 20%; }
+			}
+			&#road-toggler {
+				svg { width: 50%; left: 20%; }
+			}
+			&#point-toggler {
+				svg { width: 50%; left: 20%; }
+			}
+			&#text-toggler, &#road-toggler, &#point-toggler {
 				&.off { background: $on-color; svg { fill: $off-color; } }
 			}
 			&:not(:last-child) { margin-bottom: 10px; }

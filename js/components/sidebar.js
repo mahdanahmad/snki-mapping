@@ -5,6 +5,8 @@ const net_target	= '#dropdown-network';
 const net_toggle	= ['Select All', 'Unselect All'];
 
 const text_id		= '#text-toggler';
+const road_id		= '#road-toggler';
+const point_id		= '#point-toggler';
 const tabs_id		= '#sidebar-tabs';
 
 function toggleSide(bool) {
@@ -55,7 +57,15 @@ function toggleText() {
 	input.prop('checked', !value);
 	d3.selectAll('g.wrapper text').classed('hidden', value);
 	d3.select(text_id).classed('off', value);
+}
 
+function toggleRoad() {
+	let input 	= $( road_id + ' > input' );
+	let value	= input.prop('checked');
+
+	input.prop('checked', !value);
+	d3.selectAll('g#road-wrapper').classed('hidden', value);
+	d3.select(road_id).classed('off', value);
 }
 
 function toggleInset(show=false) {

@@ -229,6 +229,10 @@ module.exports.types	= (callback) => {
 	});
 }
 
+module.exports.points	= (input, callback) => {
+	
+};
+
 function nFormatter(num) {
 	let digits	= 2;
 	let standar = [

@@ -32,6 +32,7 @@ function writeToFile(filename, json) {
 
 	if (!fs.existsSync(path.dirname(filepath))) { fs.mkdirSync(path.dirname(filepath)); }
 	fs.writeFile(filepath, JSON.stringify(json), 'utf8', (err) => { if (err) { throw err; } });
+	// fs.writeFile(filepath, JSON.stringify(topojson.merge(json, json.objects.map.geometries)), 'utf8', (err) => { if (err) { throw err; } });
 }
 
 fs.readdirSync(shp_root).filter(o => (path.extname(o) == '.shp')).forEach(file => {

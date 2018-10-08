@@ -45,7 +45,7 @@ function createBar() {
 				.attr('y', (o) => (y(o.name) + (y.bandwidth() / 2) + 1))
 				// .attr('text-anchor', 'middle')
 				.attr('alignment-baseline', 'middle')
-				.attr('class', (o) => ('cursor-default size' + (o.size ? ' moved' : '')))
+				.attr('class', (o) => ('cursor-default capita' + (o.size ? ' moved' : '')))
 				.text((o) => (o.size ? ( active == layers[1] ? nFormatter(o.size) : o.size ) : ''));
 
 			grouped.on('mouseover', onMouseover)
@@ -71,29 +71,31 @@ function createBar() {
 			tooltip.append('text').attr('text-anchor', 'middle').attr('alignment-baseline', 'middle');
 
 			if (active == layers[1]) {
-				d3.select(misc_floor).text('Total Potential Population: ' + (result.details.potential_population ? addCommas(result.details.potential_population) : 'N/A'));
+				d3.select(misc_floor).text('Total Adult Population: ' + (result.details.potential_population ? addCommas(result.details.potential_population) : 'N/A'));
 			} else {
 				d3.select(misc_floor).text('Total Access Point: ' + (result.details.total || 'N/A'));
 				d3.select(misc_adds).text('Total Potential Population: ' + (result.details.potential_population ? addCommas(result.details.potential_population) : 'N/A'));
 			}
 
 			function onMouseover(o) {
-				tooltip.select('text').text(nFormatter(o.ap_count) + ' poin untuk ' + nFormatter(o.potential_population) + ' penduduk')
+				if (active == layers[2]) {
+					tooltip.select('text').text(nFormatter(o.ap_count) + ' poin untuk ' + nFormatter(o.potential_population) + ' penduduk')
 
-				tooltip.select('rect')
-					.attr('width', tooltip.select('text').node().getBBox().width + 15)
-					.attr('height', tooltip.select('text').node().getBBox().height + 10);
+					tooltip.select('rect')
+						.attr('width', tooltip.select('text').node().getBBox().width + 15)
+						.attr('height', tooltip.select('text').node().getBBox().height + 10);
 
-				tooltip.select('text')
-					.attr('x', tooltip.select('rect').node().getBBox().width / 2)
-					.attr('y', tooltip.select('rect').node().getBBox().height / 2);
+					tooltip.select('text')
+						.attr('x', tooltip.select('rect').node().getBBox().width / 2)
+						.attr('y', tooltip.select('rect').node().getBBox().height / 2);
 
-				let xPos	= (width / 2) - (tooltip.node().getBBox().width / 2);
-				let yPos	= y(o.name) - (tooltip.node().getBBox().height + 5);
+					let xPos	= (width / 2) - (tooltip.node().getBBox().width / 2);
+					let yPos	= y(o.name) - (tooltip.node().getBBox().height + 5);
 
-				tooltip
-					.attr('transform', 'translate(' + xPos + ',' + yPos + ')')
-					.style('opacity', 1);
+					tooltip
+						.attr('transform', 'translate(' + xPos + ',' + yPos + ')')
+						.style('opacity', 1);
+				}
 			}
 			function onMouseout() { tooltip.attr('transform', 'translate(' + -tooltip.node().getBBox().width + ',' + -tooltip.node().getBBox().height + ')').style('opacity', 0); }
 		} else {
