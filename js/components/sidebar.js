@@ -89,7 +89,7 @@ function freeDrawPoint() {
 	let canvas	= d3.select("svg#" + map_id + '> g#canvas').append('g').attr('id', point_wrapper);
 
 	getPoints((err, result) => {
-		let pinSize		= 4 / scale;
+		let pinSize		= (curr_state + (curr_state < 0 ? 3 : 2)) / scale;
 		let triangle	= d3.path();
 		triangle.moveTo(0, -pinSize);
 		triangle.lineTo(pinSize, pinSize);
