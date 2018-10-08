@@ -85,6 +85,7 @@ function togglePoint() {
 
 function freeDrawPoint() {
 	toggleLoading();
+	d3.select('g#' + point_wrapper).remove();
 	let canvas	= d3.select("svg#" + map_id + '> g#canvas').append('g').attr('id', point_wrapper);
 
 	getPoints((err, result) => {

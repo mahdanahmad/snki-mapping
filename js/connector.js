@@ -24,6 +24,7 @@ function refreshView() {
 		default: console.log('unhandled refreshView');
 	}
 
+	if ($( point_id + ' > input' ).prop('checked')) { freeDrawPoint(); }
 }
 
 function refreshLayer() {
