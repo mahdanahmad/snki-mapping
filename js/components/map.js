@@ -133,9 +133,13 @@ function initMap() {
 					.attr('fill', net_color[key]);
 			});
 
+			let prox_cnvs	= canvas.append('g')
+				.attr('id', 'wrapped-proximity')
+				.attr('class', 'hidden')
+			drawProximity(prox_cnvs, proximity);
+
 			canvas.append('g').attr('id', 'maps-wrapper');
 			drawMap(0, 'national');
-			drawProximity(canvas, proximity);
 
 			canvas.append('g').attr('id', 'road-wrapper').attr('class', 'cursor-pointer hidden')
 				.selectAll('path').data(topojson.feature(road, road.objects.map).features).enter().append('g').append('path')
@@ -369,12 +373,9 @@ function colorMap(data, state) {
 function drawProximity(canvas, raw) {
 	let topo	= topojson.feature(raw, raw.objects.map);
 
-	let grouped	= canvas.append('g')
-		.attr('id', 'wrapped-proximity')
-		.attr('class', 'hidden')
-		.selectAll('path').data(topo.features).enter()
-			.append('g')
-			.attr('id', (o) => (prx_pref + _.snakeCase(o.properties.Name)));
+	let grouped	= canvas.selectAll('path').data(topo.features).enter()
+		.append('g')
+		.attr('id', (o) => (prx_pref + _.snakeCase(o.properties.Name)));
 
 	grouped.append('path')
 		.attr('d', path)

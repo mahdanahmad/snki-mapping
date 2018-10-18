@@ -5,7 +5,7 @@ const path		= require('path');
 const topojson	= require('topojson');
 const shapefile	= require('shapefile');
 
-const shp_root	= './data/shp/prox_ntb/';
+const shp_root	= './data/shp/proximity/';
 const rslt_root	= './public/proximity/';
 const rslt_name	= 'proximity';
 
