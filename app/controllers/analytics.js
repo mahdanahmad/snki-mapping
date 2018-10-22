@@ -10,7 +10,7 @@ const filt_field	= 'access_point_type';
 const pop_field		= 'potential_population';
 const head_count	= 1000;
 
-const layers		= ['Number of FAP', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From FAPs'];
+const layers		= ['Number of Access Point', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points'];
 
 module.exports.distribution	= (input, callback) => {
 	let response        = 'OK';

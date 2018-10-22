@@ -13,7 +13,7 @@ const filt_field	= 'access_point_type';
 const pop_field		= 'potential_population';
 const head_count	= 1000;
 
-const layers		= ['Number of FAP', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From FAPs'];
+const layers		= ['Number of Access Point', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points'];
 
 const nodata_clr	= '#FAFAF8';
 
@@ -215,7 +215,8 @@ module.exports.types	= (callback) => {
 
 	async.waterfall([
 		(flowCallback) => {
-			agents.distinct(filt_field, {}, (err, result) => flowCallback(err, result));
+			// agents.distinct(filt_field, {}, (err, result) => flowCallback(err, result));
+			types.findAll({}, {}, (err, result) => flowCallback(err, result.map((o) => _.pick(o, ['type', 'group']))));
 		},
 	], (err, asyncResult) => {
 		if (err) {

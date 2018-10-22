@@ -22,7 +22,7 @@ let tooltip;
 
 let length;
 
-const layers		= ['Number of FAP', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From FAPs'];
+const layers		= ['Number of Access Point', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points'];
 const tab_heads		= [
 	['Type of Access Points', 'FAP/PAP distribution', 'Network Coverage'],
 	['Adult Population'],

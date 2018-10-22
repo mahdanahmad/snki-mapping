@@ -42,6 +42,10 @@ $splash_clr	: #006fac;
 		li { color: black; &:hover { background: $splash_clr; color: white; } }
 	}
 }
+#dropdown-filter {
+	li:not(.group):not(.toggler) { padding-left: 30px; }
+	li.group {  }
+}
 #dropdown-region {
 	li { padding: 2px 20px; }
 }

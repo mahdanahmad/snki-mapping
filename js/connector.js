@@ -34,36 +34,34 @@ function refreshLayer() {
 	d3.select('g#wrapped-proximity').classed('hidden', true);
 	toggleSide(false);
 
-	changeFilterHead(() => {
-		let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
-		states.forEach((o) => colorMap([], o));
-		d3.selectAll('g.network').classed('hidden', true);
+	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+	states.forEach((o) => colorMap([], o));
+	d3.selectAll('g.network').classed('hidden', true);
 
-		d3.select('div#filter-dropdown').classed('hidden', active == layers[3]);
-		d3.select('g#wrapped-background').classed('reverse', active == layers[3]);
+	d3.select('div#filter-dropdown').classed('hidden', active == layers[3]);
+	d3.select('g#wrapped-background').classed('reverse', active == layers[3]);
 
-		switch (active) {
-			case layers[0]:
-				defaultAmountFAP();
-				if (curr_state == states.length - 1) { toggleNetwork(false); }
-				break;
-			case layers[1]:
-				defaultAmountFAP();
-				break;
-			case layers[2]:
-				defaultAmountFAP();
-				break;
-			case layers[3]:
-				d3.select('g#wrapped-proximity, g#wrapped-proximity > g').classed('hidden', false);
-				d3.selectAll('g.wrapper path').classed('seethrough', true);
-				createLegend(_.map(prx_color, (color, key) => ({ text: key.split('_').join(' - ') + ' minutes', color })), active);
-				if (curr_state >= (states.length - 1)) { drawPoint(centered[_.last(states)]); }
-				break;
-			default: console.log('base unhandled');
-		}
+	switch (active) {
+		case layers[0]:
+			defaultAmountFAP();
+			if (curr_state == states.length - 1) { toggleNetwork(false); }
+			break;
+		case layers[1]:
+			defaultAmountFAP();
+			break;
+		case layers[2]:
+			defaultAmountFAP();
+			break;
+		case layers[3]:
+			d3.select('g#wrapped-proximity, g#wrapped-proximity > g').classed('hidden', false);
+			d3.selectAll('g.wrapper path').classed('seethrough', true);
+			createLegend(_.map(prx_color, (color, key) => ({ text: key.split('_').join(' - ') + ' minutes', color })), active);
+			if (curr_state >= (states.length - 1)) { drawPoint(centered[_.last(states)]); }
+			break;
+		default: console.log('base unhandled');
+	}
 
-		initTabs();
-	});
+	initTabs();
 }
 
 function refreshAnalytic() {
