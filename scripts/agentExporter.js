@@ -33,7 +33,7 @@ const type_details	= {
 	'Joint Venture Bank'	: { color: '#70cbd3', shape: 'rect', group: 'FAP' },
 	'BPR Syariah'			: { color: '#0d8341', shape: 'rect', group: 'FAP' },
 	'ATM'					: { color: '#efd724', shape: 'circle', group: 'FAP' },
-	'Laku Pandai'			: { color: '#a64e9d', shape: 'circle', group: 'FAP' },
+	'Banking Agents'		: { color: '#a64e9d', shape: 'circle', group: 'FAP' },
 	'Cooperative'			: { color: '#9b401c', shape: 'circle', group: 'FAP' },
 	'AirTime'				: { color: 'firebrick', shape: 'triangle', group: 'PAP' },
 	'Post Office'			: { color: '#f38b20', shape: 'triangle', group: 'PAP' },
