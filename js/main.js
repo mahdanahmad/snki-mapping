@@ -1,4 +1,4 @@
-moment.locale('id');
+// moment.locale('id');
 
 $( document ).ready(function() {
 	// $( document ).tooltip({});

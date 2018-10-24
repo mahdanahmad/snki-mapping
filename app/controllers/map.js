@@ -1,6 +1,5 @@
 const _				= require('lodash');
 const async			= require('async');
-const moment		= require('moment');
 
 const types			= require('../models/types');
 const agents		= require('../models/agents');
