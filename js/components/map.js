@@ -181,7 +181,7 @@ function zoom(id, state) {
 			svg.select('g#' + state + '-' + id).classed('hidden', true);
 			centered[state]	= id;
 
-			setTimeout(() => { drawMap(id, states[curr_state]); }, 500);
+			setTimeout(() => { drawMap(id, states[curr_state]); }, 750);
 			svg.selectAll('path.' + state).classed('unintended', true);
 
 			if ( state == _.head(states) ) { colorActive(id); }
