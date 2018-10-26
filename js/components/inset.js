@@ -43,7 +43,7 @@ function initInset(data) {
 		.on('click', () => { toggleInset(true); });
 }
 
-function colorActive(id) {
+function insetActive(id) {
 	d3.select('g#' + inset_id + ' path.active').classed('active', false);
 	if (id) { d3.select('g#' + inset_id + ' path#inset-' + id).classed('active', true); }
 }

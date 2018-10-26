@@ -184,7 +184,7 @@ function zoom(id, state) {
 			setTimeout(() => { drawMap(id, states[curr_state]); }, 750);
 			svg.selectAll('path.' + state).classed('unintended', true);
 
-			if ( state == _.head(states) ) { colorActive(id); }
+			if ( state == _.head(states) ) { insetActive(id); }
 		} else if (_.isNil(state)) {
 			x = node.width / 2;
 			y = node.height / 2;
@@ -196,11 +196,12 @@ function zoom(id, state) {
 
 			svg.selectAll('path.unintended').classed('unintended', false);
 			moveRuler(coalesce.national.distance);
-			refreshLegend();
 			changeRegionHead();
-			colorActive();
+			insetActive();
 
-			if ($( base_target + ' > ul > li > input:checked' ).attr('value') == layers[3]) { d3.selectAll('g.wrapper.national-wrapper path').classed('seethrough', true); }
+			let active		= $( base_target + ' > ul > li > input:checked' ).attr('value');
+			let pointNeeded	= (active == layers[3]) || (active == layers[0] && $( point_id + ' > input' ).prop('checked'));
+			if (pointNeeded) { d3.selectAll('g.wrapper.national-wrapper path').classed('seethrough', true); } else { refreshLegend(); }
 		} else {
 			console.error('unhandled');
 		}
@@ -291,6 +292,62 @@ function drawPoint(id, holdLegend=false) {
 	}
 }
 
+function freeDrawPoint() {
+	toggleLoading();
+	d3.select('g#' + point_wrapper).remove();
+	let canvas	= d3.select("svg#" + map_id + '> g#canvas').append('g').attr('id', point_wrapper);
+
+	getPoints((err, result) => {
+		let pinSize		= (curr_state + (curr_state < 0 ? 3 : 2)) / scale;
+		let triangle	= d3.path();
+		triangle.moveTo(0, -pinSize);
+		triangle.lineTo(pinSize, pinSize);
+		triangle.lineTo(-pinSize, pinSize);
+		triangle.lineTo(0, -pinSize);
+		triangle.closePath();
+
+		canvas.selectAll('circle')
+			.data(result.data.filter((o) => (o.shape == 'circle')))
+			.enter().append('circle')
+				.attr('class', 'point')
+				.attr('r', pinSize)
+				.attr('transform', (o) => {
+					let pix	= projection([o.long, o.lat]);
+					return ('translate(' + pix[0] + ',' + pix[1] + ')')
+				})
+				.style('fill', (o) => (o.color));
+
+		canvas.selectAll('rect')
+			.data(result.data.filter((o) => (o.shape == 'rect')))
+			.enter().append('rect')
+				.attr('class', 'point')
+				.attr('x', -pinSize)
+				.attr('y', -pinSize)
+				.attr('width', pinSize * 2)
+				.attr('height', pinSize * 2)
+				.attr('transform', (o) => {
+					let pix	= projection([o.long, o.lat]);
+					return ('translate(' + pix[0] + ',' + pix[1] + ')')
+				})
+				.style('fill', (o) => (o.color));
+
+		canvas.selectAll('path')
+			.data(result.data.filter((o) => (o.shape == 'triangle')))
+			.enter().append('path')
+				.attr('class', 'point')
+				.attr('d', triangle.toString())
+				.attr('transform', (o) => {
+					let pix	= projection([o.long, o.lat]);
+					return ('translate(' + pix[0] + ',' + pix[1] + ')')
+				})
+				.style('fill', (o) => (o.color));
+
+		createLegend(result.legend, 'Type of Access Point');
+
+		setTimeout(() => toggleLoading(true), 750);
+	});
+}
+
 function drawMap(id, state) {
 	let svg			= d3.select("svg#" + map_id + '> g#canvas > g#maps-wrapper');
 	let next_state	= states[curr_state + 1];
@@ -313,11 +370,13 @@ function drawMap(id, state) {
 				.attr('id', (o) => (next_state + '-' + o.properties.id))
 				.attr('class', 'grouped-' + state + ' cursor-pointer');
 
-			if (active == layers[3]) { d3.selectAll('g.wrapper path').classed('seethrough', false); }
+			let pointNeeded	= (active == layers[3]) || (active == layers[0] && $( point_id + ' > input' ).prop('checked'));
+
+			if (pointNeeded) { d3.selectAll('g.wrapper path').classed('seethrough', false); }
 
 			grouped.append('path')
 				.attr('d', path)
-				.attr('class', next_state + ' default-clr' + (active == layers[3] ? ' seethrough': ''))
+				.attr('class', next_state + ' default-clr' + (pointNeeded ? ' seethrough': ''))
 				.attr('vector-effect', 'non-scaling-stroke')
 				.style('stroke-width', (base_stroke - ((curr_state + 1) * .1)) + 'px');
 
@@ -333,6 +392,8 @@ function drawMap(id, state) {
 				return !_.isNil(next_state) ? zoom(o.properties.id, next_state) : null;
 			});
 
+			// if (active == layers[0] && $( point_id + ' > input' ).prop('checked')) { grouped.selectAll('path').classed('seethrough', true); }
+
 			changeRegionHead();
 			setTimeout(() => { resolve() }, 300);
 		});
@@ -341,13 +402,7 @@ function drawMap(id, state) {
 	promise.then(() => {
 		switch (active) {
 			case layers[0]:
-				let willShowPoint	= curr_state >= (states.length - 1);
-				toggleNetwork(!willShowPoint);
-				if (willShowPoint) {
-					drawPoint(id);
-				} else {
-					getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
-				}
+				if (!$( point_id + ' > input' ).prop('checked')) { getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); }); }
 				break;
 			case layers[1]:
 				getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });

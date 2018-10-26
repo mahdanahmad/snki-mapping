@@ -41,44 +41,32 @@ module.exports.index	= (input, callback) => {
 
 			switch (layer) {
 				case layers[0]:
-					if (!_.includes(states.slice(-2), active)) {
-						agents.rawAggregate([
-							{ '$match': match },
-							{ '$group': { _id: '$' + states[states.indexOf(active) + 1], size: { $sum: 1 } } },
-							{ '$match': { _id: { $ne: null } } }
-						], {}, (err, data) => {
-							let max		= _.chain(data).maxBy('size').get('size', 0).value();
+					agents.rawAggregate([
+						{ '$match': match },
+						{ '$group': { _id: '$' + states[states.indexOf(active) + 1], size: { $sum: 1 } } },
+						{ '$match': { _id: { $ne: null } } }
+					], {}, (err, data) => {
+						let max		= _.chain(data).maxBy('size').get('size', 0).value();
 
-							let rounded	= 0;
-							if (max <= 10) { rounded = 10; } else {
-								let inStr	= Math.round(max).toString();
-								let length	= inStr.length - 1;
-								rounded		= Math.ceil(parseInt(inStr) / Math.pow(10, length)) * Math.pow(10, length);
-							}
+						let rounded	= 0;
+						if (max <= 10) { rounded = 10; } else {
+							let inStr	= Math.round(max).toString();
+							let length	= inStr.length - 1;
+							rounded		= Math.ceil(parseInt(inStr) / Math.pow(10, length)) * Math.pow(10, length);
+						}
 
-							const range		= rounded / 5;
-							const fracture 	= _.range(0, rounded, range).reverse();
+						const range		= rounded / 5;
+						const fracture 	= _.range(0, rounded, range).reverse();
 
-							data.map((row) => {
-								let color	= '';
-								fracture.forEach((o, i) => { if (row.size >= o && _.isEmpty(color)) { color = pallete[i]; } });
+						data.map((row) => {
+							let color	= '';
+							fracture.forEach((o, i) => { if (row.size >= o && _.isEmpty(color)) { color = pallete[i]; } });
 
-								_.assign(row, { color });
-							});
-
-							flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: o + ' - ' + (o + range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
+							_.assign(row, { color });
 						});
-					} else {
-						types.findAll({}, {}, (err, alltypes) => {
-							if (err) { flowCallback(err); } else {
-								const mapped	= _.chain(alltypes).map((o) => ([o.type, { color: o.color, shape: o.shape }])).fromPairs().value();
-								agents.rawAggregate([
-									{ '$match': match },
-									{ '$project': { _id: 1, long: '$longitude', lat: '$latitude', type: '$' + filt_field } }
-								], {}, (err, result) => flowCallback(err, { data: result.map((o) => _.assign(o, mapped[o.type])), legend: alltypes.filter((o) => (_.chain(result).map('type').uniq().includes(o.type).value())).map((o) => ({ text: o.type.length > 15 ? (o.type.substring(0, 13) + '...') : o.type, color: o.color, shape: o.shape }))  }));
-							}
-						})
-					}
+
+						flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: o + ' - ' + (o + range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
+					});
 					break;
 				case layers[1]:
 					let parent	= _.chain({ province_id, kabupaten_id, kecamatan_id, desa_id }).omitBy(_.isNil).map().last().value() || null;
@@ -239,6 +227,7 @@ module.exports.points	= (input, callback) => {
 	const kabupaten_id	= (input.kab	|| null);
 	const kecamatan_id	= (input.kec	|| null);
 	const desa_id		= (input.desa	|| null);
+	const layer			= (input.layer	|| _.last(layers));
 
 	const filter		= input.filter ? JSON.parse(input.filter) : null;
 
@@ -247,7 +236,7 @@ module.exports.points	= (input, callback) => {
 	async.waterfall([
 		(flowCallback) => {
 			let match	= _.omitBy({ province_id, kabupaten_id, kecamatan_id, desa_id }, _.isNil);
-			if (filter) { match[filt_field] = { '$in': filter }; }
+			if (filter && (layer !== _.last(layers))) { match[filt_field] = { '$in': filter }; }
 
 			types.findAll({}, {}, (err, alltypes) => {
 				if (err) { flowCallback(err); } else {

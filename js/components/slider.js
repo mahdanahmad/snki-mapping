@@ -80,9 +80,14 @@ function onSliderClick() {
 		centered = _.omit(centered, states.slice(curr_state + 1));
 		coalesce = _.omit(coalesce, states.slice(curr_state + 1));
 
-		refreshLegend();
+		scale	= coalesce[classed].scale;
+		let active		= $( base_target + ' > ul > li > input:checked' ).attr('value');
+		let pointNeeded	= (active == layers[3]) || (active == layers[0] && $( point_id + ' > input' ).prop('checked'));
+		if (pointNeeded) { d3.selectAll('g.wrapper.national-wrapper path').classed('seethrough', true); } else { refreshLegend(); }
+		if ($( point_id + ' > input' ).prop('checked')) { freeDrawPoint(); }
+
 		changeRegionHead();
-		if (curr_state == -1) { colorActive(); }
+		if (curr_state == -1) { insetActive(); }
 		if ($( sidewrap ).hasClass('expanded')) { refreshAnalytic(); }
 	}
 }

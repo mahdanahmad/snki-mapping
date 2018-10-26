@@ -36,7 +36,7 @@ const type_details	= {
 	'Banking Agents'		: { color: '#a64e9d', shape: 'circle', group: 'FAP' },
 	'Cooperative'			: { color: '#9b401c', shape: 'circle', group: 'FAP' },
 	'AirTime'				: { color: 'firebrick', shape: 'triangle', group: 'PAP' },
-	'Post Office'			: { color: '#f38b20', shape: 'triangle', group: 'PAP' },
+	'Post Office & Agent'	: { color: '#f38b20', shape: 'triangle', group: 'PAP' },
 }
 
 function setType(o) {
@@ -45,7 +45,7 @@ function setType(o) {
 		else if (_.includes(['ATM'], o.access_point)) { return o.access_point; }
 		else { return bank_cate[o.bank_category]; }
 	} else {
-		if (_.includes(['Kantor Pos', 'Pos Agen'], o.access_point)) { return 'Post Office'; }
+		if (_.includes(['Kantor Pos', 'Pos Agen'], o.access_point)) { return 'Post Office & Agent'; }
 		else { return o.access_point; }
 	}
 }

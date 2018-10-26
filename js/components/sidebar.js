@@ -75,67 +75,18 @@ function togglePoint() {
 
 	if (value) {
 		freeDrawPoint();
+		d3.selectAll('.' + (states[curr_state] || 'national') + '-wrapper path').classed('seethrough', true);
 	} else {
 		d3.select('g#' + point_wrapper).remove();
+		d3.selectAll('g#maps-wrapper path').classed('seethrough', false);
+		refreshLegend();
 	}
+	if ($( base_target + ' > ul > li > input:checked' ).attr('value') == layers[0]) { toggleNetwork(!value); }
 
 	input.prop('checked', value);
 	d3.select(point_id).classed('off', !value);
 }
 
-function freeDrawPoint() {
-	toggleLoading();
-	d3.select('g#' + point_wrapper).remove();
-	let canvas	= d3.select("svg#" + map_id + '> g#canvas').append('g').attr('id', point_wrapper);
-
-	getPoints((err, result) => {
-		let pinSize		= (curr_state + (curr_state < 0 ? 3 : 2)) / scale;
-		let triangle	= d3.path();
-		triangle.moveTo(0, -pinSize);
-		triangle.lineTo(pinSize, pinSize);
-		triangle.lineTo(-pinSize, pinSize);
-		triangle.lineTo(0, -pinSize);
-		triangle.closePath();
-
-		canvas.selectAll('circle')
-			.data(result.data.filter((o) => (o.shape == 'circle')))
-			.enter().append('circle')
-				.attr('class', 'point')
-				.attr('r', pinSize)
-				.attr('transform', (o) => {
-					let pix	= projection([o.long, o.lat]);
-					return ('translate(' + pix[0] + ',' + pix[1] + ')')
-				})
-				.style('fill', (o) => (o.color));
-
-		canvas.selectAll('rect')
-			.data(result.data.filter((o) => (o.shape == 'rect')))
-			.enter().append('rect')
-				.attr('class', 'point')
-				.attr('x', -pinSize)
-				.attr('y', -pinSize)
-				.attr('width', pinSize * 2)
-				.attr('height', pinSize * 2)
-				.attr('transform', (o) => {
-					let pix	= projection([o.long, o.lat]);
-					return ('translate(' + pix[0] + ',' + pix[1] + ')')
-				})
-				.style('fill', (o) => (o.color));
-
-		canvas.selectAll('path')
-			.data(result.data.filter((o) => (o.shape == 'triangle')))
-			.enter().append('path')
-				.attr('class', 'point')
-				.attr('d', triangle.toString())
-				.attr('transform', (o) => {
-					let pix	= projection([o.long, o.lat]);
-					return ('translate(' + pix[0] + ',' + pix[1] + ')')
-				})
-				.style('fill', (o) => (o.color));
-
-		setTimeout(() => toggleLoading(true), 750);
-	});
-}
 
 function toggleInset(show=false) {
 	d3.select('g#' + inset_id).classed('hidden', show);
