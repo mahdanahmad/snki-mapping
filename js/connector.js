@@ -107,6 +107,8 @@ function defaultAmountFAP() {
 		colorMap(data.data, states[curr_state + 1]);
 		createLegend(data.legend, active);
 
+		if ((active == layers[0]) && $( point_id + ' > input' ).prop('checked')) { d3.selectAll('.' + (states[curr_state] || 'national') + '-wrapper path').classed('seethrough', true); }
+
 		setTimeout(() => toggleLoading(true), 750);
 	});
 }
