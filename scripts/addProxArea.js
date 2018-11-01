@@ -6,7 +6,7 @@ const csv 			= require('fast-csv');
 const async			= require('async');
 const MongoDB		= require('mongodb');
 
-const csv_file		= 'data/csv/bima_proximity.csv';
+const csv_file		= 'data/csv/prox_DIY.csv';
 const DB_COLL		= 'location';
 
 const MongoClient	= MongoDB.MongoClient;
@@ -24,7 +24,7 @@ MongoClient.connect(db_url, { }, (err, client) => {
 			csv
 				.fromPath(csv_file, { headers: true, delimiter: ';' })
 				.on('data', (row) => {
-					db.collection(DB_COLL).update({ id: row.CC_3 }, { '$set': {
+					db.collection(DB_COLL).update({ id: row.id }, { '$set': {
 						'0_5' : parseFloat(row['%Area_0to5 min'].replace(',', '.')),
 						'5_15' : parseFloat(row['%Area_5to15 min'].replace(',', '.')),
 						'15_30' : parseFloat(row['%Area_15to30 min'].replace(',', '.')),
