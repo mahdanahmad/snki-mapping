@@ -264,12 +264,12 @@ function nFormatter(num) {
 	let digits	= 2;
 	let standar = [
 		{ value: 1, symbol: "" },
-		{ value: 1E3, symbol: "ribu" },
-		{ value: 1E6, symbol: "juta" },
-		{ value: 1E9, symbol: "milyar" },
-		{ value: 1E12, symbol: "triliun" },
-		{ value: 1E15, symbol: "kuadriliun" },
-		{ value: 1E18, symbol: "kuantiliun" }
+		{ value: 1E3, symbol: "k" },
+		{ value: 1E6, symbol: "M" },
+		{ value: 1E9, symbol: "G" },
+		{ value: 1E12, symbol: "T" },
+		{ value: 1E15, symbol: "P" },
+		{ value: 1E18, symbol: "E" }
 	];
 	let re = /\.0+$|(\.[0-9]*[1-9])0+$/;
 	let i;
