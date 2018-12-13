@@ -274,5 +274,5 @@ function nFormatter(num) {
 	let re = /\.0+$|(\.[0-9]*[1-9])0+$/;
 	let i;
 	for (i = standar.length - 1; i > 0; i--) { if (num >= standar[i].value) { break; } }
-	return (num / standar[i].value).toFixed(digits).replace(re, "$1") + ' ' + standar[i].symbol;
+	return (num / standar[i].value).toFixed(digits).replace(re, "$1") + '' + standar[i].symbol;
 }
