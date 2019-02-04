@@ -61,9 +61,7 @@ typings/
 .sass-cache
 data/*
 !data/.gitkeep
-!data/csv/population.*
-!data/csv/prox_pilot.*
-!data/xlsx/Access_points_Master_Update_Pilot_V02.*
+!data/init/*
 
 results/*
 !results/.gitkeep

@@ -6,7 +6,7 @@ const csv 			= require('fast-csv');
 const async			= require('async');
 const MongoDB		= require('mongodb');
 
-const csv_file		= 'data/csv/population.csv';
+const csv_file		= 'data/init/population.csv';
 const DB_COLL		= 'location';
 
 const MongoClient	= MongoDB.MongoClient;

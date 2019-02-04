@@ -7,7 +7,7 @@ const async			= require('async');
 const XLSX 			= require('xlsx');
 const MongoDB		= require('mongodb');
 
-const xlsx_file		= 'data/xlsx/Access_points_Master_Update_Pilot_V02.xlsx';
+const xlsx_file		= 'data/init/Access_points_Master_Update_Pilot_V02.xlsx';
 
 const db_coll		= 'agents';
 const type_coll		= 'types';
