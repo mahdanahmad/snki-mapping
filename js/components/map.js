@@ -110,7 +110,7 @@ function initMap() {
 	svg.append('g').attr('id', inset_id);
 
 	d3.queue()
-		.defer(d3.json, 'json/0.json')
+		.defer(d3.json, 'bps/0.json')
 		.defer(d3.json, 'network/2G.json')
 		.defer(d3.json, 'network/3G.json')
 		.defer(d3.json, 'network/4G.json')
@@ -355,7 +355,7 @@ function drawMap(id, state) {
 	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
 
 	let promise	= new Promise((resolve, reject) => {
-		d3.json('json/' + id + '.json', (err, raw) => {
+		d3.json('bps/' + id + '.json', (err, raw) => {
 			let topo				= topojson.feature(raw, raw.objects.map);
 			mappedGeo[next_state]	= _.chain(topo).get('features', []).keyBy('properties.id').mapValues((o) => ({ centroid: path.centroid(o), bounds: path.bounds(o) })).value();
 
@@ -385,7 +385,7 @@ function drawMap(id, state) {
 				.attr('y', (o) => (mappedGeo[next_state][o.properties.id].centroid[1]))
 				.attr('class', ($( text_id + ' > input' ).prop('checked') ? '' : 'hidden'))
 				.style('font-size', (base_font / scale > 0.013 ? (base_font / scale) : 0.013) + 'px')
-				.text((o) => (o.properties.name));
+				.text((o) => _.chain(o.properties.name).words().map(o => _.capitalize(o)).join(' ').value());
 
 			grouped.on('click', (o) => {
 				_.set(coalesce, next_state + '.name', state_head[states.indexOf(next_state)] + ' ' + o.properties.name);
