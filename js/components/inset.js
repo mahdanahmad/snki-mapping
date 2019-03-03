@@ -6,6 +6,8 @@ const inset_height	= 20; // percentage
 
 const inset_padding	= 20;
 
+let in_mapped		= {};
+
 function initInset(data) {
 	let parentBBox		= d3.select('svg#' + map_id).node().getBBox();
 
@@ -13,6 +15,9 @@ function initInset(data) {
 
 	let canvasWidth		= parentBBox.width * inset_width / 100;
 	let canvasHeight	= parentBBox.height * inset_height / 100;
+
+	let topo			= topojson.feature(data, data.objects.map).features;
+	in_mapped			= _.chain(topo).map(o => ([o.properties.id, o.properties.name])).fromPairs().value();
 
 	canvas
 		.attr('transform', 'translate(' + inset_padding + ', ' + (parentBBox.height - canvasHeight - $(' #logo-wrapper ').outerHeight(true) - inset_padding) + ')');
@@ -30,9 +35,13 @@ function initInset(data) {
 		.attr('id', 'inset-background');
 
 	canvas.append('g').attr('id', 'inset-map')
-		.selectAll('path').data(topojson.feature(data, data.objects.map).features).enter().append('path')
+		.selectAll('path').data(topo).enter().append('path')
 			.attr('id', (o) => ('inset-' + o.properties.id))
 			.attr('d', in_path);
+
+	canvas.append('g').attr('id', 'inset-text').attr('transform', 'translate(' + canvasWidth / 2 + ', 20)')
+		.append('text')
+		.text('');
 
 	canvas.append('image')
 		.attr('class', 'cursor-pointer')
@@ -45,5 +54,12 @@ function initInset(data) {
 
 function insetActive(id) {
 	d3.select('g#' + inset_id + ' path.active').classed('active', false);
-	if (id) { d3.select('g#' + inset_id + ' path#inset-' + id).classed('active', true); }
+	if (id) {
+		d3.select('g#' + inset_id + ' path#inset-' + id).classed('active', true);
+
+		let text	= d3.select('g#' + inset_id + ' g#inset-text text');
+		text.text(in_mapped[id]).attr('x', -(text.node().getBBox().width / 2))
+	} else {
+		d3.select('g#' + inset_id + ' g#inset-text text').text('');
+	}
 }

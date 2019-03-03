@@ -36,6 +36,9 @@
 			g#inset-map {
 				path { fill: $land-color; stroke: $sea-color; &.active { fill: $prov-active; } }
 			}
+			g#inset-text {
+				text { font-size: 14px; text-transform: capitalize; }
+			}
 		}
 
 		g#legend-wrapper, g#point-wrapper {
