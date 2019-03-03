@@ -1,5 +1,5 @@
 function refreshView() {
-	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+	let active	= getActive();
 	if ($( sidewrap ).hasClass('expanded')) { refreshAnalytic(); }
 	switch (active) {
 		case layers[0][0]:
@@ -34,7 +34,7 @@ function refreshLayer() {
 	d3.select('g#wrapped-proximity').classed('hidden', true);
 	toggleSide(false);
 
-	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+	let active	= getActive();
 	states.forEach((o) => colorMap([], o));
 	d3.selectAll('g.network').classed('hidden', true);
 
@@ -52,11 +52,7 @@ function refreshLayer() {
 			defaultAmountFAP();
 			break;
 		case layers[0][3]:
-			d3.select('g#wrapped-proximity, g#wrapped-proximity > g').classed('hidden', false);
-			if (curr_state > -1) { d3.selectAll(_.chain(coalesce).keys().slice(0, -1).map((o) => ('.' + o + '-wrapper path')).join(', ').value()).classed('unintended', true); }
-			d3.selectAll('.' + (states[curr_state] || 'national') + '-wrapper path').classed('seethrough', true);
-			createLegend(_.map(prx_color, (color, key) => ({ text: key.split('_').join(' - ') + ' minutes', color })), layers[lang][layers[0].indexOf(active)]);
-			if (curr_state >= (states.length - 1)) { drawPoint(centered[_.last(states)]); }
+			defaultProximity();
 			break;
 		default: console.log('base unhandled');
 	}
@@ -101,7 +97,8 @@ function refreshAnalytic() {
 
 function defaultAmountFAP() {
 	$(states.concat(['national']).map((o) => ('.' + o + '-wrapper path')).join(', ')).addClass('unintended');
-	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+	let active	= getActive();
+
 	toggleLoading();
 	getMapData((err, data) => {
 		colorMap(data.data, states[curr_state + 1]);
@@ -111,6 +108,16 @@ function defaultAmountFAP() {
 
 		setTimeout(() => toggleLoading(true), 750);
 	});
+}
+
+function defaultProximity() {
+	let active	= getActive();
+	
+	d3.select('g#wrapped-proximity, g#wrapped-proximity > g').classed('hidden', false);
+	if (curr_state > -1) { d3.selectAll(_.chain(coalesce).keys().slice(0, -1).map((o) => ('.' + o + '-wrapper path')).join(', ').value()).classed('unintended', true); }
+	d3.selectAll('.' + (states[curr_state] || 'national') + '-wrapper path').classed('seethrough', true);
+	createLegend(_.map(prx_color, (color, key) => ({ text: key.split('_').join(' - ') + ' minutes', color })), layers[lang][layers[0].indexOf(active)]);
+	if (curr_state >= (states.length - 1)) { drawPoint(centered[_.last(states)]); }
 }
 
 function toggleLoading(state = false) { d3.select('#loading').classed('hidden', state); }

@@ -117,7 +117,7 @@ function langChange() {
 	initTabs();
 	toggleSide(false);
 
-	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+	let active	= getActive();
 	if ($( point_id + ' > input' ).prop('checked')) {
 		getPoints((err, result) => { createLegend(result.legend, lang_lists.type[lang]); }, true)
 	} else {

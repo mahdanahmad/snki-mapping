@@ -79,7 +79,8 @@ function togglePoint() {
 	} else {
 		d3.select('g#' + point_wrapper).remove();
 		d3.selectAll('g#maps-wrapper path').classed('seethrough', false);
-		refreshLegend();
+
+		if (getActive() == layers[0][3]) { defaultProximity(); } else { refreshLegend(); }
 	}
 	if ($( base_target + ' > ul > li > input:checked' ).attr('value') == layers[0][0]) { toggleNetwork(!value); }
 
@@ -94,7 +95,7 @@ function toggleInset(show=false) {
 }
 
 function initTabs() {
-	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+	let active	= getActive();
 
 	$( sidecont + ' > ' + tabs_id ).html(tab_heads[layers[0].indexOf(active)].map((o, i) => (
 		"<div class='tab cursor-pointer" + (!i ? ' active' : '') + "'>" +

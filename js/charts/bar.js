@@ -18,7 +18,7 @@ function createBar() {
 			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 	let tooltip;
-	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+	let active	= getActive();
 
 	getPopulation((err, result) => {
 		if (!_.isEmpty(result.data)) {

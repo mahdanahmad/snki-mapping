@@ -57,3 +57,5 @@ function addCommas(nStr) {
     }
     return nStr;
 }
+
+function getActive() { return $( base_target + ' > ul > li > input:checked' ).attr('value'); }

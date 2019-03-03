@@ -352,7 +352,7 @@ function drawMap(id, state) {
 	let svg			= d3.select("svg#" + map_id + '> g#canvas > g#maps-wrapper');
 	let next_state	= states[curr_state + 1];
 
-	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+	let active	= getActive();
 
 	let promise	= new Promise((resolve, reject) => {
 		d3.json('bps/' + id + '.json', (err, raw) => {
