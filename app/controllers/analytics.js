@@ -25,7 +25,8 @@ module.exports.distribution	= (input, callback) => {
 	const desa_id		= (input.desa	|| null);
 	const layer			= (input.layer	|| _.first(layers));
 
-	const filter		= input.filter ? JSON.parse(input.filter) : null;
+	const filter		= input.filter	? JSON.parse(input.filter)	: null;
+	const lang			= input.lang	? input.lang				: null;
 
 	const type			= _.includes(type_state, input.type) ? _.indexOf(type_state, input.type) : 0;
 
@@ -55,14 +56,15 @@ module.exports.distribution	= (input, callback) => {
 		},
 		(data, flowCallback) => {
 			let total	= _.sumBy(data, 'sum');
+
 			if (type) {
 				types.rawAggregate([
 					{ '$match': { 'type': { '$in': data.map((o) => o._id) } } },
-					{ '$project': { _id: 0, 'type': 1, 'color': 1, 'shape': 1 } }
+					{ '$project': { _id: 0, 'type': 1, 'color': 1, 'shape': 1, 'name': '$' + lang } }
 				], {}, (err, result) => {
 					if (err) { flowCallback(err); } else {
 						let mapped	= _.chain(result).map((o) => ([o.type, _.omit(o, 'type')])).fromPairs().value();
-						flowCallback(null, { data: data.map((o) => (_.assign(o, mapped[o._id]))), total })
+						flowCallback(null, { data: data.map((o) => (_.chain(o).assign(mapped[o._id], (mapped[o._id].name ? { _id: mapped[o._id].name } : {})).omit('name').value())), total })
 					}
 				});
 			} else {
@@ -210,11 +212,11 @@ module.exports.proximity	= (input, callback) => {
 	const desa_id		= (input.desa	|| null);
 
 	const filter		= input.filter ? JSON.parse(input.filter) : null;
+	const lang			= input.lang	? input.lang				: null;
 
 	const states		= ['province_id', 'kabupaten_id', 'kecamatan_id', 'desa_id'];
 
 	let id				= _.chain({ province_id, kabupaten_id, kecamatan_id, desa_id }).omitBy(_.isNil).map().last().value() || null;
-	// let id				= '5206071';
 
 	async.waterfall([
 		(flowCallback) => {
@@ -223,7 +225,7 @@ module.exports.proximity	= (input, callback) => {
 				{ '$project': { '0_5': 1, '5_15': 1, '15_30': 1, '>30': 1, _id: 0 } }
 			], {}, (err, result) => flowCallback(err, {
 				'name': 'treemap',
-				'children': _.map(result[0], (size, key) => ({ name: _.chain(key).split('_').join(' - ').value() + ' minutes', size, key }))
+				'children': _.map(result[0], (size, key) => ({ name: _.chain(key).split('_').join(' - ').value() + ' ' + (lang == 'id' ? 'menit' : 'minutes'), size, key }))
 			}));
 		}
 	], (err, asyncResult) => {

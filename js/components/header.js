@@ -35,7 +35,7 @@ function createFilterHead() {
 						"<polyline points='1 9 7 14 15 4'></polyline>" +
 					"</svg>" +
 				"</label>" +
-				"<span>" + o.type + "</span>" +
+				(o.lang ? o.lang.map((d, l) => ("<span class=\"langs lang-" + l + " " + (l ? 'hidden' : '') + "\">" + d + "</span>")).join('') : "<span>" + o.type + "</span>" ) +
 			"</li>"
 		)).join('').value());
 		$( filter_target + ' > ul > li:not(.toggler):not(.group)' ).click(function(e) {
@@ -104,12 +104,14 @@ function langChange() {
 	$( lang_id + ' > div.active' ).removeClass('active');
 
 	$( base_target + ' > ul > li > span.langs' ).addClass('hidden');
+	$( filter_target + ' > ul > li > span.langs' ).addClass('hidden');
 
 	lang	= (lang + 1) % lang_enum.length;
 
 	$( lang_id + ' > div#' + lang_enum[lang] ).addClass('active');
 
 	$( base_target + ' > ul > li > span.lang-' + lang ).removeClass('hidden');
+	$( filter_target + ' > ul > li > span.lang-' + lang ).removeClass('hidden');
 
 	writeHeader();
 	initTabs();
