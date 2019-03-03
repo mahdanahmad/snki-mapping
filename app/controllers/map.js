@@ -229,7 +229,9 @@ module.exports.points	= (input, callback) => {
 	const desa_id		= (input.desa	|| null);
 	const layer			= (input.layer	|| _.last(layers));
 
-	const filter		= input.filter ? JSON.parse(input.filter) : null;
+	const filter		= input.filter	? JSON.parse(input.filter)	: null;
+	const lang			= input.lang	? input.lang				: null;
+	const legend		= input.legend	? input.legend				: null;
 
 	const states		= ['province_id', 'kabupaten_id', 'kecamatan_id', 'desa_id'];
 
@@ -238,16 +240,26 @@ module.exports.points	= (input, callback) => {
 			let match	= _.omitBy({ province_id, kabupaten_id, kecamatan_id, desa_id }, _.isNil);
 			if (filter && (layer !== _.last(layers))) { match[filt_field] = { '$in': filter }; }
 
-			types.findAll({}, {}, (err, alltypes) => {
+			if (legend !== 'only') {
+				agents.rawAggregate([
+					{ '$match': match },
+					{ '$project': { _id: 1, long: '$longitude', lat: '$latitude', type: '$' + filt_field } }
+				], {}, (err, foundAgents) => flowCallback(err, foundAgents, _.chain(foundAgents).map('type').uniq().value()));
+			} else {
+				agents.distinct(filt_field, match, (err, result) => flowCallback(err, [], result));
+			}
+		},
+		(data, inTypes, flowCallback) => {
+			types.rawAggregate([
+				{ '$match': { 'type': { '$in': inTypes } } },
+				{ '$project': { _id: 0, 'type': 1, 'color': 1, 'shape': 1, 'name': '$' + lang } }
+			], {}, (err, foundTypes) => {
 				if (err) { flowCallback(err); } else {
-					const mapped	= _.chain(alltypes).map((o) => ([o.type, { color: o.color, shape: o.shape }])).fromPairs().value();
-					agents.rawAggregate([
-						{ '$match': match },
-						{ '$project': { _id: 1, long: '$longitude', lat: '$latitude', type: '$' + filt_field } }
-					], {}, (err, result) => flowCallback(err, { data: result.map((o) => _.assign(o, mapped[o.type])), legend: alltypes.filter((o) => (_.chain(result).map('type').uniq().includes(o.type).value())).map((o) => ({ text: o.type.length > 15 ? (o.type.substring(0, 13) + '...') : o.type, color: o.color, shape: o.shape }))  }));
+					const mapped	= _.chain(foundTypes).map((o) => ([o.type, { color: o.color, shape: o.shape }])).fromPairs().value();
+					flowCallback(null, { data: data.map((o) => _.assign(o, mapped[o.type])), legend: foundTypes.map(o => ({ text: (o.name || o.type).length > 15 ? ((o.name || o.type).substring(0, 13) + '...') : (o.name || o.type), color: o.color, shape: o.shape })) });
 				}
 			});
-		},
+		}
 	], (err, asyncResult) => {
 		if (err) {
 			response    = 'FAILED';
