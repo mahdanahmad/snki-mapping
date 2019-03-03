@@ -63,4 +63,5 @@ const lang_lists	= {
 	access: ['Total Access Point', 'Total Titik Finansial'],
 	adult: ['Total Adult Population', 'Total Populasi Orang Dewasa'],
 	potential: ['Total Potential Population', 'Total Populasi yang Berpotensi'],
+	type: ['Type of Access Point', 'Tipe Titik Finansial']
 }

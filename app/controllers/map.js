@@ -197,7 +197,7 @@ module.exports.location	= (input, callback) => {
 module.exports.types	= (callback) => {
 	let response        = 'OK';
 	let status_code     = 200;
-	let message         = 'Get location data success.';
+	let message         = 'Get type data success.';
 	let result          = null;
 
 	async.waterfall([

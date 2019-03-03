@@ -65,4 +65,3 @@ data/*
 
 results/*
 !results/.gitkeep
-!results/gadm36_IDN_*.csv

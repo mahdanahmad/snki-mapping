@@ -287,7 +287,7 @@ function drawPoint(id, holdLegend=false) {
 					})
 					.style('fill', (o) => (o.color));
 
-			if (!holdLegend) { createLegend(result.legend, 'Type of Access Point'); }
+			if (!holdLegend) { createLegend(result.legend, lang_lists.type[lang]); }
 		});
 	}
 }
@@ -342,7 +342,7 @@ function freeDrawPoint() {
 				})
 				.style('fill', (o) => (o.color));
 
-		createLegend(result.legend, 'Type of Access Point');
+		createLegend(result.legend, lang_lists.type[lang]);
 
 		setTimeout(() => toggleLoading(true), 750);
 	});

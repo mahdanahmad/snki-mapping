@@ -116,5 +116,9 @@ function langChange() {
 	toggleSide(false);
 
 	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
-	createLegend(null, layers[lang][layers[0].indexOf(active)]);
+	if ($( point_id + ' > input' ).prop('checked')) {
+		createLegend(null, lang_lists.type[lang]);
+	} else {
+		createLegend(null, layers[lang][layers[0].indexOf(active)]);
+	}
 }
