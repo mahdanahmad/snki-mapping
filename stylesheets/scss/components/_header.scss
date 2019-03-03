@@ -31,6 +31,16 @@ $splash_clr	: #006fac;
 		}
 	}
 
+	#lang-wrapper {
+		display: inline-block; float: right; text-transform: uppercase; margin-left: 20px;
+		line-height: #{$header-height - ($vPad * 2)}; font-weight: bolder;
+		div {
+			font-size: 10px; display: inline-block; color: gray; padding: 0 10px;
+			&.active { border-bottom: 4px solid $splash_clr; border-radius: 2px; color: white; }
+		}
+		span { font-size: 15px; }
+	}
+
 }
 
 .jq-dropdown > div { border: none; @include clearfix(); }

@@ -22,17 +22,17 @@ let tooltip;
 
 let length;
 
-const layers		= ['Number of Access Point', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points'];
+const layers		= [
+	['Number of Access Point', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points'],
+	['Jumlah Titik Finansial', 'Populasi Orang Dewasa', 'Titik Finansial per 1000 Dewasa', 'Waktu Tempuh dari Titik Finansial'],
+];
 const tab_heads		= [
-	['Type of Access Points', 'FAP/PAP distribution', 'Network Coverage'],
-	['Adult Population'],
-	['Access Point Per 1000 Adults'],
-	['Driving Time From FAPs'],
+	[['Type of Access Points', 'Tipe Titik Finansial'], ['FAP/PAP distribution', 'Distribusi FAP/PAP'], ['Network Coverage', 'Ketersediaan Jaringan']],
+	[['Adult Population', 'Populasi Orang Dewasa']],
+	[['Access Point Per 1000 Adults', 'Titik Finansial per 1000 Dewasa']],
+	[['Driving Time From FAPs', 'Waktu Tempuh dari Titik Finansial']],
 ];
 const net_color		= {
-	// two		: '#c8d7ea',
-	// three	: '#f4b2da',
-	// four	: '#cd9ed9'
 	two		: '#8bbdbe',
 	three	: '#75cccd',
 	four	: '#447f8b'
@@ -49,3 +49,18 @@ const prx_color		= {
 	'>30'	: '#d4dadc'
 }
 const prx_pref		= 'prx-';
+
+const lang_enum		= ['en', 'id'];
+const lang_id		= '#lang-wrapper';
+let lang			= 0;
+
+const lang_targets	= {
+	'#region-dropdown'	: ['Select', 'Pilih'],
+	'#base-dropdown'	: ['Basemap layer', 'Peta dasar'],
+	'#filter-dropdown'	: ['Filter', 'Filter'],
+}
+const lang_lists	= {
+	access: ['Total Access Point', 'Total Titik Finansial'],
+	adult: ['Total Adult Population', 'Total Populasi Orang Dewasa'],
+	potential: ['Total Potential Population', 'Total Populasi yang Berpotensi'],
+}

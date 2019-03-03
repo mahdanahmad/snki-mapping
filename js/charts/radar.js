@@ -127,7 +127,7 @@ function createRadar() {
 			let bbox	= canvas.node().getBBox();
 			canvas.attr('transform', 'translate(' + margin.left + ',' + (margin.top + (height > bbox.height ? ((height - bbox.height) / 2) : 0)) + ')');
 
-			d3.select(misc_floor).text('Total Access Point: ' + result.total);
+			d3.select(misc_floor).text(lang_lists.access[lang] + ': ' + result.total);
 
 			function onMouseover(o) {
 				tooltip.select('text').text(o.sum);

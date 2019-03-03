@@ -82,7 +82,7 @@ function onSliderClick() {
 
 		scale	= coalesce[classed].scale;
 		let active		= $( base_target + ' > ul > li > input:checked' ).attr('value');
-		let pointNeeded	= (active == layers[3]) || (active == layers[0] && $( point_id + ' > input' ).prop('checked'));
+		let pointNeeded	= (active == layers[0][3]) || (active == layers[0][0] && $( point_id + ' > input' ).prop('checked'));
 		if (pointNeeded) { d3.selectAll('g.wrapper.national-wrapper path').classed('seethrough', true); } else { refreshLegend(); }
 		if ($( point_id + ' > input' ).prop('checked')) { freeDrawPoint(); }
 

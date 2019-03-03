@@ -46,7 +46,7 @@ function createBar() {
 				// .attr('text-anchor', 'middle')
 				.attr('alignment-baseline', 'middle')
 				.attr('class', (o) => ('cursor-default capita' + (o.size ? ' moved' : '')))
-				.text((o) => (o.size ? ( active == layers[1] ? nFormatter(o.size) : o.size ) : ''));
+				.text((o) => (o.size ? ( active == layers[0][1] ? nFormatter(o.size) : o.size ) : ''));
 
 			grouped.on('mouseover', onMouseover)
 			grouped.on('mouseout', onMouseout);
@@ -70,15 +70,15 @@ function createBar() {
 			tooltip.append('rect').attr('x', 0).attr('y', 0).attr('rx', 5).attr('ry', 5);
 			tooltip.append('text').attr('text-anchor', 'middle').attr('alignment-baseline', 'middle');
 
-			if (active == layers[1]) {
-				d3.select(misc_floor).text('Total Adult Population: ' + (result.details.potential_population ? addCommas(result.details.potential_population) : 'N/A'));
+			if (active == layers[0][1]) {
+				d3.select(misc_floor).text(lang_lists.adult[lang] + ': ' + (result.details.potential_population ? addCommas(result.details.potential_population) : 'N/A'));
 			} else {
-				d3.select(misc_floor).text('Total Access Point: ' + (result.details.total || 'N/A'));
-				d3.select(misc_adds).text('Total Potential Population: ' + (result.details.potential_population ? addCommas(result.details.potential_population) : 'N/A'));
+				d3.select(misc_floor).text(lang_lists.access[lang] + ': ' + (result.details.total || 'N/A'));
+				d3.select(misc_adds).text(lang_lists.potential[lang] + ': ' + (result.details.potential_population ? addCommas(result.details.potential_population) : 'N/A'));
 			}
 
 			function onMouseover(o) {
-				if (active == layers[2]) {
+				if (active == layers[0][2]) {
 					tooltip.select('text').text(nFormatter(o.ap_count) + ' poin untuk ' + nFormatter(o.potential_population) + ' penduduk')
 
 					tooltip.select('rect')

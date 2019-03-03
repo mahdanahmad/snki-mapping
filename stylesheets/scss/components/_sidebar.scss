@@ -60,7 +60,7 @@ $misc_hgt	: 60px;
 			position: relative; width: $toggl-size; height: $toggl-size; background: $off-color; border-radius: 0 10px 10px 0;
 			svg { height: auto; position: absolute; top: 50%; transform: translateY(-50%); fill: $on-color; }
 			&#sidebar-toggler {
-				transition: all .5s linear;
+				transition: all .5s linear; background: $on-color; svg { fill: $off-color; }
 				svg { width: 75%; left: 10%; }
 			}
 			&#network-toggler {
@@ -87,6 +87,6 @@ $misc_hgt	: 60px;
 	}
 	&.expanded {
 		left: 0;
-		#sidebar-buttons > #sidebar-toggler { background: $on-color; svg { fill: $off-color; } }
+		#sidebar-buttons > #sidebar-toggler { background: $off-color; svg { fill: $on-color; } }
 	}
 }

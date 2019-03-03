@@ -51,7 +51,7 @@ function createPie() {
 
 			canvas.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
 
-			d3.select(misc_floor).text('Total Access Point: ' + total);
+			d3.select(misc_floor).text(lang_lists.access[lang] + ': ' + total);
 			d3.select(misc_adds).html(_.map(result.represent, (o, key) => (o + ' of ' + (key == 'national' ? 'National' : coalesce[key].name))).join('<br />'));
 		} else {
 			canvas.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');

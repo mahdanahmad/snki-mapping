@@ -37,4 +37,8 @@ $( document ).ready(function() {
 	initTabs();
 
 	setTimeout(() => initMap(), 100);
+
+	$(lang_id).html(_.chain(lang_enum).flatMap((o, i) => (['<span>|</span>', '<div id="' + o + '" class="' + (i == 0 ? 'active' : '') + '">' + o + '</div>'])).tail().value());
+	writeHeader();
+
 });

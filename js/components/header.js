@@ -1,5 +1,5 @@
 const state_head	= ['Provinsi', 'Kabupaten', 'Kecamatan'];
-const title_target	= '#region-dropdown > div > span';
+const title_target	= '#region-dropdown > div > span#title-target';
 
 const region_target	= '#dropdown-region';
 const base_target	= '#dropdown-base';
@@ -70,18 +70,19 @@ function createFilterHead() {
 }
 
 function createBaseHead() {
-	$( base_target + ' > ul' ).html(layers.map((o, i) => (
+	$( base_target + ' > ul' ).html(_.zip(...layers).map((o, i) => (
 		"<li id='base-" + i + "'>" +
-			"<input type='checkbox' value='" + o + "' " + (i == 0 ? 'checked' : '') + ">" +
+			"<input type='checkbox' value='" + o[0] + "' " + (i == 0 ? 'checked' : '') + ">" +
 			"<label>" +
 				"<svg width='18px' height='18px' viewBox='0 0 18 18'>" +
 					"<path d='M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z'></path>" +
 					"<polyline points='1 9 7 14 15 4'></polyline>" +
 				"</svg>" +
 			"</label>" +
-			"<span>" + o + "</span>" +
+			o.map((d, l) => ("<span class=\"langs lang-" + l + " " + (l ? 'hidden' : '') + "\">" + d + "</span>")).join('') +
 		"</li>"
 	)).join(''));
+
 	$( base_target + ' > ul > li' ).click(function(e) {
 		let prev	= $(base_target + ' > ul > li > input:checked');
 		let current	= $(this).find('input');
@@ -93,4 +94,27 @@ function createBaseHead() {
 			refreshLayer();
 		}
 	});
+}
+
+function writeHeader() {
+	_.forEach(lang_targets, (o, key) => { $( key + ' .lang-target' ).html(o[lang]); });
+}
+
+function langChange() {
+	$( lang_id + ' > div.active' ).removeClass('active');
+
+	$( base_target + ' > ul > li > span.langs' ).addClass('hidden');
+
+	lang	= (lang + 1) % lang_enum.length;
+
+	$( lang_id + ' > div#' + lang_enum[lang] ).addClass('active');
+
+	$( base_target + ' > ul > li > span.lang-' + lang ).removeClass('hidden');
+
+	writeHeader();
+	initTabs();
+	toggleSide(false);
+
+	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
+	createLegend(null, layers[lang][layers[0].indexOf(active)]);
 }

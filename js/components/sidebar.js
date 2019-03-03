@@ -81,7 +81,7 @@ function togglePoint() {
 		d3.selectAll('g#maps-wrapper path').classed('seethrough', false);
 		refreshLegend();
 	}
-	if ($( base_target + ' > ul > li > input:checked' ).attr('value') == layers[0]) { toggleNetwork(!value); }
+	if ($( base_target + ' > ul > li > input:checked' ).attr('value') == layers[0][0]) { toggleNetwork(!value); }
 
 	input.prop('checked', value);
 	d3.select(point_id).classed('off', !value);
@@ -96,10 +96,10 @@ function toggleInset(show=false) {
 function initTabs() {
 	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
 
-	$( sidecont + ' > ' + tabs_id ).html(tab_heads[layers.indexOf(active)].map((o, i) => (
+	$( sidecont + ' > ' + tabs_id ).html(tab_heads[layers[0].indexOf(active)].map((o, i) => (
 		"<div class='tab cursor-pointer" + (!i ? ' active' : '') + "'>" +
 			"<div class='tab-box'></div>" +
-			"<div class='tab-text'>" + o + "</div>" +
+			"<div class='tab-text'>" + o[lang] + "</div>" +
 		"</div>"
 	)).join(''));
 

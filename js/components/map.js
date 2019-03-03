@@ -200,7 +200,7 @@ function zoom(id, state) {
 			insetActive();
 
 			let active		= $( base_target + ' > ul > li > input:checked' ).attr('value');
-			let pointNeeded	= (active == layers[3]) || (active == layers[0] && $( point_id + ' > input' ).prop('checked'));
+			let pointNeeded	= (active == layers[0][3]) || (active == layers[0][0] && $( point_id + ' > input' ).prop('checked'));
 			if (pointNeeded) { d3.selectAll('g.wrapper.national-wrapper path').classed('seethrough', true); } else { refreshLegend(); }
 		} else {
 			console.error('unhandled');
@@ -234,7 +234,7 @@ function drawPoint(id, holdLegend=false) {
 
 	// centered[state]	= id;
 
-	if ($( base_target + ' > ul > li > input:checked' ).attr('value') !== layers[2]) {
+	if ($( base_target + ' > ul > li > input:checked' ).attr('value') !== layers[0][2]) {
 		$( '#wrapped-' + id + ' path' ).addClass('seethrough');
 
 		getMapData((err, result) => {
@@ -370,7 +370,7 @@ function drawMap(id, state) {
 				.attr('id', (o) => (next_state + '-' + o.properties.id))
 				.attr('class', 'grouped-' + state + ' cursor-pointer');
 
-			let pointNeeded	= (active == layers[3]) || (active == layers[0] && $( point_id + ' > input' ).prop('checked'));
+			let pointNeeded	= (active == layers[0][3]) || (active == layers[0][0] && $( point_id + ' > input' ).prop('checked'));
 
 			if (pointNeeded) { d3.selectAll('g.wrapper path').classed('seethrough', false); }
 
@@ -392,7 +392,7 @@ function drawMap(id, state) {
 				return !_.isNil(next_state) ? zoom(o.properties.id, next_state) : null;
 			});
 
-			// if (active == layers[0] && $( point_id + ' > input' ).prop('checked')) { grouped.selectAll('path').classed('seethrough', true); }
+			// if (active == layers[0][0] && $( point_id + ' > input' ).prop('checked')) { grouped.selectAll('path').classed('seethrough', true); }
 
 			changeRegionHead();
 			setTimeout(() => { resolve() }, 300);
@@ -401,16 +401,16 @@ function drawMap(id, state) {
 
 	promise.then(() => {
 		switch (active) {
-			case layers[0]:
+			case layers[0][0]:
 				if (!$( point_id + ' > input' ).prop('checked')) { getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); }); }
 				break;
-			case layers[1]:
+			case layers[0][1]:
 				getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
 				break;
-			case layers[2]:
+			case layers[0][2]:
 				getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
 				break;
-			case layers[3]:
+			case layers[0][3]:
 				if ( curr_state >= (states.length - 1) ) { drawPoint(id, true); }
 				break;
 			default:

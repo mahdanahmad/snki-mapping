@@ -2,16 +2,16 @@ function refreshView() {
 	let active	= $( base_target + ' > ul > li > input:checked' ).attr('value');
 	if ($( sidewrap ).hasClass('expanded')) { refreshAnalytic(); }
 	switch (active) {
-		case layers[0]:
+		case layers[0][0]:
 			defaultAmountFAP();
 			break;
-		case layers[1]:
+		case layers[0][1]:
 			defaultAmountFAP();
 			break;
-		case layers[2]:
+		case layers[0][2]:
 			defaultAmountFAP();
 			break;
-		case layers[3]:
+		case layers[0][3]:
 			$( filter_target + ' > ul > li:not(.toggler)' ).each(function() {
 				let input	= $( this ).find('input');
 
@@ -38,24 +38,24 @@ function refreshLayer() {
 	states.forEach((o) => colorMap([], o));
 	d3.selectAll('g.network').classed('hidden', true);
 
-	d3.select('div#filter-dropdown').classed('hidden', active == layers[3]);
-	d3.select('g#wrapped-background').classed('reverse', active == layers[3]);
+	d3.select('div#filter-dropdown').classed('hidden', active == layers[0][3]);
+	d3.select('g#wrapped-background').classed('reverse', active == layers[0][3]);
 
 	switch (active) {
-		case layers[0]:
+		case layers[0][0]:
 			defaultAmountFAP();
 			break;
-		case layers[1]:
+		case layers[0][1]:
 			defaultAmountFAP();
 			break;
-		case layers[2]:
+		case layers[0][2]:
 			defaultAmountFAP();
 			break;
-		case layers[3]:
+		case layers[0][3]:
 			d3.select('g#wrapped-proximity, g#wrapped-proximity > g').classed('hidden', false);
 			if (curr_state > -1) { d3.selectAll(_.chain(coalesce).keys().slice(0, -1).map((o) => ('.' + o + '-wrapper path')).join(', ').value()).classed('unintended', true); }
 			d3.selectAll('.' + (states[curr_state] || 'national') + '-wrapper path').classed('seethrough', true);
-			createLegend(_.map(prx_color, (color, key) => ({ text: key.split('_').join(' - ') + ' minutes', color })), active);
+			createLegend(_.map(prx_color, (color, key) => ({ text: key.split('_').join(' - ') + ' minutes', color })), layers[lang][layers[0].indexOf(active)]);
 			if (curr_state >= (states.length - 1)) { drawPoint(centered[_.last(states)]); }
 			break;
 		default: console.log('base unhandled');
@@ -76,22 +76,22 @@ function refreshAnalytic() {
 	$( misc_adds ).html('');
 
 	switch (true) {
-		case activeLayer == layers[0] && activeTab == tab_heads[0][0]:
+		case activeLayer == layers[0][0] && activeTab == tab_heads[0][0][lang]:
 			createRadar();
 			break;
-		case activeLayer == layers[0] && activeTab == tab_heads[0][1]:
+		case activeLayer == layers[0][0] && activeTab == tab_heads[0][1][lang]:
 			createPie();
 			break;
-		case activeLayer == layers[0] && activeTab == tab_heads[0][2]:
+		case activeLayer == layers[0][0] && activeTab == tab_heads[0][2][lang]:
 			createRadial();
 			break;
-		case activeLayer == layers[1] && activeTab == tab_heads[1][0]:
+		case activeLayer == layers[0][1] && activeTab == tab_heads[1][0][lang]:
 			createBar();
 			break;
-		case activeLayer == layers[2] && activeTab == tab_heads[2][0]:
+		case activeLayer == layers[0][2] && activeTab == tab_heads[2][0][lang]:
 			createBar();
 			break;
-		case activeLayer == layers[3] && activeTab == tab_heads[3][0]:
+		case activeLayer == layers[0][3] && activeTab == tab_heads[3][0][lang]:
 			createTreemap();
 			break;
 		default:
@@ -105,9 +105,9 @@ function defaultAmountFAP() {
 	toggleLoading();
 	getMapData((err, data) => {
 		colorMap(data.data, states[curr_state + 1]);
-		createLegend(data.legend, active);
+		createLegend(data.legend, layers[lang][layers[0].indexOf(active)]);
 
-		if ((active == layers[0]) && $( point_id + ' > input' ).prop('checked')) { d3.selectAll('.' + (states[curr_state] || 'national') + '-wrapper path').classed('seethrough', true); }
+		if ((active == layers[0][0]) && $( point_id + ' > input' ).prop('checked')) { d3.selectAll('.' + (states[curr_state] || 'national') + '-wrapper path').classed('seethrough', true); }
 
 		setTimeout(() => toggleLoading(true), 750);
 	});

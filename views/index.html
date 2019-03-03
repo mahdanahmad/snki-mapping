@@ -63,20 +63,23 @@
         <div id="root">
 			<div id="header">
 				<div id="logo"><span>Indonesia</span> Financial Access Map</div>
+				<div id="lang-wrapper" class="cursor-pointer" onclick="langChange()">
+					<!-- <div class="active">en</div><span>|</span><div>id</div> -->
+				</div>
 				<div id="drops-wrapper">
 					<div id="region-dropdown" class="dropdown cursor-pointer" data-jq-dropdown="#dropdown-region">
 						<img src="image/icons/icon_region.svg" alt="" class="hidden icons">
-						<div>Select <span></span></div>
+						<div><span class="lang-target"></span> <span id="title-target"></span></div>
 						<img src="image/icons/arrow.svg" alt="" class="hidden arrow">
 					</div>
 					<div id="base-dropdown" class="dropdown cursor-pointer" data-jq-dropdown="#dropdown-base">
 						<img src="image/icons/icon_base.svg" alt="" class="hidden icons">
-						<div>Basemap layer</div>
+						<div class="lang-target"></div>
 						<img src="image/icons/arrow.svg" alt="" class="hidden arrow">
 					</div>
 					<div id="filter-dropdown" class="dropdown cursor-pointer" data-jq-dropdown="#dropdown-filter">
 						<img src="image/icons/icon_filter.svg" alt="" class="hidden icons">
-						<div>Filter by</div>
+						<div class="lang-target"></div>
 						<img src="image/icons/arrow.svg" alt="" class="hidden arrow">
 					</div>
 				</div>

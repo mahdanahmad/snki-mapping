@@ -101,7 +101,7 @@ function createRadial() {
 
 			canvas.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
 
-			d3.select(misc_floor).text('Total Access Point: ' + result.total);
+			d3.select(misc_floor).text(lang_lists.access[lang] + ': ' + result.total);
 
 			tooltip	= canvas.append('g').attr('id', 'tooltip-wrapper').style('opacity', 0);
 
