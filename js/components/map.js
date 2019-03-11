@@ -111,9 +111,9 @@ function initMap() {
 
 	d3.queue()
 		.defer(d3.json, 'bps/0.json')
-		.defer(d3.json, 'network/2G.json')
+		.defer(d3.json, 'network/2G_cleaned.json')
 		.defer(d3.json, 'network/3G.json')
-		.defer(d3.json, 'network/4G.json')
+		.defer(d3.json, 'network/4G_cleaned.json')
 		.defer(d3.json, 'proximity/proximity.json')
 		.defer(d3.json, 'road.json')
 		.await((err, national, two, three, four, proximity, road) => {
@@ -132,6 +132,9 @@ function initMap() {
 					.attr('vector-effect', 'non-scaling-stroke')
 					.attr('fill', net_color[key]);
 			});
+
+			// console.log(three);
+			// console.log(path(topojson.feature(three, three.objects['3G_Q3_INT_DIS'])));
 
 			let prox_cnvs	= canvas.append('g')
 				.attr('id', 'wrapped-proximity')

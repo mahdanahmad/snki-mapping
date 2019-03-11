@@ -8,7 +8,7 @@ const state 	= { db: null };
 exports.connect = (url, database, callback) => {
 	if (state.db) return callback();
 
-	MongoClient.connect(url, (err, client) => {
+	MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
 		if (err) return callback(err);
 		state.db    = client.db(database);
 
