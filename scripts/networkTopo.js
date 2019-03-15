@@ -50,7 +50,7 @@ fs.readFile(filepath, 'utf8', async(err, raw) => {
 
 	const topo		= JSON.parse(raw);
 	// console.log(topo);
-	let geometry	= topojson.merge(topo, topo.objects.map.geometries);
+	let geometry	= topojson.merge(topo, topo.objects['3G'].geometries);
 	let features	= [{ type: 'Feature', properties: {}, geometry }];
 
 	fs.writeFileSync(rslt_root + '3G_merged_geo.json', JSON.stringify(Object.assign({ features }, base)), 'utf8');

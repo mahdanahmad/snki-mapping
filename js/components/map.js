@@ -112,7 +112,7 @@ function initMap() {
 	d3.queue()
 		.defer(d3.json, 'bps/0.json')
 		.defer(d3.json, 'network/2G_cleaned.json')
-		.defer(d3.json, 'network/3G.json')
+		.defer(d3.json, 'network/3G_another.json')
 		.defer(d3.json, 'network/4G_cleaned.json')
 		.defer(d3.json, 'proximity/proximity.json')
 		.defer(d3.json, 'road.json')
