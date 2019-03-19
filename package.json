@@ -36,5 +36,8 @@
     "shapefile": "^0.6.6",
     "topojson": "^3.0.2",
     "xlsx": "^0.13.5"
+  },
+  "devDependencies": {
+    "sass": "^1.17.3"
   }
 }
