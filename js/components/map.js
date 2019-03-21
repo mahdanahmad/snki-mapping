@@ -142,7 +142,7 @@ function initMap() {
 			drawProximity(prox_cnvs, proximity);
 
 			canvas.append('g').attr('id', 'maps-wrapper');
-			drawMap(0, 'national');
+			drawMap(0, 'national').then();
 
 			canvas.append('g').attr('id', 'road-wrapper').attr('class', 'cursor-pointer hidden')
 				.selectAll('path').data(topojson.feature(road, road.objects.map).features).enter().append('g').append('path')
@@ -155,6 +155,7 @@ function initMap() {
 }
 
 function zoom(id, state) {
+	toggleLoading();
 	let svg	= d3.select("svg#" + map_id + '> g#canvas');
 
 	if (path && svg.node()) {
@@ -184,7 +185,7 @@ function zoom(id, state) {
 			svg.select('g#' + state + '-' + id).classed('hidden', true);
 			centered[state]	= id;
 
-			setTimeout(() => { drawMap(id, states[curr_state]); }, 750);
+			setTimeout(async () => { await drawMap(id, states[curr_state]); }, 750);
 			svg.selectAll('path.' + state).classed('unintended', true);
 
 			if ( state == _.head(states) ) { insetActive(id); }
@@ -227,7 +228,7 @@ function zoom(id, state) {
 			.style('font-size', (base_font / scale > 0.013 ? (base_font / scale) : 0.013) + 'px');
 
 		if ($( sidewrap ).hasClass('expanded')) { refreshAnalytic(); }
-		if ($( point_id + ' > input' ).prop('checked')) { freeDrawPoint(); }
+		if ($( point_id + ' > input' ).prop('checked')) { freeDrawPoint(); } else { setTimeout(() => toggleLoading(true), 750); }
 	}
 };
 
@@ -352,76 +353,78 @@ function freeDrawPoint() {
 }
 
 function drawMap(id, state) {
-	toggleLoading();
-	let svg			= d3.select("svg#" + map_id + '> g#canvas > g#maps-wrapper');
-	let next_state	= states[curr_state + 1];
+	return new Promise(function(resolve, reject) {
+		let svg			= d3.select("svg#" + map_id + '> g#canvas > g#maps-wrapper');
+		let next_state	= states[curr_state + 1];
 
-	let active	= getActive();
+		let active	= getActive();
 
-	let promise	= new Promise((resolve, reject) => {
-		d3.json('bps/' + id + '.json', (err, raw) => {
-			let topo				= topojson.feature(raw, raw.objects.map);
-			mappedGeo[next_state]	= _.chain(topo).get('features', []).keyBy('properties.id').mapValues((o) => ({ centroid: path.centroid(o), bounds: path.bounds(o) })).value();
+		let promise	= new Promise((resolve, reject) => {
+			d3.json('bps/' + id + '.json', (err, raw) => {
+				let topo				= topojson.feature(raw, raw.objects.map);
+				mappedGeo[next_state]	= _.chain(topo).get('features', []).keyBy('properties.id').mapValues((o) => ({ centroid: path.centroid(o), bounds: path.bounds(o) })).value();
 
-			if ( !_.includes(states, state) ) {
-				countLenght(topo, (distance) => { length = distance; moveRuler(distance); });
-			} else {
-				moveRuler(length / scale);
+				if ( !_.includes(states, state) ) {
+					countLenght(topo, (distance) => { length = distance; moveRuler(distance); });
+				} else {
+					moveRuler(length / scale);
+				}
+
+				let grouped	= svg.append('g').attr('id', 'wrapped-' + id).attr('class', state + '-wrapper wrapper')
+					.selectAll('path.' + state).data(topo.features).enter().append('g')
+					.attr('id', (o) => (next_state + '-' + o.properties.id))
+					.attr('class', 'grouped-' + state + ' cursor-pointer');
+
+				let pointNeeded	= (active == layers[0][3]) || (active == layers[0][0] && $( point_id + ' > input' ).prop('checked'));
+
+				if (pointNeeded) { d3.selectAll('g.wrapper path').classed('seethrough', false); }
+
+				grouped.append('path')
+					.attr('d', path)
+					.attr('class', next_state + ' default-clr' + (pointNeeded ? ' seethrough': ''))
+					.attr('vector-effect', 'non-scaling-stroke')
+					.style('stroke-width', (base_stroke - ((curr_state + 1) * .1)) + 'px');
+
+				grouped.append('text')
+					.attr('x', (o) => (mappedGeo[next_state][o.properties.id].centroid[0]))
+					.attr('y', (o) => (mappedGeo[next_state][o.properties.id].centroid[1]))
+					.attr('class', ($( text_id + ' > input' ).prop('checked') ? '' : 'hidden'))
+					.style('font-size', (base_font / scale > 0.013 ? (base_font / scale) : 0.013) + 'px')
+					.text((o) => _.chain(o.properties.name).words().map(o => _.capitalize(o)).join(' ').value());
+
+				grouped.on('click', (o) => {
+					_.set(coalesce, next_state + '.name', state_head[states.indexOf(next_state)] + ' ' + o.properties.name);
+					return !_.isNil(next_state) ? zoom(o.properties.id, next_state) : null;
+				});
+
+				// if (active == layers[0][0] && $( point_id + ' > input' ).prop('checked')) { grouped.selectAll('path').classed('seethrough', true); }
+
+				changeRegionHead();
+				setTimeout(() => { resolve() }, 300);
+			});
+		});
+
+		promise.then(() => {
+			switch (active) {
+				case layers[0][0]:
+					if (!$( point_id + ' > input' ).prop('checked')) { getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); }); }
+					break;
+				case layers[0][1]:
+					getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
+					break;
+				case layers[0][2]:
+					getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
+					break;
+				case layers[0][3]:
+					if ( curr_state >= (states.length - 1) ) { drawPoint(id, true); }
+					break;
+				default:
+
 			}
 
-			let grouped	= svg.append('g').attr('id', 'wrapped-' + id).attr('class', state + '-wrapper wrapper')
-				.selectAll('path.' + state).data(topo.features).enter().append('g')
-				.attr('id', (o) => (next_state + '-' + o.properties.id))
-				.attr('class', 'grouped-' + state + ' cursor-pointer');
-
-			let pointNeeded	= (active == layers[0][3]) || (active == layers[0][0] && $( point_id + ' > input' ).prop('checked'));
-
-			if (pointNeeded) { d3.selectAll('g.wrapper path').classed('seethrough', false); }
-
-			grouped.append('path')
-				.attr('d', path)
-				.attr('class', next_state + ' default-clr' + (pointNeeded ? ' seethrough': ''))
-				.attr('vector-effect', 'non-scaling-stroke')
-				.style('stroke-width', (base_stroke - ((curr_state + 1) * .1)) + 'px');
-
-			grouped.append('text')
-				.attr('x', (o) => (mappedGeo[next_state][o.properties.id].centroid[0]))
-				.attr('y', (o) => (mappedGeo[next_state][o.properties.id].centroid[1]))
-				.attr('class', ($( text_id + ' > input' ).prop('checked') ? '' : 'hidden'))
-				.style('font-size', (base_font / scale > 0.013 ? (base_font / scale) : 0.013) + 'px')
-				.text((o) => _.chain(o.properties.name).words().map(o => _.capitalize(o)).join(' ').value());
-
-			grouped.on('click', (o) => {
-				_.set(coalesce, next_state + '.name', state_head[states.indexOf(next_state)] + ' ' + o.properties.name);
-				return !_.isNil(next_state) ? zoom(o.properties.id, next_state) : null;
-			});
-
-			// if (active == layers[0][0] && $( point_id + ' > input' ).prop('checked')) { grouped.selectAll('path').classed('seethrough', true); }
-
-			changeRegionHead();
-			setTimeout(() => { resolve() }, 300);
-		});
+			resolve();
+		})
 	});
-
-	promise.then(() => {
-		switch (active) {
-			case layers[0][0]:
-				if (!$( point_id + ' > input' ).prop('checked')) { getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); }); }
-				break;
-			case layers[0][1]:
-				getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
-				break;
-			case layers[0][2]:
-				getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
-				break;
-			case layers[0][3]:
-				if ( curr_state >= (states.length - 1) ) { drawPoint(id, true); }
-				break;
-			default:
-
-		}
-		setTimeout(() => toggleLoading(true), 750);
-	})
 }
 
 function colorMap(data, state) {
