@@ -352,6 +352,7 @@ function freeDrawPoint() {
 }
 
 function drawMap(id, state) {
+	toggleLoading();
 	let svg			= d3.select("svg#" + map_id + '> g#canvas > g#maps-wrapper');
 	let next_state	= states[curr_state + 1];
 
@@ -419,6 +420,7 @@ function drawMap(id, state) {
 			default:
 
 		}
+		setTimeout(() => toggleLoading(true), 750);
 	})
 }
 
