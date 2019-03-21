@@ -4,10 +4,10 @@ const _				= require('lodash');
 const fs			= require('fs');
 const csv 			= require('fast-csv');
 const async			= require('async');
-const XLSX 			= require('xlsx');
 const MongoDB		= require('mongodb');
 
-const xlsx_file		= 'data/init/Access_points_Master_Update_Pilot_V02.xlsx';
+const bank_file		= 'data/init/banklist.csv';
+const csv_file		= 'data/init/first.csv';
 
 const db_coll		= 'agents';
 const type_coll		= 'types';
@@ -26,31 +26,7 @@ const bank_cate		= {
 	'SB'	: 'State Bank',
 }
 
-const type_details	= {
-	'State Bank'			: { color: '#33489e', shape: 'rect', group: 'FAP' },
-	'BPD'					: { color: '#6abd45', shape: 'rect', group: 'FAP' },
-	'Private National Bank'	: { color: '#0581c3', shape: 'rect', group: 'FAP' },
-	'Joint Venture Bank'	: { color: '#70cbd3', shape: 'rect', group: 'FAP' },
-	'BPR Syariah'			: { color: '#0d8341', shape: 'rect', group: 'FAP' },
-	'ATM'					: { color: '#efd724', shape: 'circle', group: 'FAP' },
-	'Banking Agents'		: { color: '#a64e9d', shape: 'circle', group: 'FAP' },
-	'Cooperative'			: { color: '#9b401c', shape: 'circle', group: 'FAP' },
-	'AirTime'				: { color: 'firebrick', shape: 'triangle', group: 'PAP' },
-	'Post Office & Agent'	: { color: '#f38b20', shape: 'triangle', group: 'PAP' },
-}
-
-function setType(o) {
-	if (o.bank == 'BANK') {
-		if (_.includes(['Laku Pandai', 'Laku Pandai / LKD'], o.access_point)) { return 'Banking Agents'; }
-		else if (_.includes(['ATM'], o.access_point)) { return o.access_point; }
-		else { return bank_cate[o.bank_category]; }
-	} else {
-		if (_.includes(['Kantor Pos', 'Pos Agen'], o.access_point)) { return 'Post Office & Agent'; }
-		else { return o.access_point; }
-	}
-}
-
-MongoClient.connect(db_url, { }, (err, client) => {
+MongoClient.connect(db_url, { useNewUrlParser: true }, (err, client) => {
 	if (err) throw err;
 	let db	= client.db(process.env.DB_DATABASE);
 
@@ -59,41 +35,29 @@ MongoClient.connect(db_url, { }, (err, client) => {
 			db.collection(db_coll).deleteMany({}, (err) => flowCallback(err));
 		},
 		(flowCallback) => {
-			db.collection(type_coll).deleteMany({}, (err) => flowCallback(err));
+			let bankmapped	= {};
+			csv
+				.fromPath(bank_file, { headers: true })
+				.on('data', (row) => { bankmapped[row.bank_id] = row.bank_type; })
+				.on('finish', () => { flowCallback(null, bankmapped) });
+
 		},
-		(flowCallback) => {
-			let workbook	= XLSX.readFile(xlsx_file);
-			let sheet		= workbook.Sheets[workbook.SheetNames[0]];
-
-			function format_column_name(name) { return name.replace(/\s/g, "_"); }
-			let headers		= [];
-			let range		= XLSX.utils.decode_range(sheet['!ref']);
-			for(let C = range.s.c; C <= range.e.c; ++C) {
-    			let addr 	= XLSX.utils.encode_cell({ r:range.s.r, c:C });
-    			let cell 	= sheet[addr];
-    			if(!cell) continue;
-    			headers.push( _.snakeCase(cell.v));
-			}
-
-			let data		= XLSX.utils.sheet_to_json(sheet, { header: headers, range: 1 }).map((o) => _.chain(o).mapValues((m) => (m == 'NA' ? null : m)).assign({
-				'2_g'				: o['2_g'] ? (_.includes(o['2_g'], 'YES') ? 1 : 0) : null,
-				'3_g'				: o['3_g'] ? (_.includes(o['3_g'], 'YES') ? 1 : 0) : null,
-				'4_g'				: o['4_g'] ? (_.includes(o['4_g'], 'YES') ? 1 : 0) : null,
-				'province_id'		: o.prov_bps,
-				'kabupaten_id'		: o.kab_bps,
-				'kecamatan_id'		: o.kec_bps,
-				'desa_id'			: o.desa_bps,
-				access_point_type	: setType(o),
-			}).value());
-			// let groupMapped	= _.chain(data).uniqBy('access_point_type').map((o) => ([o.access_point_type, o.point_type])).fromPairs().value();
-			let types		= _.chain(data).map('access_point_type').uniq().map((type) => _.assign({ type }, type_details[type] )).value();
-
-			db.collection(type_coll).insertMany(types, (err, result) => {
-				let inserted	= _.chain(result.ops).map((o) => ([o.type, o._id.toString()])).fromPairs().value();
-
-				db.collection(db_coll).insertMany(data.map((o) => (_.assign(o, { access_point_id: inserted[o.access_point_type] }))), (err) => flowCallback(err));
-			})
+		(bankmapped, flowCallback) => {
+			db.collection(type_coll).find({}).toArray().then(results => flowCallback(null, bankmapped, results));
 		},
+		(bankmapped, types, flowCallback) => {
+			let data	= [];
+			let typesMapped	= _.chain(types).map(o => ([o.type, o._id])).fromPairs().value()
+
+			csv
+				.fromPath(csv_file, { headers: true })
+				.on('data', (row) => {
+					let access_point_type	= _.includes(['ATM'], row.access_point_type) ? row.access_point_type : bank_cate[bankmapped[row.bank_id]];
+
+					data.push(_.chain(row).omit(['bank_name', 'bank_id']).assign({ desa_id: parseInt(row.desa_id).toString(), access_point_type, access_point_id: typesMapped[access_point_type] }).value())
+				})
+				.on('finish', () => { db.collection(db_coll).insertMany(data, (err) => flowCallback(err)); })
+		}
 	], (err) => {
 		if (err) throw err;
 		client.close();
