@@ -34,7 +34,7 @@ const tab_heads		= [
 ];
 const net_color		= {
 	two		: '#8bbdbe',
-	three	: '#75cccd',
+	three	: '#589A9B',
 	four	: '#447f8b'
 }
 const net_map		= {
