@@ -7,7 +7,7 @@ const async			= require('async');
 const MongoDB		= require('mongodb');
 
 const bank_file		= 'data/init/banklist.csv';
-const csv_file		= 'data/init/first.csv';
+const csv_file		= 'data/init/second.csv';
 
 const db_coll		= 'agents';
 const type_coll		= 'types';
@@ -31,9 +31,9 @@ MongoClient.connect(db_url, { useNewUrlParser: true }, (err, client) => {
 	let db	= client.db(process.env.DB_DATABASE);
 
 	async.waterfall([
-		(flowCallback) => {
-			db.collection(db_coll).deleteMany({}, (err) => flowCallback(err));
-		},
+		// (flowCallback) => {
+		// 	db.collection(db_coll).deleteMany({}, (err) => flowCallback(err));
+		// },
 		(flowCallback) => {
 			let bankmapped	= {};
 			csv
