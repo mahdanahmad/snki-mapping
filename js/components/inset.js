@@ -20,7 +20,7 @@ function initInset(data) {
 	in_mapped			= _.chain(topo).map(o => ([o.properties.id, o.properties.name])).fromPairs().value();
 
 	canvas
-		.attr('transform', 'translate(' + inset_padding + ', ' + (parentBBox.height - canvasHeight - $(' #logo-wrapper ').outerHeight(true) - inset_padding) + ')');
+		.attr('transform', 'translate(' + inset_padding + ', ' + (parentBBox.height - canvasHeight - inset_padding) + ')');
 
 	let in_projection	= d3.geoMercator()
 			.scale(canvasWidth * 1.15)
