@@ -7,7 +7,7 @@ const async			= require('async');
 const MongoDB		= require('mongodb');
 
 const bank_file		= 'data/init/banklist.csv';
-const csv_file		= 'data/init/second.csv';
+const csv_file		= 'data/init/third.csv';
 
 const db_coll		= 'agents';
 const type_coll		= 'types';
