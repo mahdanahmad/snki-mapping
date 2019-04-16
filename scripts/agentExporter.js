@@ -7,7 +7,7 @@ const async			= require('async');
 const MongoDB		= require('mongodb');
 
 const bank_file		= 'data/init/banklist.csv';
-const csv_file		= 'data/init/pap.csv';
+const csv_file		= 'data/init/asuransi.csv';
 
 const db_coll		= 'agents';
 const type_coll		= 'types';
@@ -35,6 +35,23 @@ MongoClient.connect(db_url, { useNewUrlParser: true }, (err, client) => {
 		// 	db.collection(db_coll).deleteMany({}, (err) => flowCallback(err));
 		// },
 		(flowCallback) => {
+			db.collection(type_coll).findOne({ 'type': 'Insurance' }, (err, result) => {
+				if (err) { flowCallback(err); }
+				else if (result) { flowCallback(); } else {
+					let asuransi = {
+						"type"	: "Insurance",
+						"color"	: "#3A606E",
+						"shape"	: "circle",
+						"group"	: "FAP",
+						"en"	: "Insurance",
+						"id"	: "Asuransi"
+					}
+
+					db.collection(type_coll).insertOne(asuransi, (err) => flowCallback(err));
+				}
+			});
+		},
+		(flowCallback) => {
 			let bankmapped	= {};
 			csv
 				.fromPath(bank_file, { headers: true })
@@ -57,7 +74,7 @@ MongoClient.connect(db_url, { useNewUrlParser: true }, (err, client) => {
 					data.push(_.chain(row).omit(['bank_name', 'bank_id']).assign({ desa_id: parseInt(row.desa_id).toString(), access_point_type, access_point_id: typesMapped[access_point_type] }).value())
 				})
 				.on('finish', () => { db.collection(db_coll).insertMany(data, (err) => flowCallback(err)); })
-				// .on('finish', () => { console.log(data); flowCallback() })
+				// .on('finish', () => { flowCallback() })
 		}
 	], (err) => {
 		if (err) throw err;
