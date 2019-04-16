@@ -7,7 +7,7 @@ const async			= require('async');
 const MongoDB		= require('mongodb');
 
 const bank_file		= 'data/init/banklist.csv';
-const csv_file		= 'data/init/third.csv';
+const csv_file		= 'data/init/pap.csv';
 
 const db_coll		= 'agents';
 const type_coll		= 'types';
@@ -52,11 +52,12 @@ MongoClient.connect(db_url, { useNewUrlParser: true }, (err, client) => {
 			csv
 				.fromPath(csv_file, { headers: true })
 				.on('data', (row) => {
-					let access_point_type	= _.includes(['ATM'], row.access_point_type) ? row.access_point_type : bank_cate[bankmapped[row.bank_id]];
+					let access_point_type	= _.includes(_.keys(bank_cate), row.access_point_type) ? bank_cate[bankmapped[row.bank_id]] : row.access_point_type;
 
 					data.push(_.chain(row).omit(['bank_name', 'bank_id']).assign({ desa_id: parseInt(row.desa_id).toString(), access_point_type, access_point_id: typesMapped[access_point_type] }).value())
 				})
 				.on('finish', () => { db.collection(db_coll).insertMany(data, (err) => flowCallback(err)); })
+				// .on('finish', () => { console.log(data); flowCallback() })
 		}
 	], (err) => {
 		if (err) throw err;
