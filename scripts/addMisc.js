@@ -26,28 +26,33 @@ MongoClient.connect(db_url, { }, (err, client) => {
 			async.map(csvs, (name, next) => {
 				let filepath = root_dir + name + '.csv';
 
+				let data = [];
+
 				csv
 					.fromPath(filepath, { headers: true, delimiter: ';' })
 					.on('data', (row) => {
-						if (row['BPS_ID#'] !== "") {
-							// console.log(_.chain(row).omit([ID_COLL]).omitBy((o, key) => (_.includes(key, 'NAME'))).mapValues(o => (_.includes(['NA', ''], o) ? null : o )).value());
-							db.collection(DB_COLL).updateOne({ id: row[ID_COLL] }, { '$set': _.chain(row).omit([ID_COLL]).omitBy((o, key) => (_.includes(key, 'NAME'))).mapValues(o => (_.includes(['NA', ''], o) ? null : o )).value() }, {}, (err) => { if (err) { next(err) } })
-						}
+						data.push(row[ID_COLL]);
+						// if (row['BPS_ID#'] !== "") {
+						// 	// console.log(_.chain(row).omit([ID_COLL]).omitBy((o, key) => (_.includes(key, 'NAME'))).mapValues(o => (_.includes(['NA', ''], o) ? null : o )).value());
+						// 	db.collection(DB_COLL).updateOne({ id: row[ID_COLL] }, { '$set': _.chain(row).omit([ID_COLL]).omitBy((o, key) => (_.includes(key, 'NAME'))).mapValues(o => (_.includes(['NA', ''], o) ? null : o )).value() }, {}, (err) => { if (err) { next(err) } })
+						// }
 					})
-					.on('finish', () => { next(); })
+					.on('finish', () => { next(null, data); })
 			}, flowCallback);
 		},
-		// (inputs, flowCallback) => {
-		// 	inputs = _.flatten(inputs);
-		// 	db.collection(DB_COLL).find({type: { '$ne': 'desa' }}).project({ id: 1, name: 1, _id: 0 }).toArray().then(result => {
-		// 		let ids 	= _.map(result, 'id');
-		// 		let nots	= _.difference(ids, inputs);
-		//
-		// 		csv
-		// 			.writeToPath('./results/kecamatan.csv', _.chain(result).filter(o => (_.includes(nots, o.id))).value(), { headers: true })
-		// 			.on('finish', () => { flowCallback(); })
-		// 	});
-		// }
+		(inputs, flowCallback) => {
+			inputs = _.flatten(inputs);
+			db.collection(DB_COLL).find({type: { '$ne': 'desa' }}).project({ id: 1, name: 1, _id: 0 }).toArray().then(result => {
+				let ids 	= _.map(result, 'id');
+				let nots	= _.difference(ids, inputs);
+
+				console.log(not);
+
+				// csv
+				// 	.writeToPath('./results/kecamatan.csv', _.chain(result).filter(o => (_.includes(nots, o.id))).value(), { headers: true })
+				// 	.on('finish', () => { flowCallback(); })
+			});
+		}
 	], (err) => {
 		if (err) throw err;
 
