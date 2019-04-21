@@ -27,7 +27,6 @@ MongoClient.connect(db_url, { }, (err, client) => {
 	let db		= client.db(process.env.DB_DATABASE);
 	let files	= fs.readdirSync(csv_root).filter(o => (path.extname(o) == '.csv' && _.startsWith(o, csv_pref)));
 
-
 	async.waterfall([
 		(flowCallback) => {
 			db.collection(DB_COLL).deleteMany({}, (err) => flowCallback(err));
