@@ -23,8 +23,8 @@ let tooltip;
 let length;
 
 const layers		= [
-	['Number of Access Point', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points'],
-	['Jumlah Titik Finansial', 'Populasi Orang Dewasa', 'Titik Finansial per 1000 Dewasa', 'Waktu Tempuh dari Titik Finansial'],
+	['Number of Access Point', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy'],
+	['Jumlah Titik Finansial', 'Populasi Orang Dewasa', 'Titik Finansial per 1000 Dewasa', 'Waktu Tempuh dari Titik Finansial', 'Persentase dari Inklusi Finansial', 'Garis Kemiskinan', 'Kondisi Listrik', 'Literasi'],
 ];
 const tab_heads		= [
 	[['Type of Access Points', 'Tipe Titik Finansial'], ['FAP/PAP distribution', 'Distribusi FAP/PAP'], ['Network Coverage', 'Ketersediaan Jaringan']],
@@ -55,9 +55,10 @@ const lang_id		= '#lang-wrapper';
 let lang			= 0;
 
 const lang_targets	= {
-	'#region-dropdown'	: ['Select', 'Pilih'],
-	'#base-dropdown'	: ['Basemap layer', 'Peta dasar'],
-	'#filter-dropdown'	: ['Filter', 'Filter'],
+	'#region-dropdown'		: ['Select', 'Pilih'],
+	'#base-dropdown'		: ['Basemap layer', 'Peta dasar'],
+	'#filter-dropdown'		: ['Filter', 'Filter'],
+	'#question-dropdown'	: ['Questions Analytic', 'Pertanyaan Analitis'],
 }
 const lang_lists	= {
 	access: ['Total Access Point', 'Total Titik Finansial'],

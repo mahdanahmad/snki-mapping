@@ -21,6 +21,9 @@ function refreshView() {
 				d3.select(id).classed('hidden', !value);
 			});
 			break;
+		case layers[0][7]:
+			defaultAmountFAP();
+			break;
 		default: console.log('unhandled refreshView');
 	}
 
@@ -38,7 +41,7 @@ function refreshLayer() {
 	states.forEach((o) => colorMap([], o));
 	d3.selectAll('g.network').classed('hidden', true);
 
-	d3.select('div#filter-dropdown').classed('hidden', active == layers[0][3]);
+	d3.select('div#filter-dropdown').classed('hidden', _.includes([layers[0][3], layers[0][7]], active));
 	d3.select('g#wrapped-background').classed('reverse', active == layers[0][3]);
 
 	switch (active) {
@@ -53,6 +56,9 @@ function refreshLayer() {
 			break;
 		case layers[0][3]:
 			defaultProximity();
+			break;
+		case layers[0][7]:
+			defaultAmountFAP();
 			break;
 		default: console.log('base unhandled');
 	}
@@ -112,7 +118,7 @@ function defaultAmountFAP() {
 
 function defaultProximity() {
 	let active	= getActive();
-	
+
 	d3.select('g#wrapped-proximity, g#wrapped-proximity > g').classed('hidden', false);
 	if (curr_state > -1) { d3.selectAll(_.chain(coalesce).keys().slice(0, -1).map((o) => ('.' + o + '-wrapper path')).join(', ').value()).classed('unintended', true); }
 	d3.selectAll('.' + (states[curr_state] || 'national') + '-wrapper path').classed('seethrough', true);

@@ -10,9 +10,10 @@ const pallete		= ['#004e79', '#00659d', '#0085ce', '#38a8e2', '#99d0ec'];
 
 const filt_field	= 'access_point_type';
 const pop_field		= 'potential_population';
+const lit_field		= 'literacy_level';
 const head_count	= 1000;
 
-const layers		= ['Number of Access Point', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points'];
+const layers		= ['Number of Access Point', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy'];
 
 const nodata_clr	= '#FAFAF8';
 
@@ -38,67 +39,35 @@ module.exports.index	= (input, callback) => {
 			if (filter) { match[filt_field] = { '$in': filter }; }
 
 			let active	= _.chain({ province_id, kabupaten_id, kecamatan_id, desa_id }).omitBy(_.isNil).keys().last().value();
+			let parent	= _.chain({ province_id, kabupaten_id, kecamatan_id, desa_id }).omitBy(_.isNil).map().last().value() || null;
 
 			switch (layer) {
+				// Number of Access Point
 				case layers[0]:
 					agents.rawAggregate([
 						{ '$match': match },
 						{ '$group': { _id: '$' + states[states.indexOf(active) + 1], size: { $sum: 1 } } },
 						{ '$match': { _id: { $ne: null } } }
 					], {}, (err, data) => {
-						let max		= _.chain(data).maxBy('size').get('size', 0).value();
-
-						let rounded	= 0;
-						if (max <= 10) { rounded = 10; } else {
-							let inStr	= Math.round(max).toString();
-							let length	= inStr.length - 1;
-							rounded		= Math.ceil(parseInt(inStr) / Math.pow(10, length)) * Math.pow(10, length);
-						}
-
-						const range		= rounded / 5;
-						const fracture 	= _.range(0, rounded, range).reverse();
-
-						data.map((row) => {
-							let color	= '';
-							fracture.forEach((o, i) => { if (row.size >= o && _.isEmpty(color)) { color = pallete[i]; } });
-
-							_.assign(row, { color });
+						setColor(data, 'size', true).then((result) => {
+							flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: o + ' - ' + (o + result.range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
 						});
-
-						flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: o + ' - ' + (o + range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
 					});
 					break;
+				// Adult Population
 				case layers[1]:
-					let parent	= _.chain({ province_id, kabupaten_id, kecamatan_id, desa_id }).omitBy(_.isNil).map().last().value() || null;
 					location.rawAggregate([
 						{ '$match': { parent, id: { '$ne': '' } } },
 						{ '$project': { _id: '$id', size: '$' + pop_field,  } }
 					], {}, (err, data) => {
 						if (err) { flowCallback(err); } else {
-							let max		= _.chain(data).maxBy('size').get('size', 0).value();
-
-							let rounded	= 0;
-							if (max <= 10) { rounded = 10; } else {
-								let inStr	= Math.round(max).toString();
-								let length	= inStr.length - 1;
-								rounded		= Math.ceil(parseInt(inStr) / Math.pow(10, length)) * Math.pow(10, length);
-							}
-
-							const range		= rounded / 5;
-							const fracture 	= _.range(0, rounded, range).reverse();
-
-							data.map((row) => {
-								let color	= '';
-								if (_.isNil(row.size)) { color = nodata_clr; }
-								fracture.forEach((o, i) => { if (row.size >= o && _.isEmpty(color)) { color = pallete[i]; } });
-
-								_.assign(row, { color });
+							setColor(data, 'size', true).then((result) => {
+								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + ' - ' + nFormatter(o + result.range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
 							});
-
-							flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: nFormatter(o) + ' - ' + nFormatter(o + range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
 						}
 					});
 					break;
+				// Access Point Per 1000 Adults
 				case layers[2]:
 					agents.rawAggregate([
 						{ '$match': match },
@@ -115,22 +84,13 @@ module.exports.index	= (input, callback) => {
 							const mapped	= _.chain(ap_count).map(o => ([o._id, o.size])).fromPairs().value();
 							let data		= loc.map((o) => (_.assign(o, { size: mapped[o._id], capita: _.round(mapped[o._id] / o.count, 2) })))
 
-							let max			= _.chain(data).maxBy('capita').get('capita', 0).ceil().value();
-
-							const range		= _.ceil(max / 5);
-							const fracture 	= _.range(0, (range * 5), range).reverse().map((o) => (_.round(o, 2)));
-
-							data.map((row) => {
-								let color	= '';
-								fracture.forEach((o, i) => { if (row.capita >= o && _.isEmpty(color)) { color = pallete[i]; } });
-
-								_.assign(row, { color });
+							setColor(data, 'capita', false, true).then((result) => {
+								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: o + ' - ' + _.round(o + result.range, 2), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
 							});
-
-							flowCallback(err, { data, legend: fracture.map((o, i) => ({ text: o + ' - ' + _.round(o + range, 2), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
 						});
 					});
 					break;
+				// Driving Time From Access Points
 				case layers[3]:
 					match	= _.omit(match, [filt_field]);
 					if (_.includes(states.slice(-2), active)) {
@@ -146,6 +106,32 @@ module.exports.index	= (input, callback) => {
 					} else {
 						flowCallback();
 					}
+					break;
+				// Percentage of Financial Inclusion
+				case layers[4]:
+					flowCallback();
+					break;
+				// Poverty Line
+				case layers[5]:
+					flowCallback();
+					break;
+				// Electricity
+				case layers[6]:
+					flowCallback();
+					break;
+				// Literacy
+				case layers[7]:
+					location.rawAggregate([
+						{ '$match': { parent, id: { '$ne': '' } } },
+						{ '$project': { _id: '$id', size: '$' + lit_field,  } }
+					], {}, (err, loc) => {
+						if (err) { flowCallback(err); } else {
+							let data = loc.map(o => ({ _id: o._id, size: o.size ? parseFloat(o.size.replace(',', '.')) : null }))
+							setColor(data, 'size', true).then((result) => {
+								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + ' - ' + nFormatter(o + result.range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
+							});
+						}
+					});
 					break;
 				default:
 					flowCallback('Lights on, and everybody go home.');
@@ -287,4 +273,41 @@ function nFormatter(num) {
 	let i;
 	for (i = standar.length - 1; i > 0; i--) { if (num >= standar[i].value) { break; } }
 	return (num / standar[i].value).toFixed(digits).replace(re, "$1") + '' + standar[i].symbol;
+}
+
+function setColor(data, maxBy, rounded, ceiling) {
+	return new Promise((resolve, reject) => {
+		let max		= _.chain(data).maxBy(maxBy).get(maxBy, 0).value();
+
+		let base	= 0;
+		if (rounded) {
+			if (max <= 10) { base = 10; } else {
+				let inStr	= Math.round(max).toString();
+				let length	= inStr.length - 1;
+				base		= _.ceil(max, -length);
+			}
+		} else {
+			base = _.ceil(max);
+		}
+
+		let range		= base / 5;
+		let fracture;
+		if (ceiling) {
+			range		= _.ceil(range);
+			fracture 	= _.range(0, (range * 5), range).reverse().map((o) => (_.round(o, 2)));
+		} else {
+			fracture 	= _.range(0, base, range).reverse();
+		}
+
+		data.map((row) => {
+			let color	= '';
+			if (_.isNil(row.size)) { color = nodata_clr; } else {
+				fracture.forEach((o, i) => { if (row.size >= o && _.isEmpty(color)) { color = pallete[i]; } });
+			}
+
+			_.assign(row, { color });
+		});
+
+		resolve({ data, fracture, range });
+	});
 }
