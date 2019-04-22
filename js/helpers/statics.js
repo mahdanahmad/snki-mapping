@@ -31,6 +31,10 @@ const tab_heads		= [
 	[['Adult Population', 'Populasi Orang Dewasa']],
 	[['Access Point Per 1000 Adults', 'Titik Finansial per 1000 Dewasa']],
 	[['Driving Time From FAPs', 'Waktu Tempuh dari Titik Finansial']],
+	[['', '']],
+	[['', '']],
+	[['', '']],
+	[['Literacy Percentage', 'Persentase Literasi']],
 ];
 const net_color		= {
 	two		: '#8bbdbe',

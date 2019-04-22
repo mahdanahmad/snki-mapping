@@ -11,6 +11,9 @@ const pallete		= ['#004e79', '#00659d', '#0085ce', '#38a8e2', '#99d0ec'];
 const filt_field	= 'access_point_type';
 const pop_field		= 'potential_population';
 const lit_field		= 'literacy_level';
+const povrt_field	= 'poverty_percent';
+const electr_field	= 'electricity_count';
+const inclus_field	= 'financial_inclusion_total';
 const head_count	= 1000;
 
 const layers		= ['Number of Access Point', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy'];
@@ -109,15 +112,45 @@ module.exports.index	= (input, callback) => {
 					break;
 				// Percentage of Financial Inclusion
 				case layers[4]:
-					flowCallback();
+					location.rawAggregate([
+						{ '$match': { parent, id: { '$ne': '' } } },
+						{ '$project': { _id: '$id', size: '$' + inclus_field,  } }
+					], {}, (err, loc) => {
+						if (err) { flowCallback(err); } else {
+							let data = loc.map(o => ({ _id: o._id, size: o.size ? parseFloat(o.size.replace(',', '.')) : null }))
+							setColor(data, 'size', true).then((result) => {
+								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + ' - ' + nFormatter(o + result.range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
+							});
+						}
+					});
 					break;
 				// Poverty Line
 				case layers[5]:
-					flowCallback();
+					location.rawAggregate([
+						{ '$match': { parent, id: { '$ne': '' } } },
+						{ '$project': { _id: '$id', size: '$' + povrt_field,  } }
+					], {}, (err, loc) => {
+						if (err) { flowCallback(err); } else {
+							let data = loc.map(o => ({ _id: o._id, size: o.size ? parseFloat(o.size.replace(',', '.')) : null }))
+							setColor(data, 'size', true).then((result) => {
+								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + ' - ' + nFormatter(o + result.range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
+							});
+						}
+					});
 					break;
 				// Electricity
 				case layers[6]:
-					flowCallback();
+					location.rawAggregate([
+						{ '$match': { parent, id: { '$ne': '' } } },
+						{ '$project': { _id: '$id', size: '$' + electr_field,  } }
+					], {}, (err, loc) => {
+						if (err) { flowCallback(err); } else {
+							let data = loc.map(o => ({ _id: o._id, size: o.size ? parseFloat(o.size.replace(',', '.')) : null }))
+							setColor(data, 'size', true).then((result) => {
+								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + ' - ' + nFormatter(o + result.range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
+							});
+						}
+					});
 					break;
 				// Literacy
 				case layers[7]:
