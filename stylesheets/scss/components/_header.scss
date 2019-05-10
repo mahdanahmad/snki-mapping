@@ -9,8 +9,8 @@ $splash_clr	: #006fac;
 #header {
 	width: calc(100% - #{$hPad * 2}); height: #{$header-height - ($vPad * 2)}; display: inline-block; padding: #{$vPad} #{$hPad}; overflow: visible; position: relative;
 	#logo {
-		width: 90px; height: 80px; word-spacing: 120px; padding: 20px 15px; border-radius: 2px;
-		color: white; font-size: 18px; font-weight: 700; line-height: 20px; span { color: #37d1fa; }
+		width: 95px; height: 80px; word-spacing: 120px; padding: 20px 15px; border-radius: 2px;
+		color: white; font-size: 18px; font-weight: 700; line-height: 20px; span.diff { color: #37d1fa; }
 		cursor: default; display: inline-block; float: left; position: relative; z-index: 90; left: $hPad; @include noselect();
 		background: #{$first_clr}; background: -moz-linear-gradient(top, #{$first_clr} 0%, #{$second_clr} 100%); background: -webkit-linear-gradient(top, #{$first_clr} 0%,#{$second_clr} 100%); background: linear-gradient(to bottom, #{$first_clr} 0%,#{$second_clr} 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{$first_clr}', endColorstr='#{$second_clr}',GradientType=0 );
 	}

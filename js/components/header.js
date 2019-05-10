@@ -5,6 +5,8 @@ const region_target	= '#dropdown-region';
 const base_target	= '#dropdown-base';
 const filter_target	= '#dropdown-filter';
 
+const logo_target	= '#header > #logo';
+
 let filter_time;
 const awaitTime		= 750;
 
@@ -106,6 +108,7 @@ function langChange() {
 
 	$( base_target + ' > ul > li > span.langs' ).addClass('hidden');
 	$( filter_target + ' > ul > li > span.langs' ).addClass('hidden');
+	$( logo_target + ' > span' ).addClass('hidden');
 
 	lang	= (lang + 1) % lang_enum.length;
 
@@ -113,6 +116,7 @@ function langChange() {
 
 	$( base_target + ' > ul > li > span.lang-' + lang ).removeClass('hidden');
 	$( filter_target + ' > ul > li > span.lang-' + lang ).removeClass('hidden');
+	$( logo_target + ' > span.lang-' + lang ).removeClass('hidden')
 
 	writeHeader();
 	initTabs();
