@@ -16,6 +16,8 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.static(path.join(__dirname, '../stylesheets')));
 app.use(express.static(path.join(__dirname, '../views')));
 
+app.use(express.static(path.join(__dirname, '../node_modules')));
+
 app.use('/', require('./routes/views'));
 app.use('/api', require('./routes/api'));
 

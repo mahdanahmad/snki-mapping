@@ -17,7 +17,9 @@ const ObjectID		= MongoDB.ObjectID;
 const auth			= (process.env.DB_USERNAME !== '' || process.env.DB_PASSWORD !== '') ? process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD + '@' : '';
 const db_url		= 'mongodb://' + auth + process.env.DB_HOST + ':' + process.env.DB_PORT;
 
-MongoClient.connect(db_url, { }, (err, client) => {
+const client		= new MongoClient(db_url, { useNewUrlParser: true });
+
+client.connect((err) => {
 	if (err) throw err;
 	let db	= client.db(process.env.DB_DATABASE);
 
@@ -34,14 +36,21 @@ MongoClient.connect(db_url, { }, (err, client) => {
 						// data.push(row[ID_COLL]);
 						if (row['BPS_ID#'] !== "") {
 							// console.log(_.chain(row).omit([ID_COLL]).omitBy((o, key) => (_.includes(key, 'NAME'))).mapValues(o => (_.includes(['NA', ''], o) ? null : o )).value());
-							db.collection(DB_COLL).updateOne({ id: row[ID_COLL] }, { '$set': _.chain(row).omit([ID_COLL]).omitBy((o, key) => (_.includes(key, 'NAME'))).mapValues(o => (_.includes(['NA', ''], o) ? null : o )).value() }, {}, (err) => { if (err) { next(err) } })
+							data.push(_.chain(row).omitBy((o, key) => (_.includes(key, 'NAME'))).mapValues(o => (_.includes(['NA', ''], o) ? null : o )).value());
+							// db.collection(DB_COLL).updateOne({ id: row[ID_COLL] }, { '$set': _.chain(row).omit([ID_COLL]).omitBy((o, key) => (_.includes(key, 'NAME'))).mapValues(o => (_.includes(['NA', ''], o) ? null : o )).value() }, {}, (err) => { if (err) { next(err) } })
 						}
 					})
 					.on('finish', () => { next(null, data); })
 			}, flowCallback);
 		},
-		// (inputs, flowCallback) => {
-		// 	inputs = _.flatten(inputs);
+		(inputs, flowCallback) => {
+			inputs = _.flatten(inputs);
+
+			async.each(inputs, (row, next) => {
+				console.log(row[ID_COLL]);
+				db.collection(DB_COLL).updateOne({ id: row[ID_COLL] }, { '$set': _.omit(row, [ID_COLL]) }, {}, (err) => { next(err) });
+			}, flowCallback)
+
 		// 	db.collection(DB_COLL).find({type: { '$ne': 'desa' }}).project({ id: 1, name: 1, parent: 1, _id: 0 }).toArray().then(result => {
 		// 		let ids 	= _.map(result, 'id');
 		// 		let nots	= _.difference(ids, inputs);
@@ -64,10 +73,9 @@ MongoClient.connect(db_url, { }, (err, client) => {
 		// 			.writeToPath('./results/missing_kecamatan.csv', concated, { headers: true })
 		// 			.on('finish', () => { flowCallback(); })
 		// 	});
-		// }
+		}
 	], (err) => {
 		if (err) throw err;
-
 
 		client.close();
 	});

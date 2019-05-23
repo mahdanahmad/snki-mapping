@@ -115,7 +115,7 @@ function initMap() {
 		.defer(d3.json, 'network/3G_another.json')
 		.defer(d3.json, 'network/4G_cleaned.json')
 		.defer(d3.json, 'proximity/proximity.json')
-		.defer(d3.json, 'road.json')
+		// .defer(d3.json, 'road.json')
 		.await((err, national, two, three, four, proximity, road) => {
 			initInset(national);
 
@@ -133,9 +133,6 @@ function initMap() {
 					.attr('fill', net_color[key]);
 			});
 
-			// console.log(three);
-			// console.log(path(topojson.feature(three, three.objects['3G_Q3_INT_DIS'])));
-
 			let prox_cnvs	= canvas.append('g')
 				.attr('id', 'wrapped-proximity')
 				.attr('class', 'hidden')
@@ -144,11 +141,11 @@ function initMap() {
 			canvas.append('g').attr('id', 'maps-wrapper');
 			drawMap(0, 'national').then();
 
-			canvas.append('g').attr('id', 'road-wrapper').attr('class', 'cursor-pointer hidden')
-				.selectAll('path').data(topojson.feature(road, road.objects.map).features).enter().append('g').append('path')
-					.attr('d', path)
-					.attr('vector-effect', 'non-scaling-stroke')
-					.attr('fill', 'none');
+			// canvas.append('g').attr('id', 'road-wrapper').attr('class', 'cursor-pointer hidden')
+			// 	.selectAll('path').data(topojson.feature(road, road.objects.map).features).enter().append('g').append('path')
+			// 		.attr('d', path)
+			// 		.attr('vector-effect', 'non-scaling-stroke')
+			// 		.attr('fill', 'none');
 
 			setTimeout(() => toggleLoading(true), 1000);
 		});

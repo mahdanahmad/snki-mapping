@@ -12,7 +12,7 @@ const filt_field	= 'access_point_type';
 const pop_field		= 'potential_population';
 const lit_field		= 'literacy_level';
 const povrt_field	= 'poverty_percent';
-const electr_field	= 'electricity_count';
+const electr_field	= 'electricty_percent';
 const inclus_field	= 'financial_inclusion_total';
 const head_count	= 1000;
 
