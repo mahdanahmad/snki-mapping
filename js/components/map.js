@@ -47,7 +47,7 @@ function initMap() {
 		.attr('id', 'background')
 		.attr('width', width)
 		.attr('height', height)
-		.on('click', () => zoom(null));
+		.on('click', () => { if (curr_state >= 0) { zoom(null); } });
 
 	let ruler	= svg.append('g')
 		.attr("id", 'ruler');
