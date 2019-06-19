@@ -23,8 +23,8 @@ let tooltip;
 let length;
 
 const layers		= [
-	['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy'],
-	['Jumlah Titik Finansial', 'Populasi', 'Titik Finansial per 1000 Dewasa', 'Waktu Tempuh dari Titik Finansial', 'Persentase dari Inklusi Finansial', 'Garis Kemiskinan', 'Kondisi Listrik', 'Literasi'],
+	['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy'],
+	['Jumlah Titik Finansial', 'Populasi', 'Titik Finansial per 1000 Dewasa', 'Jarak dari Titik Finansial', 'Persentase dari Inklusi Finansial', 'Garis Kemiskinan', 'Kondisi Listrik', 'Literasi'],
 ];
 const tab_heads		= [
 	[['Type of Access Points', 'Tipe Titik Finansial'], ['FAP/PAP distribution', 'Distribusi FAP/PAP'], ['Network Coverage', 'Ketersediaan Jaringan']],
@@ -51,6 +51,11 @@ const prx_color		= {
 	'5_15'	: '#bcbddc',
 	'15_30'	: '#efedf5',
 	'>30'	: '#d4dadc'
+}
+
+const buff_color	= {
+	'1'	: '#756bb1',
+	'5'	: '#bcbddc',
 }
 const prx_pref		= 'prx-';
 

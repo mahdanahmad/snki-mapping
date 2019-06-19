@@ -17,7 +17,5 @@ function constructParams() {
 	let layer		= $( base_target + ' > ul > li > input:checked' ).map(function() { return $( this ).attr('value'); }).get()[0];
 	let population	= $( pops_target + ' > ul > li > input:checked' ).map(function() { return $( this ).attr('value'); }).get()[0];
 
-	console.log(_.chain({}).assign(centered, { filter, layer, population, lang: lang_enum[lang] }).omitBy(_.isNil).value());
-
 	return _.chain({}).assign(centered, { filter, layer, population, lang: lang_enum[lang] }).omitBy(_.isNil).value()
 };

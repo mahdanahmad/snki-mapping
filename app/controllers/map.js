@@ -16,7 +16,7 @@ const electr_field	= 'electricty_percent';
 const inclus_field	= 'financial_inclusion_total';
 const head_count	= 1000;
 
-const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy'];
+const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy'];
 
 const nodata_clr	= '#FAFAF8';
 

@@ -38,7 +38,7 @@ function refreshLayer() {
 	states.forEach((o) => colorMap([], o));
 	d3.selectAll('g.network').classed('hidden', true);
 
-	d3.select('div#filter-dropdown').classed('hidden', _.includes([layers[0][1], layers[0][3], layers[0][4], layers[0][5], layers[0][6], layers[0][7]], active));
+	d3.select('div#filter-dropdown').classed('hidden', _.includes([layers[0][1], layers[0][4], layers[0][5], layers[0][6], layers[0][7]], active));
 	d3.select('div#population-dropdown').classed('hidden', !_.includes([layers[0][1]], active));
 	d3.select('g#wrapped-background').classed('reverse', active == layers[0][3]);
 
@@ -129,7 +129,7 @@ function defaultProximity() {
 	d3.select('g#wrapped-proximity, g#wrapped-proximity > g').classed('hidden', false);
 	if (curr_state > -1) { d3.selectAll(_.chain(coalesce).keys().slice(0, -1).map((o) => ('.' + o + '-wrapper path')).join(', ').value()).classed('unintended', true); }
 	d3.selectAll('.' + (states[curr_state] || 'national') + '-wrapper path').classed('seethrough', true);
-	createLegend(_.map(prx_color, (color, key) => ({ text: key.split('_').join(' - ') + ' minutes', color })), layers[lang][layers[0].indexOf(active)]);
+	createLegend(_.map(buff_color, (color, key) => ({ text: key + 'km', color })), layers[lang][layers[0].indexOf(active)]);
 	if (curr_state >= (states.length - 1)) { drawPoint(centered[_.last(states)]); }
 }
 

@@ -114,9 +114,9 @@ function initMap() {
 		.defer(d3.json, 'network/2G_cleaned.json')
 		.defer(d3.json, 'network/3G_another.json')
 		.defer(d3.json, 'network/4G_cleaned.json')
-		.defer(d3.json, 'proximity/proximity.json')
-		// .defer(d3.json, 'road.json')
-		.await((err, national, two, three, four, proximity, road) => {
+		.defer(d3.json, 'proximity/1K.json')
+		.defer(d3.json, 'proximity/5K.json')
+		.await((err, national, two, three, four, rad1, rad5) => {
 			initInset(national);
 
 			_.forEach({ two, three, four }, (raw, key) => {
@@ -136,16 +136,11 @@ function initMap() {
 			let prox_cnvs	= canvas.append('g')
 				.attr('id', 'wrapped-proximity')
 				.attr('class', 'hidden')
-			drawProximity(prox_cnvs, proximity);
+
+			drawProximity(prox_cnvs, rad1, rad5);
 
 			canvas.append('g').attr('id', 'maps-wrapper');
 			drawMap(0, 'national').then();
-
-			// canvas.append('g').attr('id', 'road-wrapper').attr('class', 'cursor-pointer hidden')
-			// 	.selectAll('path').data(topojson.feature(road, road.objects.map).features).enter().append('g').append('path')
-			// 		.attr('d', path)
-			// 		.attr('vector-effect', 'non-scaling-stroke')
-			// 		.attr('fill', 'none');
 
 			setTimeout(() => toggleLoading(true), 1000);
 		});
@@ -430,15 +425,20 @@ function colorMap(data, state) {
 	data.forEach((o) => { $( '#' + state + '-' + o._id + ' > path' ).removeClass('default-clr').css('fill', o.color); });
 }
 
-function drawProximity(canvas, raw) {
-	let topo	= topojson.feature(raw, raw.objects.map);
+function drawProximity(canvas, rad1, rad5) {
+	let topo1	= topojson.feature(rad1, rad1.objects.FAPs_1K_Buffer);
+	let topo5	= topojson.feature(rad5, rad5.objects.FAPs_5K_Buffer);
 
-	let grouped	= canvas.selectAll('path').data(topo.features).enter()
-		.append('g')
-		.attr('id', (o) => (prx_pref + _.snakeCase(o.properties.Name)));
+	_.forEach({ topo5, topo1 }, (raw, key) => {
+		let grouped	= canvas.append('g').attr('id', (o) => (prx_pref + _.last(key)))
+			.selectAll('path').data(raw.features).enter()
+			.append('g');
 
-	grouped.append('path')
-		.attr('d', path)
-		.attr('vector-effect', 'non-scaling-stroke')
-		.attr('fill', (o) => (prx_color[_.snakeCase(o.properties.Name)]));
+		grouped.append('path')
+			.attr('d', path)
+			.attr('vector-effect', 'non-scaling-stroke')
+			.attr('fill', buff_color[_.last(key)]);
+	});
+
+
 }
