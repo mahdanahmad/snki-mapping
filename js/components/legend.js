@@ -91,7 +91,7 @@ function createLegend(data, title) {
 
 function refreshLegend() {
 	let active	= getActive();
-	if (_.includes([0,1,2], layers[0].indexOf(active))) {
+	if (!_.includes([3], layers[0].indexOf(active))) {
 		getMapData((err, result) => { colorMap(result.data, states[curr_state + 1]); createLegend(result.legend, active); })
 		toggleNetwork();
 	}

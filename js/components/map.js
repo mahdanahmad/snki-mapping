@@ -401,16 +401,11 @@ function drawMap(id, state) {
 				case layers[0][0]:
 					if (!$( point_id + ' > input' ).prop('checked')) { getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); }); }
 					break;
-				case layers[0][1]:
-					getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
-					break;
-				case layers[0][2]:
-					getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
-					break;
 				case layers[0][3]:
 					if ( curr_state >= (states.length - 1) ) { drawPoint(id, true); }
 					break;
 				default:
+					getMapData((err, data) => { colorMap(data.data, next_state); createLegend(data.legend, active); });
 
 			}
 

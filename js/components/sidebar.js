@@ -75,7 +75,7 @@ function togglePoint() {
 
 	if (value) {
 		freeDrawPoint();
-		d3.selectAll('.' + (states[curr_state] || 'national') + '-wrapper path').classed('seethrough', true);
+		if (getActive() == layers[0][0]) { d3.selectAll('.' + (states[curr_state] || 'national') + '-wrapper path').classed('seethrough', true); }
 	} else {
 		d3.select('g#' + point_wrapper).remove();
 		d3.selectAll('g#maps-wrapper path').classed('seethrough', false);
