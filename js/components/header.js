@@ -12,6 +12,23 @@ const awaitTime		= 750;
 
 const filt_toggle	= ['Select All', 'Unselect All'];
 
+const pops_target	= '#dropdown-population';
+const pops_filt		= [
+	{ value: "2018_total", lang: ['total population on 2018', 'total penduduk tahun 2018']},
+	{ value: "2018_adult", lang: ['adult population (>15 yo) on 2018', 'penduduk dewasa (>15 thn) tahun 2018']},
+	{ value: "2018_male", lang: ['male population on 2018', 'penduduk laki-laki tahun 2018']},
+	{ value: "2018_female", lang: ['female population on 2018', 'penduduk perempuan tahun 2018']},
+	{ value: "2015_total", lang: ['total population on 2015', 'total penduduk tahun 2015']},
+	{ value: "2015_adult", lang: ['adult population (>15 yo) on 2015', 'penduduk dewasa (>15 thn) tahun 2015']},
+	{ value: "2015_male", lang: ['male population on 2015', 'penduduk laki-laki tahun 2015']},
+	{ value: "2015_female", lang: ['female population on 2015', 'penduduk perempuan tahun 2015']},
+	{ value: "2010_total", lang: ['total population on 2010', 'total penduduk tahun 2010']},
+	{ value: "2010_male", lang: ['male population on 2010', 'penduduk laki-laki tahun 2010']},
+	{ value: "2010_female", lang: ['female population on 2010', 'penduduk perempuan tahun 2010']},
+	// { value: "2018_adult_female", lang: ['female population on 2018', 'penduduk perempuan tahun 2018']},
+	// { value: "2018_adult_male", lang: ['male population on 2018', 'penduduk laki-laki tahun 2018']},
+];
+
 function changeRegionHead() {
 	if (state_head[curr_state + 1]) {
 		d3.select(title_target).text(state_head[curr_state + 1]);
@@ -88,6 +105,33 @@ function createBaseHead() {
 
 	$( base_target + ' > ul > li' ).click(function(e) {
 		let prev	= $(base_target + ' > ul > li > input:checked');
+		let current	= $(this).find('input');
+
+		if (prev.attr('value') !== current.attr('value')) {
+			current.prop('checked', true);
+			prev.prop('checked', false);
+
+			refreshLayer();
+		}
+	});
+}
+
+function createPopsHead() {
+	$( pops_target + ' > ul' ).html(pops_filt.map((o, i) => (
+		"<li id='pops-" + i + "'>" +
+			"<input type='checkbox' value='" + o.value + "' " + (i == 0 ? 'checked' : '') + ">" +
+			"<label>" +
+				"<svg width='18px' height='18px' viewBox='0 0 18 18'>" +
+					"<path d='M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z'></path>" +
+					"<polyline points='1 9 7 14 15 4'></polyline>" +
+				"</svg>" +
+			"</label>" +
+			o.lang.map((d, l) => ("<span class=\"langs lang-" + l + " " + (l ? 'hidden' : '') + "\">" + d + "</span>")).join('') +
+		"</li>"
+	)).join(''));
+
+	$( pops_target + ' > ul > li' ).click(function(e) {
+		let prev	= $(pops_target + ' > ul > li > input:checked');
 		let current	= $(this).find('input');
 
 		if (prev.attr('value') !== current.attr('value')) {

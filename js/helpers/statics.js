@@ -23,12 +23,12 @@ let tooltip;
 let length;
 
 const layers		= [
-	['Number of Access Point', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy'],
-	['Jumlah Titik Finansial', 'Populasi Orang Dewasa', 'Titik Finansial per 1000 Dewasa', 'Waktu Tempuh dari Titik Finansial', 'Persentase dari Inklusi Finansial', 'Garis Kemiskinan', 'Kondisi Listrik', 'Literasi'],
+	['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy'],
+	['Jumlah Titik Finansial', 'Populasi', 'Titik Finansial per 1000 Dewasa', 'Waktu Tempuh dari Titik Finansial', 'Persentase dari Inklusi Finansial', 'Garis Kemiskinan', 'Kondisi Listrik', 'Literasi'],
 ];
 const tab_heads		= [
 	[['Type of Access Points', 'Tipe Titik Finansial'], ['FAP/PAP distribution', 'Distribusi FAP/PAP'], ['Network Coverage', 'Ketersediaan Jaringan']],
-	[['Adult Population', 'Populasi Orang Dewasa']],
+	[['Population', 'Populasi']],
 	[['Access Point Per 1000 Adults', 'Titik Finansial per 1000 Dewasa']],
 	[['Driving Time From FAPs', 'Waktu Tempuh dari Titik Finansial']],
 	[['', '']],
@@ -62,6 +62,7 @@ const lang_targets	= {
 	'#region-dropdown'		: ['Select', 'Pilih'],
 	'#base-dropdown'		: ['Basemap layer', 'Peta dasar'],
 	'#filter-dropdown'		: ['Filter', 'Filter'],
+	'#population-dropdown'	: ['Population Filter', 'Filter Populasi'],
 	'#question-dropdown'	: ['Questions Analytic', 'Pertanyaan Analitis'],
 }
 const lang_lists	= {

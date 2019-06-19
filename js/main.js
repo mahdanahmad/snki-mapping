@@ -33,6 +33,7 @@ $( document ).ready(function() {
 	createNetworkDrop();
 
 	createFilterHead();
+	createPopsHead();
 
 	initTabs();
 

@@ -12,9 +12,12 @@ function getProximity(callback) { $.get(baseUrl + '/proximity', constructParams(
 
 // HELPER
 function constructParams() {
-	let checked	= $( filter_target + ' > ul > li > input:checked' ).map(function() { return $( this ).attr('value'); }).get()
-	let filter	= !_.isNil(checked) ? JSON.stringify(checked) : null;
-	let layer	= $( base_target + ' > ul > li > input:checked' ).map(function() { return $( this ).attr('value'); }).get()[0];
+	let checked		= $( filter_target + ' > ul > li > input:checked' ).map(function() { return $( this ).attr('value'); }).get()
+	let filter		= !_.isNil(checked) ? JSON.stringify(checked) : null;
+	let layer		= $( base_target + ' > ul > li > input:checked' ).map(function() { return $( this ).attr('value'); }).get()[0];
+	let population	= $( pops_target + ' > ul > li > input:checked' ).map(function() { return $( this ).attr('value'); }).get()[0];
 
-	return _.chain({}).assign(centered, { filter, layer, lang: lang_enum[lang] }).omitBy(_.isNil).value()
+	console.log(_.chain({}).assign(centered, { filter, layer, population, lang: lang_enum[lang] }).omitBy(_.isNil).value());
+
+	return _.chain({}).assign(centered, { filter, layer, population, lang: lang_enum[lang] }).omitBy(_.isNil).value()
 };

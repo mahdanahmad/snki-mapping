@@ -38,7 +38,8 @@ function refreshLayer() {
 	states.forEach((o) => colorMap([], o));
 	d3.selectAll('g.network').classed('hidden', true);
 
-	d3.select('div#filter-dropdown').classed('hidden', _.includes([layers[0][3], layers[0][5], layers[0][6], layers[0][7]], active));
+	d3.select('div#filter-dropdown').classed('hidden', _.includes([layers[0][1], layers[0][3], layers[0][4], layers[0][5], layers[0][6], layers[0][7]], active));
+	d3.select('div#population-dropdown').classed('hidden', !_.includes([layers[0][1]], active));
 	d3.select('g#wrapped-background').classed('reverse', active == layers[0][3]);
 
 	switch (active) {

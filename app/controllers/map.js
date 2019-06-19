@@ -9,14 +9,14 @@ const location		= require('../models/location');
 const pallete		= ['#004e79', '#00659d', '#0085ce', '#38a8e2', '#99d0ec'];
 
 const filt_field	= 'access_point_type';
-const pop_field		= 'potential_population';
+const pop_field		= '2018_adult';
 const lit_field		= 'literacy_level';
 const povrt_field	= 'poverty_percent';
 const electr_field	= 'electricty_percent';
 const inclus_field	= 'financial_inclusion_total';
 const head_count	= 1000;
 
-const layers		= ['Number of Access Point', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy'];
+const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy'];
 
 const nodata_clr	= '#FAFAF8';
 
@@ -32,7 +32,8 @@ module.exports.index	= (input, callback) => {
 	const desa_id		= (input.desa	|| null);
 	const layer			= (input.layer	|| _.first(layers));
 
-	const filter		= input.filter ? JSON.parse(input.filter) : null;
+	const filter		= input.filter		? JSON.parse(input.filter)	: null;
+	const population	= input.population	? input.population 			: null;
 
 	const states		= ['province_id', 'kabupaten_id', 'kecamatan_id', 'desa_id'];
 
@@ -59,9 +60,10 @@ module.exports.index	= (input, callback) => {
 					break;
 				// Adult Population
 				case layers[1]:
+					console.log(population);
 					location.rawAggregate([
 						{ '$match': { parent, id: { '$ne': '' } } },
-						{ '$project': { _id: '$id', size: '$' + pop_field,  } }
+						{ '$project': { _id: '$id', size: '$' + population,  } }
 					], {}, (err, data) => {
 						if (err) { flowCallback(err); } else {
 							setColor(data, 'size', true).then((result) => {
@@ -82,10 +84,12 @@ module.exports.index	= (input, callback) => {
 
 						location.rawAggregate([
 							{ '$match': query },
-							{ '$project': { _id: '$id', count: { '$divide': ['$' + pop_field, head_count] } } }
+							// { '$project': { _id: '$id', count: { '$divide': [{ '$toInt': '$' + pop_field }, head_count] } } }
+							{ '$project': { _id: '$id', count: '$' + pop_field } }
 						], {}, (err, loc) => {
+							console.log(loc);
 							const mapped	= _.chain(ap_count).map(o => ([o._id, o.size])).fromPairs().value();
-							let data		= loc.map((o) => (_.assign(o, { size: mapped[o._id], capita: _.round(mapped[o._id] / o.count, 2) })))
+							let data		= loc.map((o) => (_.assign(o, { size: mapped[o._id], capita: _.round(mapped[o._id] / (parseInt(o.count) / 1000), 2) })))
 
 							setColor(data, 'capita', false, true).then((result) => {
 								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: o + ' - ' + _.round(o + result.range, 2), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });

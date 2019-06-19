@@ -7,7 +7,8 @@ const async			= require('async');
 const MongoDB		= require('mongodb');
 
 const root_dir		= 'data/init/';
-const csvs			= ['province', 'kabupaten', 'kecamatan'];
+// const csvs			= ['province', 'kabupaten', 'kecamatan'];
+const csvs			= ['province'];
 const ID_COLL		= 'BPS_ID#';
 const DB_COLL		= 'location';
 
