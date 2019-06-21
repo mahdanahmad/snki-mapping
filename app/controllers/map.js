@@ -226,7 +226,7 @@ module.exports.types	= (callback) => {
 	async.waterfall([
 		(flowCallback) => {
 			// agents.distinct(filt_field, {}, (err, result) => flowCallback(err, result));
-			types.findAll({}, {}, (err, result) => flowCallback(err, result.map((o) => ({ type: o.type, group: o.group, lang: [o.en, o.id] }))));
+			types.findAll({}, {}, (err, result) => flowCallback(err, _.chain(result).map((o) => ({ type: o.type, group: o.group, lang: [o.en, o.id] })).orderBy(o => _.indexOf(['FAP', 'PAP', 'Others'], o.group)).value()));
 		},
 	], (err, asyncResult) => {
 		if (err) {
