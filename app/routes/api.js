@@ -27,7 +27,7 @@ router.get('/network', (req, res, next) => {
 	analytics.network(req.query, (result) => { res.status(result.status_code).json(result); })
 });
 router.get('/population', (req, res, next) => {
-	analytics.pupulation(req.query, (result) => { res.status(result.status_code).json(result); })
+	analytics.population(req.query, (result) => { res.status(result.status_code).json(result); })
 });
 router.get('/proximity', (req, res, next) => {
 	analytics.proximity(req.query, (result) => { res.status(result.status_code).json(result); })

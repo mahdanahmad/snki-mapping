@@ -6,10 +6,10 @@ const agents		= require('../models/agents');
 const location		= require('../models/location');
 
 const filt_field	= 'access_point_type';
-const pop_field		= 'potential_population';
+const pop_field		= '2018_adult';
 const head_count	= 1000;
 
-const layers		= ['Number of Access Point', 'Adult Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points'];
+const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points'];
 
 module.exports.distribution	= (input, callback) => {
 	let response        = 'OK';
@@ -135,10 +135,10 @@ module.exports.network	= (input, callback) => {
 	});
 };
 
-module.exports.pupulation	= (input, callback) => {
+module.exports.population	= (input, callback) => {
 	let response        = 'OK';
 	let status_code     = 200;
-	let message         = 'Get pupulation data success.';
+	let message         = 'Get population data success.';
 	let result          = null;
 
 	const province_id	= (input.prov	|| null);
@@ -147,7 +147,8 @@ module.exports.pupulation	= (input, callback) => {
 	const desa_id		= (input.desa	|| null);
 	const layer			= (input.layer	|| _.first(layers));
 
-	const filter		= input.filter ? JSON.parse(input.filter) : null;
+	const filter		= input.filter 		? JSON.parse(input.filter)	: null;
+	const population	= input.population	? input.population 			: null;
 
 	const states		= ['province_id', 'kabupaten_id', 'kecamatan_id', 'desa_id'];
 
@@ -157,12 +158,12 @@ module.exports.pupulation	= (input, callback) => {
 		(flowCallback) => {
 			location.rawAggregate([
 				{ '$match': { parent, id: { '$ne': '' } } },
-				{ '$project': { potential_population: 1, name: 1, id: 1, _id: 0 } }
+				{ '$project': { adult: '$' + pop_field, count: '$' + population, name: 1, id: 1, _id: 0 } }
 			], {}, (err, result) => flowCallback(err, result));
 		},
 		(loc_below, flowCallback) => {
 			if (layer == layers[1]) {
-				flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: o.potential_population })).orderBy(['size'], ['asc']).value());
+				flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseInt(o.count) })).orderBy(['size'], ['asc']).value());
 			} else {
 				let match	= _.omitBy({ province_id, kabupaten_id, kecamatan_id, desa_id }, _.isNil);
 				if (filter) { match[filt_field] = { '$in': filter }; }
@@ -178,7 +179,7 @@ module.exports.pupulation	= (input, callback) => {
 
 					flowCallback(err, _.chain(loc_below).map((o) => {
 						let ap_count	= (mapped_ap[o.id] || 0);
-						let size		= (ap_count ? _.round(ap_count / (o[pop_field] / head_count), 2) : 0);
+						let size		= (ap_count ? _.round(ap_count / (o[count] / head_count), 2) : 0);
 
 						return (_.assign(o, { ap_count, size }));
 					}).orderBy(['size', 'ap_count'], ['asc', 'asc']).value());

@@ -60,7 +60,7 @@ module.exports.index	= (input, callback) => {
 					break;
 				// Adult Population
 				case layers[1]:
-					console.log(population);
+					// console.log(population);
 					location.rawAggregate([
 						{ '$match': { parent, id: { '$ne': '' } } },
 						{ '$project': { _id: '$id', size: '$' + population,  } }
