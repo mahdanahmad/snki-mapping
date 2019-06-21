@@ -7,9 +7,13 @@ const location		= require('../models/location');
 
 const filt_field	= 'access_point_type';
 const pop_field		= '2018_adult';
+const lit_field		= 'literacy_level';
+const povrt_field	= 'poverty_percent';
+const electr_field	= 'electricty_percent';
+const inclus_field	= 'financial_inclusion_total';
 const head_count	= 1000;
 
-const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Driving Time From Access Points'];
+const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy'];
 
 module.exports.distribution	= (input, callback) => {
 	let response        = 'OK';
@@ -158,36 +162,58 @@ module.exports.population	= (input, callback) => {
 		(flowCallback) => {
 			location.rawAggregate([
 				{ '$match': { parent, id: { '$ne': '' } } },
-				{ '$project': { adult: '$' + pop_field, count: '$' + population, name: 1, id: 1, _id: 0 } }
+				{ '$project': { adult: '$' + pop_field, count: '$' + population, name: 1, id: 1, _id: 0,  lit: '$' + lit_field, povrt: '$' + povrt_field, electr: '$' + electr_field, inclus: '$' + inclus_field } }
 			], {}, (err, result) => flowCallback(err, result));
 		},
 		(loc_below, flowCallback) => {
-			if (layer == layers[1]) {
-				flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseInt(o.count) })).orderBy(['size'], ['asc']).value());
-			} else {
-				let match	= _.omitBy({ province_id, kabupaten_id, kecamatan_id, desa_id }, _.isNil);
-				if (filter) { match[filt_field] = { '$in': filter }; }
+			switch (layer) {
+				case layers[1]:
+					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseInt(o.count) })).orderBy(['size'], ['asc']).value());
+					break;
 
-				let active	= _.chain({ province_id, kabupaten_id, kecamatan_id, desa_id }).omitBy(_.isNil).keys().last().value();
+				case layers[2]:
+					let match	= _.omitBy({ province_id, kabupaten_id, kecamatan_id, desa_id }, _.isNil);
+					if (filter) { match[filt_field] = { '$in': filter }; }
 
-				agents.rawAggregate([
-					{ '$match': match },
-					{ '$group': { _id: '$' + states[states.indexOf(active) + 1], size: { $sum: 1 } } },
-					{ '$match': { _id: { $ne: null } } }
-				], {}, (err, ap_count) => {
-					const mapped_ap	= _.chain(ap_count).map((o) => ([o._id, o.size])).fromPairs().value();
+					let active	= _.chain({ province_id, kabupaten_id, kecamatan_id, desa_id }).omitBy(_.isNil).keys().last().value();
 
-					flowCallback(err, _.chain(loc_below).map((o) => {
-						let ap_count	= (mapped_ap[o.id] || 0);
-						let size		= (ap_count ? _.round(ap_count / (o[count] / head_count), 2) : 0);
+					agents.rawAggregate([
+						{ '$match': match },
+						{ '$group': { _id: '$' + states[states.indexOf(active) + 1], size: { $sum: 1 } } },
+						{ '$match': { _id: { $ne: null } } }
+					], {}, (err, ap_count) => {
+						const mapped_ap	= _.chain(ap_count).map((o) => ([o._id, o.size])).fromPairs().value();
 
-						return (_.assign(o, { ap_count, size }));
-					}).orderBy(['size', 'ap_count'], ['asc', 'asc']).value());
-				});
+						flowCallback(err, _.chain(loc_below).map((o) => {
+							let ap_count	= (mapped_ap[o.id] || 0);
+							let size		= (ap_count ? _.round(ap_count / (parseInt(o.adult) / head_count), 2) : 0);
+
+							return (_.assign(o, { ap_count, size }));
+						}).orderBy(['size', 'ap_count'], ['asc', 'asc']).value());
+					});
+					break;
+
+				case layers[4]:
+					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseInt(o.lit) })).orderBy(['size'], ['asc']).value());
+					break;
+
+				case layers[5]:
+					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseInt(o.povrt) })).orderBy(['size'], ['asc']).value());
+					break;
+
+				case layers[6]:
+					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseInt(o.electr) })).orderBy(['size'], ['asc']).value());
+					break;
+
+				case layers[7]:
+					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseInt(o.inclus) })).orderBy(['size'], ['asc']).value());
+					break;
+
+				default: flowCallback(null, []);
 			}
 		},
 		(data, flowCallback) => {
-			location.findOne({id: parent}, (err, result) => flowCallback(null, { data, details: _.chain(result).omit(['_id', 'parent']).assign({ total: _.sumBy(data, 'ap_count') }).value() }));
+			location.findOne({id: parent}, (err, result) => flowCallback(null, { data, details: { total: _.sumBy(data, 'ap_count'), adult: ( result ? result[pop_field] : null), count: (result ? result[population] : null) } }));
 		}
 	], (err, asyncResult) => {
 		if (err) {

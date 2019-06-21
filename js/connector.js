@@ -95,13 +95,25 @@ function refreshAnalytic() {
 			createRadial();
 			break;
 		case activeLayer == layers[0][1] && activeTab == tab_heads[1][0][lang]:
-			createBar();
+			getPopulation((err, result) => { createBar(result); });
 			break;
 		case activeLayer == layers[0][2] && activeTab == tab_heads[2][0][lang]:
-			createBar();
+			getPopulation((err, result) => { createBar(result); });
 			break;
 		case activeLayer == layers[0][3] && activeTab == tab_heads[3][0][lang]:
 			createTreemap();
+			break;
+		case activeLayer == layers[0][4] && activeTab == tab_heads[4][0][lang]:
+			getPopulation((err, result) => { createBar(result); });
+			break;
+		case activeLayer == layers[0][5] && activeTab == tab_heads[5][0][lang]:
+			getPopulation((err, result) => { createBar(result); });
+			break;
+		case activeLayer == layers[0][6] && activeTab == tab_heads[6][0][lang]:
+			getPopulation((err, result) => { createBar(result); });
+			break;
+		case activeLayer == layers[0][7] && activeTab == tab_heads[7][0][lang]:
+			getPopulation((err, result) => { createBar(result); });
 			break;
 		default:
 			console.error('unhandled analytics');

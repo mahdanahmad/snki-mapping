@@ -31,9 +31,9 @@ const tab_heads		= [
 	[['Population', 'Populasi']],
 	[['Access Point Per 1000 Adults', 'Titik Finansial per 1000 Dewasa']],
 	[['Driving Time From FAPs', 'Waktu Tempuh dari Titik Finansial']],
-	[['', '']],
-	[['', '']],
-	[['', '']],
+	[['Percentage of Financial Inclusion', 'Persentase dari Inklusi Finansial']],
+	[['Poverty Line', 'Garis Kemiskinan']],
+	[['Electricity', 'Kondisi Listrik']],
 	[['Literacy Percentage', 'Persentase Literasi']],
 ];
 const net_color		= {
@@ -72,7 +72,7 @@ const lang_targets	= {
 }
 const lang_lists	= {
 	access: ['Total Access Point', 'Total Titik Finansial'],
-	adult: ['Total Adult Population', 'Total Populasi Orang Dewasa'],
+	adult: ['Total Population', 'Total Populasi'],
 	potential: ['Total Potential Population', 'Total Populasi yang Berpotensi'],
 	type: ['Type of Access Point', 'Tipe Titik Finansial']
 }
