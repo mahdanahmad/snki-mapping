@@ -7,7 +7,7 @@ const async			= require('async');
 const MongoDB		= require('mongodb');
 
 const bank_file		= 'data/banklist.csv';
-const csv_file		= 'data/results.csv';
+const csv_file		= 'data/jabar.csv';
 
 const db_coll		= 'agents';
 const type_coll		= 'types';
@@ -31,26 +31,26 @@ MongoClient.connect(db_url, { useNewUrlParser: true }, (err, client) => {
 	let db	= client.db(process.env.DB_DATABASE);
 
 	async.waterfall([
-		// (flowCallback) => {
-		// 	db.collection(db_coll).deleteMany({}, (err) => flowCallback(err));
-		// },
 		(flowCallback) => {
-			db.collection(type_coll).findOne({ 'type': 'LKM' }, (err, result) => {
-				if (err) { flowCallback(err); }
-				else if (result) { flowCallback(); } else {
-					let newType = {
-						"type"	: "LKM",
-						"color"	: "firebrick",
-						"shape"	: "circle",
-						"group"	: "PAP",
-						"en"	: "LKM",
-						"id"	: "LKM"
-					}
-
-					db.collection(type_coll).insertOne(newType, (err) => flowCallback(err));
-				}
-			});
+			db.collection(db_coll).deleteMany({ province_id: "32" }, (err) => flowCallback(err));
 		},
+		// (flowCallback) => {
+		// 	db.collection(type_coll).findOne({ 'type': 'LKM' }, (err, result) => {
+		// 		if (err) { flowCallback(err); }
+		// 		else if (result) { flowCallback(); } else {
+		// 			let newType = {
+		// 				"type"	: "LKM",
+		// 				"color"	: "firebrick",
+		// 				"shape"	: "circle",
+		// 				"group"	: "PAP",
+		// 				"en"	: "LKM",
+		// 				"id"	: "LKM"
+		// 			}
+		//
+		// 			db.collection(type_coll).insertOne(newType, (err) => flowCallback(err));
+		// 		}
+		// 	});
+		// },
 		(flowCallback) => {
 			let bankmapped	= {};
 			csv
@@ -66,27 +66,29 @@ MongoClient.connect(db_url, { useNewUrlParser: true }, (err, client) => {
 			let data	= [];
 			let typesMapped	= _.chain(types).map(o => ([o.type, o._id])).fromPairs().value()
 
-			let prov	= {};
+			// let prov	= {};
+			let type_dict = {};
 
 			csv
 				.fromPath(csv_file, { headers: true })
 				.on('data', (row) => {
 					let access_point_type = '';
-					if (row['Institutio'] == 'INSURANSI') { access_point_type = '' }
-					else if (row['ACCESS POI'] == 'Pergadaian') { access_point_type = 'Pegadaian' }
-					else if (_.includes(['ATM', 'LKM'], row['ACCESS POI'])) { access_point_type = row['ACCESS POI'] }
+					// if (row['Institutio'] == 'INSURANSI') { access_point_type = '' }
+					// else if (row['ACCESS POI'] == 'Pergadaian') { access_point_type = 'Pegadaian' }
+					if (_.includes(['ATM'], row['ACCESS POI'])) { access_point_type = row['ACCESS POI'] }
 					else {
-						if (!row['BANKID']) { console.log(row); } else { access_point_type = bank_cate[bankmapped[parseInt(row['BANKID'])]] }
+						if (!row['bank_id']) { console.log(row); } else { access_point_type = bank_cate[bankmapped[parseInt(row['bank_id'])]] }
 					}
 
 					if (access_point_type) {
-						data.push(_.chain(row).omit(['bank_name', 'bank_id']).assign({ desa_id: parseInt(row.desa_id).toString(), access_point_type, access_point_id: typesMapped[access_point_type] }).value())
+						data.push(_.chain(row).omit(['bank_name', 'bank_id', 'ACCESS POI']).assign({ desa_id: parseInt(row.desa_id).toString(), access_point_type, access_point_id: typesMapped[access_point_type] }).value())
 					}
 
-					if (!_.chain(prov).keys().includes(row['province_id']).value()) { prov[row['province_id']] = 1; } else { prov[row['province_id']]++; }
+					// if (!_.chain(prov).keys().includes(row['province_id']).value()) { prov[row['province_id']] = 1; } else { prov[row['province_id']]++; }
+					if (!_.chain(type_dict).keys().includes(access_point_type).value()) { type_dict[access_point_type] = 1; } else { type_dict[access_point_type]++; }
 				})
 				.on('finish', () => { console.log(data.length); db.collection(db_coll).insertMany(data, (err) => flowCallback(err)); })
-				// .on('finish', () => { console.log(prov); console.log(_.chain(prov).values().sum().value()); flowCallback() })
+				// .on('finish', () => { flowCallback() })
 		}
 	], (err) => {
 		if (err) throw err;
