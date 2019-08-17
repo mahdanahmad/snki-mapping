@@ -61,7 +61,6 @@ module.exports.index	= (input, callback) => {
 					break;
 				// Adult Population
 				case layers[1]:
-					// console.log(population);
 					location.rawAggregate([
 						{ '$match': { parent, id: { '$ne': '' } } },
 						{ '$project': { _id: '$id', size: '$' + population,  } }
@@ -88,7 +87,6 @@ module.exports.index	= (input, callback) => {
 							// { '$project': { _id: '$id', count: { '$divide': [{ '$toInt': '$' + pop_field }, head_count] } } }
 							{ '$project': { _id: '$id', count: '$' + pop_field } }
 						], {}, (err, loc) => {
-							console.log(loc);
 							const mapped	= _.chain(ap_count).map(o => ([o._id, o.size])).fromPairs().value();
 							let data		= loc.map((o) => (_.assign(o, { size: mapped[o._id], capita: _.round(mapped[o._id] / (parseInt(o.count) / 1000), 2) })))
 
