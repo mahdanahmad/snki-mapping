@@ -34,6 +34,7 @@ $( document ).ready(function() {
 
 	createFilterHead();
 	createPopsHead();
+	createWelfareHead();
 
 	initTabs();
 

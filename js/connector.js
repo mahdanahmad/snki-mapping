@@ -21,6 +21,9 @@ function refreshView() {
 				d3.select(id).classed('hidden', !value);
 			});
 			break;
+		case layers[0][8]:
+			defaultAmountFAP();
+			break;
 		default: console.log('unhandled refreshView');
 	}
 
@@ -38,8 +41,9 @@ function refreshLayer() {
 	states.forEach((o) => colorMap([], o));
 	d3.selectAll('g.network').classed('hidden', true);
 
-	d3.select('div#filter-dropdown').classed('hidden', _.includes([layers[0][1], layers[0][4], layers[0][5], layers[0][6], layers[0][7]], active));
+	d3.select('div#filter-dropdown').classed('hidden', _.includes([layers[0][1], layers[0][4], layers[0][5], layers[0][6], layers[0][7], layers[0][8]], active));
 	d3.select('div#population-dropdown').classed('hidden', !_.includes([layers[0][1]], active));
+	d3.select('div#desil-dropdown').classed('hidden', !_.includes([layers[0][8]], active));
 	d3.select('g#wrapped-background').classed('reverse', active == layers[0][3]);
 
 	switch (active) {
@@ -65,6 +69,9 @@ function refreshLayer() {
 			defaultAmountFAP();
 			break;
 		case layers[0][7]:
+			defaultAmountFAP();
+			break;
+		case layers[0][8]:
 			defaultAmountFAP();
 			break;
 		default: console.log('base unhandled');

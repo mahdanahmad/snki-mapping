@@ -16,7 +16,7 @@ const electr_field	= 'electricty_percent';
 const inclus_field	= 'financial_inclusion_total';
 const head_count	= 1000;
 
-const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy'];
+const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy', 'Welfare Status'];
 
 const nodata_clr	= '#FAFAF8';
 
@@ -158,6 +158,19 @@ module.exports.index	= (input, callback) => {
 					break;
 				// Literacy
 				case layers[7]:
+					location.rawAggregate([
+						{ '$match': { parent, id: { '$ne': '' } } },
+						{ '$project': { _id: '$id', size: '$' + lit_field,  } }
+					], {}, (err, loc) => {
+						if (err) { flowCallback(err); } else {
+							let data = loc.map(o => ({ _id: o._id, size: o.size ? parseFloat(o.size.replace(',', '.')) : null }))
+							setColor(data, 'size', true).then((result) => {
+								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + ' - ' + nFormatter(o + result.range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
+							});
+						}
+					});
+					break;
+				case layers[8]:
 					location.rawAggregate([
 						{ '$match': { parent, id: { '$ne': '' } } },
 						{ '$project': { _id: '$id', size: '$' + lit_field,  } }

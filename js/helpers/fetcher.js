@@ -16,6 +16,7 @@ function constructParams() {
 	let filter		= !_.isNil(checked) ? JSON.stringify(checked) : null;
 	let layer		= $( base_target + ' > ul > li > input:checked' ).map(function() { return $( this ).attr('value'); }).get()[0];
 	let population	= $( pops_target + ' > ul > li > input:checked' ).map(function() { return $( this ).attr('value'); }).get()[0];
+	let desil		= $( desil_target + ' > ul > li:not(.group) > input:checked' ).map(function() { return $( this ).attr('value'); }).get();
 
-	return _.chain({}).assign(centered, { filter, layer, population, lang: lang_enum[lang] }).omitBy(_.isNil).value()
+	return _.chain({}).assign(centered, { filter, layer, population, desil, lang: lang_enum[lang] }).omitBy(_.isNil).value()
 };
