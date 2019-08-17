@@ -33,6 +33,7 @@ module.exports.index	= (input, callback) => {
 	const layer			= (input.layer	|| _.first(layers));
 
 	const filter		= input.filter		? JSON.parse(input.filter)	: null;
+	const desil			= input.desil		? input.desil				: [];
 	const population	= input.population	? input.population 			: null;
 
 	const states		= ['province_id', 'kabupaten_id', 'kecamatan_id', 'desa_id'];
@@ -170,13 +171,15 @@ module.exports.index	= (input, callback) => {
 						}
 					});
 					break;
+				// Walfare Status
 				case layers[8]:
 					location.rawAggregate([
 						{ '$match': { parent, id: { '$ne': '' } } },
-						{ '$project': { _id: '$id', size: '$' + lit_field,  } }
+						// { '$project': Object.assign({ _id: '$id' }, _.chain(desil).map(o => ([o, 1])).fromPairs().value()) }
+						{ '$project': { _id: '$id', size: { '$sum': desil.map(o => ('$' + o)) }}},
 					], {}, (err, loc) => {
 						if (err) { flowCallback(err); } else {
-							let data = loc.map(o => ({ _id: o._id, size: o.size ? parseFloat(o.size.replace(',', '.')) : null }))
+							let data = loc.map(o => ({ _id: o._id, size: o.size ? o.size : null }))
 							setColor(data, 'size', true).then((result) => {
 								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + ' - ' + nFormatter(o + result.range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
 							});
