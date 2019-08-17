@@ -45,7 +45,7 @@ function createBar(result) {
 			// .attr('text-anchor', 'middle')
 			.attr('alignment-baseline', 'middle')
 			.attr('class', (o) => ('cursor-default capita' + (o.size ? ' moved' : '')))
-			.text((o) => (o.size ? ( active == layers[0][1] ? nFormatter(o.size) : o.size + ( active == layers[0][2] ? '' : '%' ) ) : ''));
+			.text((o) => (o.size ? ( _.includes([layers[0][1], layers[0][8]], active) ? nFormatter(o.size) : o.size + ( active == layers[0][2] ? '' : '%' ) ) : ''));
 
 		grouped.on('mouseover', onMouseover)
 		grouped.on('mouseout', onMouseout);

@@ -13,7 +13,7 @@ const electr_field	= 'electricty_percent';
 const inclus_field	= 'financial_inclusion_total';
 const head_count	= 1000;
 
-const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy'];
+const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy', 'Welfare Status'];
 
 module.exports.distribution	= (input, callback) => {
 	let response        = 'OK';
@@ -152,6 +152,7 @@ module.exports.population	= (input, callback) => {
 	const layer			= (input.layer	|| _.first(layers));
 
 	const filter		= input.filter 		? JSON.parse(input.filter)	: null;
+	const desil			= input.desil		? input.desil				: [];
 	const population	= input.population	? input.population 			: null;
 
 	const states		= ['province_id', 'kabupaten_id', 'kecamatan_id', 'desa_id'];
@@ -162,7 +163,7 @@ module.exports.population	= (input, callback) => {
 		(flowCallback) => {
 			location.rawAggregate([
 				{ '$match': { parent, id: { '$ne': '' } } },
-				{ '$project': { adult: '$' + pop_field, count: '$' + population, name: 1, id: 1, _id: 0,  lit: '$' + lit_field, povrt: '$' + povrt_field, electr: '$' + electr_field, inclus: '$' + inclus_field } }
+				{ '$project': { adult: '$' + pop_field, count: '$' + population, name: 1, id: 1, _id: 0,  lit: '$' + lit_field, povrt: '$' + povrt_field, electr: '$' + electr_field, inclus: '$' + inclus_field, desil: { '$sum': desil.map(o => ('$' + o)) } } }
 			], {}, (err, result) => flowCallback(err, result));
 		},
 		(loc_below, flowCallback) => {
@@ -207,6 +208,10 @@ module.exports.population	= (input, callback) => {
 
 				case layers[7]:
 					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseInt(o.inclus) })).orderBy(['size'], ['asc']).value());
+					break;
+
+				case layers[8]:
+					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseInt(o.desil) })).orderBy(['size'], ['asc']).value());
 					break;
 
 				default: flowCallback(null, []);

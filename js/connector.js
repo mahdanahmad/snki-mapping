@@ -122,6 +122,9 @@ function refreshAnalytic() {
 		case activeLayer == layers[0][7] && activeTab == tab_heads[7][0][lang]:
 			getPopulation((err, result) => { createBar(result); });
 			break;
+		case activeLayer == layers[0][8] && activeTab == tab_heads[8][0][lang]:
+			getPopulation((err, result) => { createBar(result); });
+			break;
 		default:
 			console.error('unhandled analytics');
 	}

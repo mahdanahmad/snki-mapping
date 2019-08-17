@@ -59,7 +59,6 @@ function changeRegionHead() {
 
 function createFilterHead() {
 	getTypes((err, data) => {
-		console.log( _.chain(data).groupBy('group').flatMap((val, key) => (_.concat([{ type: key, group: 'group' }], val))).value());
 		$( filter_target + ' > ul' ).html("<li class='toggler'>" + filt_toggle[1] + "</li>" + _.chain(data).groupBy('group').flatMap((val, key) => (_.concat([{ type: key, group: 'group' }], val))).map((o, i) => (
 			"<li id='filter-" + _.camelCase(o.type) + "' class='" + o.group + "'>" +
 				// "<input type='checkbox' value='" + o.type + "' checked>" +
