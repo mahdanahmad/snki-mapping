@@ -13,7 +13,7 @@ const electr_field	= 'electricty_percent';
 const inclus_field	= 'financial_inclusion_total';
 const head_count	= 1000;
 
-const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy', 'Welfare Status'];
+const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy', '40% Below Prosperity Line'];
 
 module.exports.distribution	= (input, callback) => {
 	let response        = 'OK';
@@ -195,23 +195,23 @@ module.exports.population	= (input, callback) => {
 					break;
 
 				case layers[4]:
-					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseInt(o.lit) })).orderBy(['size'], ['asc']).value());
+					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseFloat(o.lit.replace(',', '.')) })).orderBy(['size'], ['asc']).value());
 					break;
 
 				case layers[5]:
-					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseInt(o.povrt) })).orderBy(['size'], ['asc']).value());
+					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseFloat(o.povrt.replace(',', '.')) })).orderBy(['size'], ['asc']).value());
 					break;
 
 				case layers[6]:
-					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseInt(o.electr) })).orderBy(['size'], ['asc']).value());
+					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseFloat(o.electr.replace(',', '.')) })).orderBy(['size'], ['asc']).value());
 					break;
 
 				case layers[7]:
-					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseInt(o.inclus) })).orderBy(['size'], ['asc']).value());
+					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseFloat(o.inclus.replace(',', '.')) })).orderBy(['size'], ['asc']).value());
 					break;
 
 				case layers[8]:
-					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseInt(o.desil) })).orderBy(['size'], ['asc']).value());
+					flowCallback(null, _.chain(loc_below).map((o) => ({ id: o.id, name: o.name, size: parseFloat(o.desil.replace(',', '.')) })).orderBy(['size'], ['asc']).value());
 					break;
 
 				default: flowCallback(null, []);

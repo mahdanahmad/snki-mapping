@@ -23,8 +23,8 @@ let tooltip;
 let length;
 
 const layers		= [
-	['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy', 'Welfare Status'],
-	['Jumlah Titik Finansial', 'Populasi', 'Titik Finansial per 1000 Dewasa', 'Jarak dari Titik Finansial', 'Persentase dari Inklusi Finansial', 'Garis Kemiskinan', 'Kondisi Listrik', 'Literasi', 'Status Kesejahteraan'],
+	['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy', '40% Below Prosperity Line'],
+	['Jumlah Titik Finansial', 'Populasi', 'Titik Finansial per 1000 Dewasa', 'Jarak dari Titik Finansial', 'Persentase dari Inklusi Finansial', 'Garis Kemiskinan', 'Kondisi Listrik', 'Literasi', '40% Dibawah Garis Kemiskinan'],
 ];
 const tab_heads		= [
 	[['Type of Access Points', 'Tipe Titik Finansial'], ['FAP/PAP distribution', 'Distribusi FAP/PAP'], ['Network Coverage', 'Ketersediaan Jaringan']],
@@ -35,7 +35,7 @@ const tab_heads		= [
 	[['Poverty Line', 'Garis Kemiskinan']],
 	[['Electricity', 'Kondisi Listrik']],
 	[['Literacy Percentage', 'Persentase Literasi']],
-	[['Welfare Status', 'Status Kesejahteraan']]
+	[['40% Below Prosperity Line', '40% Dibawah Garis Kemiskinan']]
 ];
 const net_color		= {
 	two		: '#8bbdbe',
@@ -69,7 +69,7 @@ const lang_targets	= {
 	'#base-dropdown'		: ['Basemap layer', 'Peta dasar'],
 	'#filter-dropdown'		: ['Filter', 'Filter'],
 	'#population-dropdown'	: ['Population Filter', 'Filter Populasi'],
-	'#desil-dropdown'		: ['Decile Filter', 'Filter Desil'],
+	'#desil-dropdown'		: ['Decil Filter', 'Desil Filter'],
 	'#question-dropdown'	: ['Questions Analytic', 'Pertanyaan Analitis'],
 }
 const lang_lists	= {

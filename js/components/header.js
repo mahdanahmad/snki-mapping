@@ -19,6 +19,9 @@ const pops_filt		= [
 	{ value: "2018_adult", lang: ['adult population (>15 yo) on 2018', 'penduduk dewasa (>15 thn) tahun 2018']},
 	{ value: "2018_male", lang: ['male population on 2018', 'penduduk laki-laki tahun 2018']},
 	{ value: "2018_female", lang: ['female population on 2018', 'penduduk perempuan tahun 2018']},
+	{ value: "2017_total", lang: ['total population on 2017', 'total penduduk tahun 2017']},
+	{ value: "2017_male", lang: ['male population on 2017', 'penduduk laki-laki tahun 2017']},
+	{ value: "2017_female", lang: ['female population on 2017', 'penduduk perempuan tahun 2017']},
 	{ value: "2015_total", lang: ['total population on 2015', 'total penduduk tahun 2015']},
 	{ value: "2015_adult", lang: ['adult population (>15 yo) on 2015', 'penduduk dewasa (>15 thn) tahun 2015']},
 	{ value: "2015_male", lang: ['male population on 2015', 'penduduk laki-laki tahun 2015']},
@@ -31,12 +34,12 @@ const pops_filt		= [
 ];
 
 const desil_filt = [
-	{ value: "rumah_tangga", group: "group", lang: ["Household", "Rumah Tangga"] },
+	{ value: "rumah_tangga", group: "group", lang: ["Household Level", "Tingkat Rumah Tangga"] },
 	{ value: "rumah_tangga_desil_1", group: "rumah_tangga", lang: ["1st Decile", "Desil 1"] },
 	{ value: "rumah_tangga_desil_2", group: "rumah_tangga", lang: ["2nd Decile", "Desil 2"] },
 	{ value: "rumah_tangga_desil_3", group: "rumah_tangga", lang: ["3rd Decile", "Desil 3"] },
 	{ value: "rumah_tangga_desil_4", group: "rumah_tangga", lang: ["4th Decile", "Desil 4"] },
-	{ value: "individu", group: "group", lang: ["Individual", "Individu"] },
+	{ value: "individu", group: "group", lang: ["Individual Level", "Tingkat Individu"] },
 	{ value: "individu_desil_1", group: "individu", lang: ["1st Decile", "Desil 1"] },
 	{ value: "individu_desil_2", group: "individu", lang: ["2nd Decile", "Desil 2"] },
 	{ value: "individu_desil_3", group: "individu", lang: ["3rd Decile", "Desil 3"] },
