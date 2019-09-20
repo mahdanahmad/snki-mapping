@@ -1,4 +1,4 @@
-const state_head	= ['Provinsi', 'Kabupaten', 'Kecamatan'];
+const state_head	= [['Province', 'Provinsi'], ['Regency', 'Kabupaten'], ['District', 'Kecamatan']];
 const title_target	= '#region-dropdown > div > span#title-target';
 
 const region_target	= '#dropdown-region';
@@ -46,9 +46,15 @@ const desil_filt = [
 	{ value: "individu_desil_4", group: "individu", lang: ["4th Decile", "Desil 4"] },
 ]
 
+const group_lang = {
+	"FAP": ["FAP", "FAP"],
+	"PAP": ["PAP", "PAP"],
+	"Others": ["Others", "Lainnya"]
+}
+
 function changeRegionHead() {
 	if (state_head[curr_state + 1]) {
-		d3.select(title_target).text(state_head[curr_state + 1]);
+		d3.select(title_target).html(state_head[curr_state + 1].map((o, i) => '<span class="langs lang-' + i + ' ' + (i == lang ? '' : 'hidden') + '">' + o + '</span>').join(""));
 		getLocation((err, data) => {
 			$( region_target + ' > ul' ).html(data.map((o) => ("<li id='region-" + o.id + "' value='" + o.id + "'>" + o.name + "</li>")).join(''));
 			$( region_target + ' > ul > li' ).click(function(e) {
@@ -62,7 +68,7 @@ function changeRegionHead() {
 
 function createFilterHead() {
 	getTypes((err, data) => {
-		$( filter_target + ' > ul' ).html("<li class='toggler'>" + filt_toggle[1] + "</li>" + _.chain(data).groupBy('group').flatMap((val, key) => (_.concat([{ type: key, group: 'group' }], val))).map((o, i) => (
+		$( filter_target + ' > ul' ).html("<li class='toggler'>" + filt_toggle[1] + "</li>" + _.chain(data).groupBy('group').flatMap((val, key) => (_.concat([{ type: key, lang: group_lang[key], group: 'group' }], val))).map((o, i) => (
 			"<li id='filter-" + _.camelCase(o.type) + "' class='" + o.group + "'>" +
 				// "<input type='checkbox' value='" + o.type + "' checked>" +
 				"<input type='checkbox' value='" + o.type + "'>" +
@@ -215,6 +221,7 @@ function langChange() {
 	$( filter_target + ' > ul > li > span.langs' ).addClass('hidden');
 	$( desil_target + ' > ul > li > span.langs' ).addClass('hidden');
 	$( logo_target + ' > span' ).addClass('hidden');
+	$( title_target + ' > span.langs' ).addClass('hidden');
 
 	lang	= (lang + 1) % lang_enum.length;
 
@@ -224,6 +231,7 @@ function langChange() {
 	$( filter_target + ' > ul > li > span.lang-' + lang ).removeClass('hidden');
 	$( desil_target + ' > ul > li > span.lang-' + lang ).removeClass('hidden');
 	$( logo_target + ' > span.lang-' + lang ).removeClass('hidden')
+	$( title_target + ' > span.langs.lang-' + lang ).removeClass('hidden');
 
 	writeHeader();
 	initTabs();

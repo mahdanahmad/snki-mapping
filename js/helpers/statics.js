@@ -23,7 +23,7 @@ let tooltip;
 let length;
 
 const layers		= [
-	['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy', '40% Below Prosperity Line'],
+	['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy', '40% Below Poverty Line'],
 	['Jumlah Titik Finansial', 'Populasi', 'Titik Finansial per 1000 Dewasa', 'Jarak dari Titik Finansial', 'Persentase dari Inklusi Finansial', 'Garis Kemiskinan', 'Kondisi Listrik', 'Literasi', '40% Dibawah Garis Kemiskinan'],
 ];
 const tab_heads		= [
@@ -35,7 +35,7 @@ const tab_heads		= [
 	[['Poverty Line', 'Garis Kemiskinan']],
 	[['Electricity', 'Kondisi Listrik']],
 	[['Literacy Percentage', 'Persentase Literasi']],
-	[['40% Below Prosperity Line', '40% Dibawah Garis Kemiskinan']]
+	[['40% Below Poverty Line', '40% Dibawah Garis Kemiskinan']]
 ];
 const net_color		= {
 	two		: '#8bbdbe',

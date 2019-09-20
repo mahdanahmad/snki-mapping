@@ -13,7 +13,7 @@ const electr_field	= 'electricty_percent';
 const inclus_field	= 'financial_inclusion_total';
 const head_count	= 1000;
 
-const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy', '40% Below Prosperity Line'];
+const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy', '40% Below Poverty Line'];
 
 module.exports.distribution	= (input, callback) => {
 	let response        = 'OK';

@@ -16,7 +16,7 @@ const electr_field	= 'electricty_percent';
 const inclus_field	= 'financial_inclusion_total';
 const head_count	= 1000;
 
-const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy', '40% Below Prosperity Line'];
+const layers		= ['Number of Access Point', 'Population', 'Access Point Per 1000 Adults', 'Distance From Access Points', 'Percentage of Financial Inclusion', 'Poverty Line', 'Electricity', 'Literacy', '40% Below Poverty Line'];
 
 const nodata_clr	= '#FAFAF8';
 
@@ -122,7 +122,7 @@ module.exports.index	= (input, callback) => {
 						if (err) { flowCallback(err); } else {
 							let data = loc.map(o => ({ _id: o._id, size: o.size ? parseFloat(o.size.replace(',', '.')) : null }))
 							setColor(data, 'size', true).then((result) => {
-								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + ' - ' + nFormatter(o + result.range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
+								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + '% - ' + nFormatter(o + result.range) + '%', color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
 							});
 						}
 					});
@@ -136,7 +136,7 @@ module.exports.index	= (input, callback) => {
 						if (err) { flowCallback(err); } else {
 							let data = loc.map(o => ({ _id: o._id, size: o.size ? parseFloat(o.size.replace(',', '.')) : null }))
 							setColor(data, 'size', true).then((result) => {
-								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + ' - ' + nFormatter(o + result.range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
+								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + '% - ' + nFormatter(o + result.range) + '%', color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
 							});
 						}
 					});
@@ -150,7 +150,7 @@ module.exports.index	= (input, callback) => {
 						if (err) { flowCallback(err); } else {
 							let data = loc.map(o => ({ _id: o._id, size: o.size ? parseFloat(o.size.replace(',', '.')) : null }))
 							setColor(data, 'size', true).then((result) => {
-								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + ' - ' + nFormatter(o + result.range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
+								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + '% - ' + nFormatter(o + result.range) + '%', color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
 							});
 						}
 					});
@@ -164,7 +164,7 @@ module.exports.index	= (input, callback) => {
 						if (err) { flowCallback(err); } else {
 							let data = loc.map(o => ({ _id: o._id, size: o.size ? parseFloat(o.size.replace(',', '.')) : null }))
 							setColor(data, 'size', true).then((result) => {
-								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + ' - ' + nFormatter(o + result.range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
+								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + '% - ' + nFormatter(o + result.range) + '%', color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
 							});
 						}
 					});
@@ -179,7 +179,7 @@ module.exports.index	= (input, callback) => {
 						if (err) { flowCallback(err); } else {
 							let data = loc.map(o => ({ _id: o._id, size: o.size ? o.size : null }))
 							setColor(data, 'size', true).then((result) => {
-								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + ' - ' + nFormatter(o + result.range), color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
+								flowCallback(err, { data: result.data, legend: result.fracture.map((o, i) => ({ text: nFormatter(o) + '% - ' + nFormatter(o + result.range) + '%', color: pallete[i] })).concat([{ text: 'No data', color: nodata_clr }]).reverse() });
 							});
 						}
 					});
