@@ -1,4 +1,4 @@
-const state_head	= [['Province', 'Provinsi'], ['Regency', 'Kabupaten'], ['District', 'Kecamatan']];
+const state_head	= [['Province', 'Provinsi'], ['Regency', 'Kabupaten'], ['Sub-district', 'Kecamatan'], ['Village', 'Desa']];
 const title_target	= '#region-dropdown > div > span#title-target';
 
 const region_target	= '#dropdown-region';

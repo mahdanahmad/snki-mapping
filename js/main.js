@@ -1,4 +1,5 @@
 // moment.locale('id');
+const home = "http://103.233.144.149";
 
 $( document ).ready(function() {
 	// $( document ).tooltip({});
@@ -44,3 +45,5 @@ $( document ).ready(function() {
 	writeHeader();
 
 });
+
+function onHeaderClick() { window.location = home; }
