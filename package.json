@@ -40,7 +40,7 @@
     "@claviska/jquery-dropdown": "^2.0.3",
     "d3": "^4.13.0",
     "d3-queue": "^3.0.7",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "nodemon": "^1.19.3",
     "sass": "^1.23.0"
   }
