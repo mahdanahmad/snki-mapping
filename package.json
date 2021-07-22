@@ -34,7 +34,7 @@
     "multer": "^1.4.2",
     "shapefile": "^0.6.6",
     "topojson": "^3.0.2",
-    "xlsx": "^0.13.5"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "@claviska/jquery-dropdown": "^2.0.3",
